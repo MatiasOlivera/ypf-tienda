@@ -7,6 +7,8 @@ module.exports = {
     'plugin:vue/recommended',
     '@vue/airbnb',
     '@vue/typescript',
+    'plugin:import/errors',
+    'plugin:import/warnings',
     'plugin:prettier/recommended'
   ],
   rules: {
