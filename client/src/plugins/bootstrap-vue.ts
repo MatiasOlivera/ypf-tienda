@@ -1,5 +1,4 @@
-import 'bootstrap-vue/dist/bootstrap-vue.css';
-import 'bootstrap/dist/css/bootstrap.css';
+import '../styles/index.scss';
 
 import BootstrapVue from 'bootstrap-vue';
 import Vue from 'vue';
