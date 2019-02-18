@@ -22,3 +22,20 @@ $familia-fuente-sans-serif: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 }
 
 $headings-font-family: 'D-DIN', $familia-fuente-sans-serif;
+
+// Cuerpo
+@font-face {
+  font-family: 'Inter';
+  src: url('../assets/fonts/inter/Inter-Regular.woff2') format('woff2');
+  font-style: normal;
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('../assets/fonts/inter/Inter-Bold.woff') format('woff2');
+  font-style: normal;
+  font-weight: bold;
+}
+
+$font-family-base: 'Inter', $familia-fuente-sans-serif;
