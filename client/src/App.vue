@@ -1,11 +1,17 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Inicio</router-link>
-    </div>
-    <router-view/>
+    <LaCabecera />
+
+    <RouterView />
   </div>
 </template>
 
-<style>
-</style>
+<script lang="ts">
+import Vue from 'vue';
+import LaCabecera from './components/LaCabecera.vue';
+
+export default Vue.extend({
+  name: 'App',
+  components: { LaCabecera }
+});
+</script>
