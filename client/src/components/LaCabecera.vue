@@ -8,7 +8,7 @@
     class="shadow"
   >
     <b-container>
-      <b-navbar-brand>
+      <b-navbar-brand :to="{ name: rutaInicio }">
         <img src="../assets/logotipo.png" alt="Logotipo" />
       </b-navbar-brand>
 
@@ -41,9 +41,15 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { rutaInicio } from '../router/rutas';
 
 export default Vue.extend({
-  name: 'LaCabecera'
+  name: 'LaCabecera',
+  data: () => {
+    return {
+      rutaInicio
+    };
+  }
 });
 </script>
 
