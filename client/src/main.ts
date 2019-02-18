@@ -1,4 +1,5 @@
 import './plugins/bootstrap-vue';
+import './plugins/vue-feather';
 
 import Vue from 'vue';
 
