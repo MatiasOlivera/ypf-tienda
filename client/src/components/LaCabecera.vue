@@ -9,7 +9,7 @@
   >
     <b-container>
       <b-navbar-brand :to="{ name: rutaInicio }">
-        <img src="../assets/images/logotipo.png" alt="Logotipo" />
+        <img src="../static/images/logotipo.png" alt="Logotipo" />
       </b-navbar-brand>
 
       <b-navbar-toggle target="nav_collapse" label="Cambiar navegación" />

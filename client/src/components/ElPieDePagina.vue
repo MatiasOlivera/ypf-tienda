@@ -5,7 +5,7 @@
         <b-col class="d-flex justify-content-center">
           <img
             id="logotipo"
-            src="../assets/images/logotipo.png"
+            src="../static/images/logotipo.png"
             alt="Logotipo"
           />
         </b-col>

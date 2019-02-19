@@ -9,14 +9,14 @@ $familia-fuente-sans-serif: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 // Titulos
 @font-face {
   font-family: 'D-DIN';
-  src: url('../assets/fonts/d-din/D-DIN.otf') format('otf');
+  src: url('../static/fonts/d-din/D-DIN.otf') format('otf');
   font-style: normal;
   font-weight: normal;
 }
 
 @font-face {
   font-family: 'D-DIN';
-  src: url('../assets/fonts/d-din/D-DIN-Bold.otf') format('otf');
+  src: url('../static/fonts/d-din/D-DIN-Bold.otf') format('otf');
   font-style: normal;
   font-weight: bold;
 }
@@ -26,14 +26,14 @@ $headings-font-family: 'D-DIN', $familia-fuente-sans-serif;
 // Cuerpo
 @font-face {
   font-family: 'Inter';
-  src: url('../assets/fonts/inter/Inter-Regular.woff2') format('woff2');
+  src: url('../static/fonts/inter/Inter-Regular.woff2') format('woff2');
   font-style: normal;
   font-weight: normal;
 }
 
 @font-face {
   font-family: 'Inter';
-  src: url('../assets/fonts/inter/Inter-Bold.woff') format('woff2');
+  src: url('../static/fonts/inter/Inter-Bold.woff') format('woff2');
   font-style: normal;
   font-weight: bold;
 }
