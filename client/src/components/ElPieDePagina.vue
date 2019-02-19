@@ -3,7 +3,11 @@
     <b-container>
       <b-row class="mb-5">
         <b-col class="d-flex justify-content-center">
-          <img id="logotipo" src="../assets/logotipo.png" alt="Logotipo" />
+          <img
+            id="logotipo"
+            src="../assets/images/logotipo.png"
+            alt="Logotipo"
+          />
         </b-col>
       </b-row>
 
