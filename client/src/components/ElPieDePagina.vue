@@ -62,15 +62,16 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-$color-fuente: rgba(0, 0, 0, 0.5);
+@import '~/bootstrap/scss/bootstrap.scss';
 
 footer {
-  color: $color-fuente;
+  color: $gray-600;
   padding: 40px 0;
 }
 
-a {
-  color: $color-fuente;
+a,
+a:hover {
+  color: $gray-600;
 }
 
 #logotipo {
