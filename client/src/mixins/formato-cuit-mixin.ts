@@ -1,12 +1,12 @@
 import Mixin from './tipos-mixins';
 
-const filtroCuitMixin: Mixin = {
+const formatoCuitMixin: Mixin = {
   filters: {
-    formatoCuit(valor: number): string {
+    formatoCuit(valor: number | string): string {
       if (!valor) return '';
 
       const caracter: string = 'x';
-      const cuit: string = valor.toString();
+      const cuit: string = typeof valor === 'number' ? valor.toString() : valor;
 
       const tipo: string = cuit.substring(0, 2).padEnd(2, caracter);
       const numero: string = cuit.substring(2, 10).padEnd(8, caracter);
@@ -19,4 +19,4 @@ const filtroCuitMixin: Mixin = {
   }
 };
 
-export default filtroCuitMixin;
+export default formatoCuitMixin;
