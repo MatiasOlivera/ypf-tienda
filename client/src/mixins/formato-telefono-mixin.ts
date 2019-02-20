@@ -1,6 +1,6 @@
 import Mixin from './tipos-mixins';
 
-const filtroTelefonoMixin: Mixin = {
+const formatoTelefonoMixin: Mixin = {
   filters: {
     formatoTelefono(valor: number): string {
       if (!valor) return '';
@@ -15,4 +15,4 @@ const filtroTelefonoMixin: Mixin = {
   }
 };
 
-export default filtroTelefonoMixin;
+export default formatoTelefonoMixin;
