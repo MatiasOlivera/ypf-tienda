@@ -1,6 +1,11 @@
 import '../static/styles/index.scss';
 
-import BootstrapVue from 'bootstrap-vue';
-import Vue from 'vue';
+import _BootstrapVue from 'bootstrap-vue';
 
-Vue.use(BootstrapVue);
+import { ConfiguracionPlugin } from './tipos-plugins';
+
+const BootstrapVue: ConfiguracionPlugin = {
+  plugin: _BootstrapVue
+};
+
+export default BootstrapVue;

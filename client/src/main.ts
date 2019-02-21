@@ -1,11 +1,13 @@
-import './plugins/bootstrap-vue';
-import './plugins/vue-feather';
-
 import Vue from 'vue';
 
 import App from './App.vue';
+import { BootstrapVue, VueFeather } from './plugins';
 import router from './router';
 import store from './store';
+
+// Plugins
+Vue.use(BootstrapVue.plugin);
+Vue.use(VueFeather.plugin);
 
 Vue.config.productionTip = false;
 
