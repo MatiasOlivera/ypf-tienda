@@ -1,0 +1,31 @@
+// Titulos
+@font-face {
+  font-family: 'D-DIN';
+  src: url('../fonts/d-din/D-DIN.otf') format('opentype');
+  font-style: normal;
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'D-DIN';
+  src: url('../fonts/d-din/D-DIN-Bold.otf') format('opentype');
+  font-style: normal;
+  font-weight: bold;
+}
+
+// Cuerpo
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/inter/Inter-Regular.woff2') format('woff2'),
+    url('../fonts/inter/Inter-Regular.woff') format('woff');
+  font-style: normal;
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/inter/Inter-Bold.woff2') format('woff2'),
+    url('../fonts/inter/Inter-Bold.woff') format('woff');
+  font-style: normal;
+  font-weight: bold;
+}

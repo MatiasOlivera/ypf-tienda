@@ -1,4 +1,9 @@
-import Vue from 'vue';
-import VueFeather from 'vue-feather';
+import _VueFeather from 'vue-feather';
 
-Vue.use(VueFeather);
+import { ConfiguracionPlugin } from './tipos-plugins';
+
+const VueFeather: ConfiguracionPlugin = {
+  plugin: _VueFeather
+};
+
+export default VueFeather;
