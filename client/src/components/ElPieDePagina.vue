@@ -71,6 +71,7 @@ footer {
 
 a,
 a:hover {
+  text-decoration: underline;
   color: $gray-600;
 }
 
