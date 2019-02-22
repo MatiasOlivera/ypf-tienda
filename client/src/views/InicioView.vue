@@ -29,6 +29,19 @@
         <polygon fill="white" points="0,100 100,0 100,100" />
       </svg>
     </div>
+
+    <b-container>
+      <b-row class="py-5">
+        <b-col md="8" offset-md="2">
+          <p class="text-center text-muted">
+            YPF DIRECTO es el canal de venta integral de YPF en donde el
+            productor agropecuario o el empresario pyme encuentra todos los
+            productos para desarrollar su actividad, más el soporte técnico y el
+            asesoramiento necesario para solucionar sus necesidades.
+          </p>
+        </b-col>
+      </b-row>
+    </b-container>
   </main>
 </template>
 
