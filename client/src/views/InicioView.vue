@@ -84,12 +84,68 @@
           </b-button>
         </b-col>
       </b-row>
+
+      <b-row class="py-5">
+        <b-col class="text-center">
+          <h2 class="titulo text-uppercase">
+            Contáctanos
+          </h2>
+        </b-col>
+      </b-row>
+
+      <b-row class="py-5">
+        <b-col
+          id="contacto"
+          cols="12"
+          md="6"
+          offset-md="3"
+          xl="4"
+          offset-xl="4"
+        >
+          <b-list-group>
+            <GrupoListaItem icono="map-pin">
+              <address class="my-3">
+                <p class="m-0">
+                  {{ contacto.direccion.calle }} -
+                  {{ contacto.direccion.localidad }},
+                  {{ contacto.direccion.provincia }}
+                </p>
+              </address>
+            </GrupoListaItem>
+
+            <GrupoListaItem icono="phone">
+              <address class="my-3">
+                <p
+                  v-for="(telefono, indice) in contacto.telefonos"
+                  :key="indice"
+                  class="m-0"
+                >
+                  <a :href="`tel:+${telefono}`" class="text-body">
+                    {{ telefono | formatoTelefono }}
+                  </a>
+                </p>
+              </address>
+            </GrupoListaItem>
+
+            <GrupoListaItem icono="mail">
+              <address class="my-3">
+                <a :href="`mailto:${contacto.email}`" class="text-body m-0">
+                  {{ contacto.email }}
+                </a>
+              </address>
+            </GrupoListaItem>
+          </b-list-group>
+        </b-col>
+      </b-row>
     </b-container>
   </main>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import GrupoListaItem from '../components/GrupoListaItem.vue';
+import { direccion, telefonos, email, Direccion } from '../config/empresa';
+import formatoTelefonoMixin from '../mixins/formato-telefono-mixin';
 
 import asesoramiento from '../static/images/categorias/asesoramiento-tecnico.jpg';
 import muestreoDeSuelo from '../static/images/categorias/muestreo-suelo.jpg';
@@ -104,6 +160,8 @@ import servicioCapilar from '../static/images/categorias/servicio-capilar.jpg';
 
 export default Vue.extend({
   name: 'InicioView',
+  components: { GrupoListaItem },
+  mixins: [formatoTelefonoMixin],
   data: (): Data => {
     return {
       categorias: [
@@ -148,7 +206,12 @@ export default Vue.extend({
           rutaImagen: servicioCapilar
         }
       ],
-      verTodasLasCategorias: false
+      verTodasLasCategorias: false,
+      contacto: {
+        direccion,
+        telefonos,
+        email
+      }
     };
   },
   methods: {
@@ -161,11 +224,18 @@ export default Vue.extend({
 interface Data {
   verTodasLasCategorias: boolean;
   categorias: Array<Categoria>;
+  contacto: Contacto;
 }
 
 interface Categoria {
   nombre: string;
   rutaImagen: string;
+}
+
+interface Contacto {
+  direccion: Direccion;
+  telefonos: Array<number>;
+  email: string;
 }
 </script>
 
@@ -206,5 +276,9 @@ interface Categoria {
   // Clase shadow de Bootstrap
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
   top: -10px;
+}
+
+#contacto a {
+  text-decoration: underline;
 }
 </style>
