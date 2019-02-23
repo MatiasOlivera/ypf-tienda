@@ -1,0 +1,26 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:11
+
+    working_directory: ~/ypf-tienda
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          key: dependency-cache-{{ checksum "client/package.json" }}
+
+      - run:
+          name: Instalar dependencias
+          command: cd client && npm install
+
+      - save_cache:
+          key: dependency-cache-{{ checksum "client/package.json" }}
+          paths:
+            - client/node_modules
+
+      - run:
+          name: Ejecutar los tests unitarios
+          command: cd client && npm run test:unit
