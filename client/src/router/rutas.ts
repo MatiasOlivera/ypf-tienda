@@ -1,6 +1,6 @@
 import { RouteConfig } from 'vue-router';
 
-import Inicio from '../views/Inicio.vue';
+import InicioView from '../views/InicioView.vue';
 
 // Nombres
 export const rutaInicio = 'inicio';
@@ -9,7 +9,7 @@ export const rutas: Array<RouteConfig> = [
   {
     path: '/',
     name: rutaInicio,
-    component: Inicio
+    component: InicioView
   }
 ];
 

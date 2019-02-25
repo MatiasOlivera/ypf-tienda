@@ -11,13 +11,12 @@ export const direccion: Direccion = {
 export const telefonos: Array<number> = [543773529218, 543774633944];
 export const email: string = 'info@ascsrl.com.ar';
 
-interface Direccion {
+export interface Direccion {
   calle: string;
   localidad: string;
   provincia: string;
 }
-
-const empresa: Empresa = {
+export default {
   nombreFantasia,
   razonSocial,
   cuit,
@@ -25,14 +24,3 @@ const empresa: Empresa = {
   telefonos,
   email
 };
-
-export interface Empresa {
-  nombreFantasia: string;
-  razonSocial: string;
-  cuit: number;
-  direccion: Direccion;
-  telefonos: Array<number>;
-  email: string;
-}
-
-export default empresa;

@@ -1,0 +1,23 @@
+@import './variables.scss';
+
+// Titulo con subrayado
+.titulo {
+  display: inline-block;
+  padding-bottom: 5px;
+  position: relative;
+}
+
+.titulo:after {
+  content: '';
+  display: block;
+  height: 1px;
+  bottom: 0;
+  width: 25%;
+  margin: auto;
+  border-bottom: 4px solid $primary;
+  transition: all 0.3s ease-in-out 0s;
+}
+
+.titulo:hover::after {
+  width: 50%;
+}
