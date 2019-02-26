@@ -7,3 +7,10 @@
 ![GitHub closed issues](https://img.shields.io/github/issues-closed/MatiasOlivera/ypf-tienda.svg)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/MatiasOlivera/ypf-tienda.svg)
 ![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/MatiasOlivera/ypf-tienda.svg)
+
+## Estructura del proyecto
+
+| Paquete  | Descripción                                           | Documentación             |
+| -------- | ----------------------------------------------------- | ------------------------- |
+| Servidor | Un servidor web que expone un API REST                | [Ver](./server/README.md) |
+| Cliente  | Un cliente web que consume el API y que muestra la UI | [Ver](./client/README.md) |
