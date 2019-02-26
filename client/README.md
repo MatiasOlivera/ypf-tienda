@@ -1,5 +1,10 @@
 # Cliente web
 
+[![Estado dependencias](https://david-dm.org/MatiasOlivera/ypf-tienda/status.svg?path=client)](https://david-dm.org/MatiasOlivera/ypf-tienda?path=client)
+[![Estado dependencias de desarrollo](https://david-dm.org/MatiasOlivera/ypf-tienda/dev-status.svg?path=client)](https://david-dm.org/MatiasOlivera/ypf-tienda?path=client&type=dev)
+[![Estilo de código](https://badgen.net/badge/code%20style/airbnb/ff5a5f)](https://github.com/airbnb/javascript)
+[![Formateador de código](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+
 ## CLI
 
 | Comando             | Descripción                                |
