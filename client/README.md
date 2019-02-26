@@ -7,6 +7,16 @@
 
 [Volver a inicio](../README.md)
 
+## Stack
+
+| Librería / Framework                    | Descripción                                                          |
+| --------------------------------------- | -------------------------------------------------------------------- |
+| [Vue.js](https://vuejs.org/)            | Framework web para crear interfaces de usuario mediante componentes  |
+| [Vue Router](https://router.vuejs.org/) | Router para gestionar las rutas de una SPA (Single Page Application) |
+| [Vuex](https://vuex.vuejs.org/)         | Librería para gestionar el estado global de la aplicación            |
+
+> El listado completo de dependencias se encuentra en el archivo [package.json](package.json)
+
 ## Estructura del proyecto
 
 ```bash
