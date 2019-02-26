@@ -1,39 +1,13 @@
-# client
+# Cliente web
 
-## Project setup
-```
-npm install
-```
+## CLI
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Run your end-to-end tests
-```
-npm run test:e2e
-```
-
-### Run your unit tests
-```
-npm run test:unit
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+| Comando             | Descripción                                |
+| ------------------- | ------------------------------------------ |
+| `npm install`       | Instala las dependencias                   |
+| `npm run serve`     | Compila e inicia un servidor de desarrollo |
+| `npm run build`     | Compila y minifica para producción         |
+| `npm run lint`      | Linting y correción en los archivos        |
+| `npm run test`      | Corre los tests unitarios (alias)          |
+| `npm run test:e2e`  | Corre los tests de integración (e2e)       |
+| `npm run test:unit` | Corre los tests unitarios                  |
