@@ -14,9 +14,6 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 //Users Request
 use App\Http\Requests\UsersRequest\UserLoginRequest;
 
-
-
-
 class AuthController extends Controller
 {
 
@@ -36,9 +33,7 @@ class AuthController extends Controller
             return response()->json($mensaje, $status);
         }
 
-        $response = compact('token');
-
-        return $this->SetRespuestaToken($token);
+        return $this->setRespuestaToken($token);
     }
 
     /**
@@ -75,9 +70,16 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function renovarToken(Request $request)
+    public function renovar(Request $request)
     {
-        return $this->SetRespuestaToken($this->guard()->refresh());
+        try {
+            $token = $this->guard()->refresh();
+            return $this->setRespuestaToken($token);
+        } catch (JWTException $e) {
+            $mensaje = 'Token Invalido';
+            $status = 401;
+            return response()->json(compact('mensaje'), $status);
+        }
     }
 
     /**
@@ -85,7 +87,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function SetRespuestaToken($token)
+    protected function setRespuestaToken($token)
     {
         return response()->json([
             'access_token' => $token,
