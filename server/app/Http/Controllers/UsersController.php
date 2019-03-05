@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -7,154 +6,140 @@ use App\Http\Requests\UsersRequest\UserCreateRequest;
 use App\Http\Requests\UsersRequest\UserUpdateRequest;
 use App\User;
 use Hash;
+use App\Http\Controllers\BaseController;
+use App\Auxiliares\Consulta;
+use App\Auxiliares\Paginacion;
+use App\Auxiliares\Mensaje;
+
 
 class UsersController extends Controller
 {
 
     /**
-     * Display a listing of the resource.
+     * Muestra una lista de usuarios.
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
+        $campos     = ['id', 'name', 'email', 'email_verified_at', 'id_cliente', 'created_at', 'updated_at', 'deleted_at',];
+        $relaciones = null;
+        $buscar     = $request->input("buscar", null);
+        $eliminados = $request->input("eliminados", false);
+        $paginado   = $request->input("paginado", 10);
+        $campoOrden = $request->input("campoOrden", 'name');
+        $orden      = $request->input("orden", true);
 
-        $campos = ['id', 'name', 'email', 'created_at'];
+        //paginado
+        $paginacion = new Paginacion;
+        $paginacion->setRegistrosPorPagina($paginado);
+        $paginacion->setCampoOrden($campoOrden);
+        ($orden === true || $orden == 'true') ? $paginacion->setOrdenASC() : $paginacion->setOrdenDESC() ;
 
-        $porPag = $request->input("porPag");
+        //consulta
+        $consulta = new Consulta;
+        if($eliminados === true || $eliminados == 'true'){ $consulta->soloEliminados();};
+        $consulta->setBuscar($buscar);
+        $consulta->setModelosRelacionados($relaciones);
+        $consulta->setCampos($campos);
 
-        $Users = new User();
-        $lista = $Users::select($campos)->paginate($porPag);
+        //mensajes
+        $mensajes = new Mensaje;
+        $mensajes->setMensajeError("Tubimos un problema, vuelva a intentarlo", 'CATCH_USER_INDEX');
 
-        $respuesta = $lista;
+        $metodo = new BaseController();
+        $modelo = new User();
 
-        return $respuesta;
+        return $metodo->index($consulta, $modelo, $paginacion, $mensajes);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Guarda un nuevo usuario en la BD.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(UserCreateRequest $request)
     {
-        $name = $request->input('name');
-        $email = $request->input('email');
-        $pass = $request->input('password');
-        $hash = Hash::make($pass);
+        $mensajes = new Mensaje;
+        $metodo   = new BaseController();
+        $modelo   = new User();
+        $inputs   = $request->all();
+        $nombre   = $request->input('name');
+        $inputs['password'] = Hash::make($request->input('password'));
+        unset($inputs['password_confirmation']);
 
-        try {
+        //mensajes
+        $mensaje->setMensajeExito("Usuario {$nombre} Creado con exito");
+        $mensaje->setMensajeError("No pudimos guardar el Usuario {$nombre}", 'CATCH_USER_STORE');
 
-            $User = new User();
-            $User->name = $name;
-            $User->email = $email;
-            $User->password = $hash;
-            $User->save();
-
-            $transaccion = true;
-        } catch (\Exception $e) {
-            $transaccion = false;
-        }
-
-        if ($transaccion) {
-            $respuesta = ['mensaje' => "El Usuario {$name} se creado con exito"];
-            $status = 201;
-        } else {
-            $respuesta = ['mensaje' => "Hubo un problema al intentar guardar a {$name}"];
-            $status = 400;
-        }
-
-        return response()->json($respuesta, $status);
+        return $metodo->store($inputs, $modelo, $mensajes);
     }
 
     /**
-     * Display the specified resource.
+     * Muestra un usuario especifico.
      *
-     * @param  int  $id
+     * @param App\User $user
      * @return \Illuminate\Http\Response
      */
-
-    public function Show($id)
+    public function show(User $user)
     {
-        $user = User::findOrfail($id);
-        return response()->json($user);
+        return $user;
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualizar el usuario especifico en la BD.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Http\Request  $usuario
+     * @param  \App\Http\Request  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(UserUpdateRequest $request, User $usuario)
+    public function update(UserUpdateRequest $request, User $user)
     {
-        $name = $request->input('name');
-        $email = $request->input('email');
-        $pass = $request->input('password');
-        $hash = Hash::make($pass);
+        $inputs  = $request->all();
+        $nombre  = $request->input('name');
+        $metodo  = new BaseController();
+        $mensaje = new Mensaje;
 
-        try {
+        $mensaje->setMensajeExito("El usuario {$nombre} ha sido actualizado");
+        $mensaje->setMensajeError("Hubo un problema al intentar actualizar el Usuario  {$nombre}", 'CATCH_USER_UPDATE');
 
-            $usuario->name = $name;
-            $usuario->email = $email;
-            $usuario->password = $hash;
-            $usuario->save();
-
-            $respuesta = ['mensaje' => "{ $name} ha sido actualizada"];
-            $status = 200;
-        } catch (\Exception $e) {
-
-            $respuesta = ['mensaje' => "Hubo un problema al intentar actualizar a { $name}"];
-            $status = 400;
-        }
-
-        return response()->json($respuesta, $status);
+        return $metodo->update($inputs, $user, $mensaje);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * elimina el usuario especifico de la BD
      *
-     * @param App\User $User
+     * @param App\User $user
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $User)
+    public function destroy(User $user)
     {
-        $nombre = $User->name;
-        $eliminada = $User->delete();
+        $nombre  = $user->name;
+        $metodo  = new BaseController();
+        $mensaje = new Mensaje;
 
-        if ($eliminada) {
-            $respuesta = ['mensaje' => "se elimino a {$nombre} con exito"];
-            $status = 200;
-        } else {
-            $respuesta = ['mensaje' => "Hubo un problema al intentar eliminar a {$nombre}"];
-            $status = 400;
-        }
+        $mensaje->setMensajeExito("se elimino a {$nombre} con exito");
+        $mensaje->setMensajeError("Hubo un problema al intentar eliminar a {$nombre}", 'CATCH_USER_DESTROY');
 
-        return response()->json($respuesta, $status);
+        return $metodo->destroy($user, $mensaje);
     }
 
-
     /**
-     * Restaurar la persona Fisica que ha sido eliminada
+     * Restaurar el usuario que ha sido eliminado
      *
-     * @param  \App\User  $User
+     * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function restore(User $User)
+    public function restore(User $user)
     {
-        $nombre = $User->name;
-        $restaurada = $User->restore();
+        $nombre  = $user->name;
+        $metodo  = new BaseController();
+        $mensaje = new Mensaje;
 
-        if ($restaurada) {
-            $respuesta = ['mensaje' => "{$nombre} ha sido dada de alta"];
-            $status = 200;
-        } else {
-            $respuesta = ['mensaje' => "Hubo un problema al intentar dar de alta a {$nombre}"];
-            $status = 400;
-        }
+        $mensaje->setMensajeExito("{$nombre} ha sido dada de alta");
+        $mensaje->setMensajeError("Hubo un problema al intentar dar de alta a {$nombre}", 'CATCH_USER_RESTORE');
 
-        return response()->json($respuesta, $status);
+        return $metodo->restore($user, $mensaje);
     }
 }
