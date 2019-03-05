@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -17,8 +18,14 @@ class User extends Authenticatable implements JWTSubject
 	 *
 	 * @var string
 	 */
-    protected $table = 'cliente_usuario';
+    protected $table = 'cliente_usuarios';
 
+    /**
+    * The attributes that should be mutated to dates.
+    *
+    * @var array
+    */
+    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
     /**
      * The attributes that are mass assignable.
      *
@@ -45,6 +52,11 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTIdentifier()
     {
         return $this->getKey();
+    }
+
+    public function cliente()
+    {
+        return $this->hasOne('App\Clientes', 'id_cliente', 'id_cliente');
     }
 
     /**
