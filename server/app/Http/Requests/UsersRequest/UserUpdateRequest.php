@@ -2,21 +2,29 @@
 
 namespace App\Http\Requests\UsersRequest;
 
-// use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
 use Illuminate\Http\Request;
-// use App\User;
+
 use Illuminate\Validation\Rule;
 
 class UserUpdateRequest extends UserCreateRequest
 {
+
+    /**
+     * Ignora el Unique Mail, para el Usuario que se esta actualizando.
+     *
+     */
     private function SetEmailRequest()
     {
-        // $this->reglas['email'][4] .= ",{$this->User->id}";
-        // $this->reglas['email'][4] = Rule::unique('cliente_usuario')->ignore($this->User->id);
-
-        array_push($this->reglas['email'], Rule::unique('cliente_usuario')->ignore($this->User->id));
+        array_push($this->reglas['email'], Rule::unique('cliente_usuarios')->ignore($this->user->id));
     }
+
+    private function eliminarPasswordRequest()
+    {
+        unset($this->reglas['password']);
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -35,6 +43,7 @@ class UserUpdateRequest extends UserCreateRequest
     public function rules()
     {
         $this->SetEmailRequest();
+        $this->eliminarPasswordRequest();
         return $this->reglas;
     }
 }
