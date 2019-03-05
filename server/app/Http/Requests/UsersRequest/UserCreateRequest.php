@@ -8,16 +8,14 @@ class UserCreateRequest extends UserLoginRequest
 {
     private function SetNameRequest()
     {
-        $name = array([
-            'name' => ['bail', 'required', 'string', 'max:50'],
-        ]);
+        $name = array('bail', 'required', 'string', 'max:50');
 
-        array_push($this->reglas, $name);
+        $this->reglas['name'] = $name;
     }
 
     private function SetUniqueEmailRequest()
     {
-        array_push($this->reglas['email'], 'unique:cliente_usuario,email');
+        array_push($this->reglas['email'], 'unique:cliente_usuarios,email');
     }
 
     /**
