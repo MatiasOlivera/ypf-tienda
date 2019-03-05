@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateClienteUsuarioTable extends Migration
+class CreateClienteUsuariosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateClienteUsuarioTable extends Migration
      */
     public function up()
     {
-        Schema::create('cliente_usuario', function (Blueprint $table) {
+        Schema::create('cliente_usuarios', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->string('email')->unique();
@@ -36,7 +36,7 @@ class CreateClienteUsuarioTable extends Migration
     public function down()
     {
         Schema::disableForeignKeyConstraints();
-        Schema::dropIfExists('cliente_usuario');
+        Schema::dropIfExists('cliente_usuarios');
         Schema::enableForeignKeyConstraints();
     }
 }
