@@ -58,7 +58,7 @@ class BaseController
             }
         } catch (\Throwable $th) {
             $status = 500;
-            $error  = $mensaje->getMensajeError();
+            $error  = $mensajes->getMensajeError();
             return response()->json($error, $status);
         }
     }

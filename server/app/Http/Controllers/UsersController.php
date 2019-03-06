@@ -22,7 +22,7 @@ class UsersController extends Controller
      */
     public function index(Request $request)
     {
-        $campos     = ['id', 'name', 'email', 'email_verified_at', 'id_cliente', 'created_at', 'updated_at', 'deleted_at',];
+        $campos     = ['id', 'name', 'email', 'email_verified_at', 'id_cliente', 'created_at', 'updated_at', 'deleted_at', ];
         $relaciones = null;
         $buscar     = $request->input("buscar", null);
         $eliminados = $request->input("eliminados", false);
@@ -34,11 +34,13 @@ class UsersController extends Controller
         $paginacion = new Paginacion;
         $paginacion->setRegistrosPorPagina($paginado);
         $paginacion->setCampoOrden($campoOrden);
-        ($orden === true || $orden == 'true') ? $paginacion->setOrdenASC() : $paginacion->setOrdenDESC() ;
+        ($orden === true || $orden == 'true') ? $paginacion->setOrdenASC() : $paginacion->setOrdenDESC();
 
         //consulta
         $consulta = new Consulta;
-        if($eliminados === true || $eliminados == 'true'){ $consulta->soloEliminados();};
+        if ($eliminados === true || $eliminados == 'true') {
+            $consulta->soloEliminados();
+        };
         $consulta->setBuscar($buscar);
         $consulta->setModelosRelacionados($relaciones);
         $consulta->setCampos($campos);
@@ -61,7 +63,7 @@ class UsersController extends Controller
      */
     public function store(UserCreateRequest $request)
     {
-        $mensajes = new Mensaje;
+        $mensaje = new Mensaje;
         $metodo   = new BaseController();
         $modelo   = new User();
         $inputs   = $request->all();
@@ -73,7 +75,7 @@ class UsersController extends Controller
         $mensaje->setMensajeExito("Usuario {$nombre} Creado con exito");
         $mensaje->setMensajeError("No pudimos guardar el Usuario {$nombre}", 'CATCH_USER_STORE');
 
-        return $metodo->store($inputs, $modelo, $mensajes);
+        return $metodo->store($inputs, $modelo, $mensaje);
     }
 
     /**
