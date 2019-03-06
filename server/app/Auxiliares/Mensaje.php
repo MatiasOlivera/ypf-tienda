@@ -9,7 +9,7 @@ class Mensaje
 
     public function __Construct(){
         $this->error = [
-                'codigo' => 'ERROR_BASE_CONTROLLER' ,
+                'codigo' => null ,
                 'descripcion' => 'Ha ocurrido un error, intente nuevamente',
             ];
 
