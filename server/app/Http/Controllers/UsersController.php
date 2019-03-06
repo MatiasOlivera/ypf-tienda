@@ -66,10 +66,9 @@ class UsersController extends Controller
         $mensaje = new Mensaje;
         $metodo   = new BaseController();
         $modelo   = new User();
-        $inputs   = $request->all();
+        $inputs   = $request->only('name', 'email', 'password');
         $nombre   = $request->input('name');
         $inputs['password'] = Hash::make($request->input('password'));
-        unset($inputs['password_confirmation']);
 
         //mensajes
         $mensaje->setMensajeExito("Usuario {$nombre} Creado con exito");
@@ -98,7 +97,7 @@ class UsersController extends Controller
      */
     public function update(UserUpdateRequest $request, User $user)
     {
-        $inputs  = $request->all();
+        $inputs  = $request->only('name', 'email');
         $nombre  = $request->input('name');
         $metodo  = new BaseController();
         $mensaje = new Mensaje;
