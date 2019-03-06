@@ -6,14 +6,14 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UserCreateRequest extends UserLoginRequest
 {
-    private function SetNameRequest()
+    private function setReglaName()
     {
         $name = array('bail', 'required', 'string', 'max:50');
 
         $this->reglas['name'] = $name;
     }
 
-    private function SetUniqueEmailRequest()
+    private function setReglaUniqueEmail()
     {
         array_push($this->reglas['email'], 'unique:cliente_usuarios,email');
     }
@@ -21,11 +21,10 @@ class UserCreateRequest extends UserLoginRequest
     /**
      * Agrega la confirmacion de PASSWORD a la hs de crear un Usuario
      */
-    private function SetPasswordConfirmRequest()
+    private function setReglaPasswordConfirm()
     {
         array_push($this->reglas['password'], 'confirmed');
     }
-
 
     /**
      * Determine if the user is authorized to make this request.
@@ -44,9 +43,9 @@ class UserCreateRequest extends UserLoginRequest
      */
     public function rules()
     {
-        $this->SetNameRequest();
-        $this->SetUniqueEmailRequest();
-        $this->SetPasswordConfirmRequest();
+        $this->setReglaName();
+        $this->setReglaUniqueEmail();
+        $this->setReglaPasswordConfirm();
         return $this->reglas;
     }
 }
