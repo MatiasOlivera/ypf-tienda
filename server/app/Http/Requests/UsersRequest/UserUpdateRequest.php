@@ -15,7 +15,7 @@ class UserUpdateRequest extends UserCreateRequest
      * Ignora el Unique Mail, para el Usuario que se esta actualizando.
      *
      */
-    private function SetEmailRequest()
+    private function setReglaEmail()
     {
         array_push($this->reglas['email'], Rule::unique('cliente_usuarios')->ignore($this->user->id));
     }
@@ -42,7 +42,7 @@ class UserUpdateRequest extends UserCreateRequest
      */
     public function rules()
     {
-        $this->SetEmailRequest();
+        $this->setReglaEmail();
         $this->eliminarPasswordRequest();
         return $this->reglas;
     }
