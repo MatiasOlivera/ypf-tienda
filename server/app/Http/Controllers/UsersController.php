@@ -7,10 +7,6 @@ use App\Http\Requests\UsersRequest\UserUpdateRequest;
 use App\User;
 use Hash;
 use App\Http\Controllers\BaseController;
-use App\Auxiliares\Consulta;
-use App\Auxiliares\Paginacion;
-use App\Auxiliares\Mensaje;
-
 
 class UsersController extends Controller
 {
