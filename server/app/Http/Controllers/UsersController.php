@@ -22,37 +22,32 @@ class UsersController extends Controller
      */
     public function index(Request $request)
     {
-        $campos     = ['id', 'name', 'email', 'email_verified_at', 'id_cliente', 'created_at', 'updated_at', 'deleted_at', ];
-        $relaciones = null;
-        $buscar     = $request->input("buscar", null);
-        $eliminados = $request->input("eliminados", false);
-        $paginado   = $request->input("paginado", 10);
-        $campoOrden = $request->input("campoOrden", 'name');
-        $orden      = $request->input("orden", true);
+        $parametros = [
+            'modelo' => 'User',
+            'campos' => ['id', 'name', 'email', 'email_verified_at', 'id_cliente', 'created_at', 'updated_at', 'deleted_at', ],
+            'relaciones' => null,
+            'buscar' => $request->input("buscar", null),
+            'eliminados' => $request->input("eliminados", false),
+            'paginado' => [
+                'porPagina'   => $request->input("porPagina", 10),
+                'ordenadoPor' => $request->input("ordenadoPor", 'name'),
+                'orden'       => $request->input("orden", true),
+            ]
+        ];
 
-        //paginado
-        $paginacion = new Paginacion;
-        $paginacion->setRegistrosPorPagina($paginado);
-        $paginacion->setCampoOrden($campoOrden);
-        ($orden === true || $orden == 'true') ? $paginacion->setOrdenASC() : $paginacion->setOrdenDESC();
+        $mensajes = [
+            'error' => [
+                'descripcion' => 'Hemos tenido un error durante la consulta de datos, intente nuevamente',
+                'codigo'      => 'USER_INDEX_CONTROLLER',
+            ],
+            'exito' => [
+                'descripcion' => 'operacion exitosa',
+                'codigo'      => 'USER_CATCH_INDEX_CONTROLLER',
+            ]
+        ];
 
-        //consulta
-        $consulta = new Consulta;
-        if ($eliminados === true || $eliminados == 'true') {
-            $consulta->soloEliminados();
-        };
-        $consulta->setBuscar($buscar);
-        $consulta->setModelosRelacionados($relaciones);
-        $consulta->setCampos($campos);
-
-        //mensajes
-        $mensajes = new Mensaje;
-        $mensajes->setMensajeError("Tubimos un problema, vuelva a intentarlo", 'CATCH_USER_INDEX');
-
-        $metodo = new BaseController();
-        $modelo = new User();
-
-        return $metodo->index($consulta, $modelo, $paginacion, $mensajes);
+        $metodo   = new BaseController;
+        return $metodo->index($parametros, $mensajes);
     }
 
     /**
@@ -63,18 +58,30 @@ class UsersController extends Controller
      */
     public function store(UserCreateRequest $request)
     {
-        $mensaje = new Mensaje;
         $metodo   = new BaseController();
-        $modelo   = new User();
         $inputs   = $request->only('name', 'email', 'password');
         $nombre   = $request->input('name');
         $inputs['password'] = Hash::make($request->input('password'));
 
-        //mensajes
-        $mensaje->setMensajeExito("Usuario {$nombre} Creado con exito");
-        $mensaje->setMensajeError("No pudimos guardar el Usuario {$nombre}", 'CATCH_USER_STORE');
+        //parametros
+        $parametros = [
+            'inputs' => $inputs,
+            'modelo' => 'User',
+        ];
 
-        return $metodo->store($inputs, $modelo, $mensaje);
+        //mensajes
+        $mensaje = [
+            'exito' => [
+                'codigo' => 'USER_STORE_CONTROLLER',
+                'descripcion' => "Usuario {$nombre} Creado con exito",
+            ],
+            'error' => [
+                'descripcion' => "No pudimos guardar el Usuario {$nombre}",
+                'codigo' => 'CATCH_USER_STORE'
+            ],
+        ];
+
+        return $metodo->store($parametros, $mensaje);
     }
 
     /**
@@ -99,13 +106,24 @@ class UsersController extends Controller
     {
         $inputs  = $request->only('name', 'email');
         $nombre  = $request->input('name');
+        $parametros = [
+            'inputs' => $inputs,
+            'modelo' => $user,
+        ];
+        //mensajes
+        $mensaje = [
+            'exito' => [
+                'codigo' => 'USER_STORE_CONTROLLER',
+                'descripcion' => "El usuario {$nombre} ha sido actualizado",
+            ],
+            'error' => [
+                'descripcion' => "Hubo un problema al intentar actualizar el Usuario  {$nombre}",
+                'codigo' => 'CATCH_USER_UPDATE'
+            ],
+        ];
+
         $metodo  = new BaseController();
-        $mensaje = new Mensaje;
-
-        $mensaje->setMensajeExito("El usuario {$nombre} ha sido actualizado");
-        $mensaje->setMensajeError("Hubo un problema al intentar actualizar el Usuario  {$nombre}", 'CATCH_USER_UPDATE');
-
-        return $metodo->update($inputs, $user, $mensaje);
+        return $metodo->update($parametros, $mensaje);
     }
 
     /**
@@ -118,10 +136,17 @@ class UsersController extends Controller
     {
         $nombre  = $user->name;
         $metodo  = new BaseController();
-        $mensaje = new Mensaje;
-
-        $mensaje->setMensajeExito("se elimino a {$nombre} con exito");
-        $mensaje->setMensajeError("Hubo un problema al intentar eliminar a {$nombre}", 'CATCH_USER_DESTROY');
+        //mensajes
+        $mensaje = [
+            'exito' => [
+                'codigo' => 'USER_DESTROY_CONTROLLER',
+                'descripcion' => "se elimino a {$nombre} con exito",
+            ],
+            'error' => [
+                'descripcion' => "Hubo un problema al intentar eliminar al Usuario {$nombre}",
+                'codigo' => 'USER_DESTROY_CONTROLLER'
+            ],
+        ];
 
         return $metodo->destroy($user, $mensaje);
     }
@@ -136,10 +161,17 @@ class UsersController extends Controller
     {
         $nombre  = $user->name;
         $metodo  = new BaseController();
-        $mensaje = new Mensaje;
-
-        $mensaje->setMensajeExito("{$nombre} ha sido dada de alta");
-        $mensaje->setMensajeError("Hubo un problema al intentar dar de alta a {$nombre}", 'CATCH_USER_RESTORE');
+        //mensajes
+        $mensaje = [
+            'exito' => [
+                'codigo' => 'USER_RESTORE_CONTROLLER',
+                'descripcion' => "El Usuario {$nombre} ha sido dado de alta",
+            ],
+            'error' => [
+                'descripcion' => "Hubo un problema al intentar dar de alta al Usuario {$nombre}",
+                'codigo' => 'USER_RESTORE_CONTROLLER'
+            ],
+        ];
 
         return $metodo->restore($user, $mensaje);
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Auxiliares\Consulta;
 
 class BaseController
 {
@@ -17,49 +18,17 @@ class BaseController
      * @param App\AuxiliaresApp\Auxiliares\Mensajes  $mensajes
      * @return \Illuminate\Http\Response
      */
-    public function index($consulta, $modelo, $paginacion, $mensajes)
+    public function index($parametros, $mensajes)
     {
         try {
-            $campoOrden = $paginacion->getCampoOrden();
-            $paginado   = $paginacion->getRegistrosPorPagina();
-            $relaciones = $consulta->getRelaciones();
-            $eliminados = $consulta->getEliminados();
-            $campos     = $consulta->getCampos();
-            $buscar     = $consulta->getValorBuscar();
-
-            if (!is_null($relaciones)) {
-                $lista = $modelo::with($relaciones);
-            } else {
-                $lista = $modelo;
-            }
-
-            if ($eliminados) {
-                $lista = $lista->onlyTrashed();
-            }
-
-            if (!is_null($campos)) {
-                $lista = $lista->select($campos);
-            }
-
-            if (!is_null($buscar)) {
-                $lista = $this->buscar($lista, $campos, $buscar);
-            }
-
-            if ($campoOrden) {
-                $orden = $paginacion->getOrden();
-                $lista = $lista->orderBy($campoOrden, $orden);
-            }
-
-            $Resultado = $lista->paginate($paginado);
-
-            if ($Resultado) {
-                $status = 200;
-                return response()->json($Resultado, $status);
+            $consulta = new Consulta;
+            $consulta->setParametros($parametros);
+            $lista = $consulta->ejecutarconsulta();
+            if ($lista) {
+                return response()->json($lista, 200);
             }
         } catch (\Throwable $th) {
-            $status = 500;
-            $error  = $mensajes->getMensajeError();
-            return response()->json($error, $status);
+            return response()->json($mensajes['error'], 500);
         }
     }
 
@@ -71,19 +40,18 @@ class BaseController
      * @param App\Auxiliares\Mensajes  $mensajes
      * @return \Illuminate\Http\Response
      */
-    public function store($inputs, $modelo, $mensaje)
+    public function store($parametros, $mensaje)
     {
         try {
-            $modelo->fill($inputs);
+            $nombreModelo = "App\\{$parametros['modelo']}";
+            $modelo = new $nombreModelo;
+            $modelo->fill($parametros['inputs']);
+
             if ($modelo->save()) {
-                $status   = 201;
-                $mensajes =  $mensaje->getMensajeExito();
-                return response()->json($mensajes, $status);
+                return response()->json($mensaje['exito'], 201);
             }
         } catch (\Throwable $th) {
-            $status = 500;
-            $error  = $mensaje->getMensajeError();
-            return response()->json($error, $status);
+            return response()->json($mensaje['error'], 500);
         }
     }
 
@@ -95,23 +63,16 @@ class BaseController
      * @param App\Auxiliares\Mensajes  $mensajes
      * @return \Illuminate\Http\Response
      */
-    public function update($inputs, $modelo, $mensaje)
+    public function update($parametros, $mensaje)
     {
         try {
-            $modelo->fill($inputs);
+            $modelo = $parametros['modelo'];
+            $modelo->fill($parametros['inputs']);
             if ($modelo->save()) {
-                $status                  =  200;
-                $mensajes['codigo']      =  $mensaje->exitoCodigo;
-                $mensajes['descripcion'] =  $mensaje->exitoDescripcion;
-
-                return response()->json($mensajes, $status);
+                return response()->json($mensaje['exito'], 200);
             }
         } catch (\Throwable $th) {
-            $status               =  500;
-            $error['codigo']      =  $mensaje->errorCodigo;
-            $error['descripcion'] =  $mensaje->errorDescripcion;
-
-            return response()->json($error, $status);
+            return response()->json($mensaje['error'], 500);
         }
     }
 
@@ -128,16 +89,10 @@ class BaseController
             $eliminado = $modelo->delete();
 
             if ($eliminado) {
-                $status   = 200;
-                $mensajes = $mensaje->getMensajeExito();
-
-                return response()->json($mensajes, $status);
+                return response()->json($mensaje['exito'], 200);
             }
         } catch (\Throwable $th) {
-            $status = 500;
-            $error  = $mensaje->getMensajeError();
-
-            return response()->json($error, $status);
+            return response()->json($mensaje['error'], 500);
         }
     }
 
@@ -154,25 +109,10 @@ class BaseController
             $restaurada = $modelo->restore();
 
             if ($restaurada) {
-                $status    = 200;
-                $mensajes  = $mensaje->getMensajeExito();
-
-                return response()->json($mensajes, $status);
+                return response()->json($mensaje['exito'], 200);
             }
         } catch (\Throwable $th) {
-            $status = 500;
-            $error  = $mensaje->getMensajeError();
-
-            return response()->json($error, $status);
+            return response()->json($mensaje['error'], 500);
         }
-    }
-
-    private function buscar($consulta, $campos, $buscar)
-    {
-        return $consulta->where(function ($query) use ($campos, $buscar) {
-            foreach ($campos as $campo) {
-                $query->orWhere($campo, 'like', "%{$buscar}%");
-            }
-        });
     }
 }
