@@ -69,10 +69,10 @@ class UsersController extends Controller
         $mensaje = [
             'exito' => [
                 'codigo' => 'USER_STORE_CONTROLLER',
-                'descripcion' => "Usuario {$nombre} Creado con exito",
+                'descripcion' => "{$nombre} se ha creado con exito",
             ],
             'error' => [
-                'descripcion' => "No pudimos guardar el Usuario {$nombre}",
+                'descripcion' => "Hubo un error al intentar guardar a {$nombre}",
                 'codigo' => 'CATCH_USER_STORE'
             ],
         ];
@@ -110,10 +110,10 @@ class UsersController extends Controller
         $mensaje = [
             'exito' => [
                 'codigo' => 'USER_STORE_CONTROLLER',
-                'descripcion' => "El usuario {$nombre} ha sido actualizado",
+                'descripcion' => "{$nombre} se ha modificado",
             ],
             'error' => [
-                'descripcion' => "Hubo un problema al intentar actualizar el Usuario  {$nombre}",
+                'descripcion' => "Hubo un error al intentar modificar el Usuario {$nombre}",
                 'codigo' => 'CATCH_USER_UPDATE'
             ],
         ];
@@ -136,10 +136,10 @@ class UsersController extends Controller
         $mensaje = [
             'exito' => [
                 'codigo' => 'USER_DESTROY_CONTROLLER',
-                'descripcion' => "se elimino a {$nombre} con exito",
+                'descripcion' => "{$nombre} ha sido eliminado",
             ],
             'error' => [
-                'descripcion' => "Hubo un problema al intentar eliminar al Usuario {$nombre}",
+                'descripcion' => "Hubo un error al intentar eliminar a {$nombre}",
                 'codigo' => 'USER_DESTROY_CONTROLLER'
             ],
         ];
@@ -161,10 +161,10 @@ class UsersController extends Controller
         $mensaje = [
             'exito' => [
                 'codigo' => 'USER_RESTORE_CONTROLLER',
-                'descripcion' => "El Usuario {$nombre} ha sido dado de alta",
+                'descripcion' => "{$nombre} ha sido dado de alta",
             ],
             'error' => [
-                'descripcion' => "Hubo un problema al intentar dar de alta al Usuario {$nombre}",
+                'descripcion' => "Hubo un error al intentar dar de alta a {$nombre}",
                 'codigo' => 'USER_RESTORE_CONTROLLER'
             ],
         ];

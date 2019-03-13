@@ -19,7 +19,6 @@ use Illuminate\Http\Request;
 Route::post('/auth/login',  'AuthController@login');
 
 //Registro
-
 Route::post('/usuarios', 'UsersController@store');
 
 //Auth Group
@@ -34,5 +33,5 @@ Route::middleware('jwt.auth')->group(function () {
     Route::apiResource('/usuarios', 'UsersController')
         ->parameters(['usuarios' => 'user']);
     //Restaurar usuario
-    Route::POST('/usuarios/{user}/restaurar/', 'UsersController@restore')->name('usuarios.restore');
+    Route::post('/usuarios/{user}/restaurar/', 'UsersController@restore')->name('usuarios.restore');
 });

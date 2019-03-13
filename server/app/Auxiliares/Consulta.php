@@ -61,7 +61,7 @@ class Consulta
                 $this->setRegistrosPorPagina($paginado['porPagina']);
             }
             if (isset($paginado['ordenadoPor'])) {
-                $this->setOrndenarPor($paginado['ordenadoPor']);
+                $this->setOrdenarPor($paginado['ordenadoPor']);
             }
             if (isset($paginado['orden'])) {
                 $this->setOrden($paginado['orden']);
@@ -291,7 +291,7 @@ class Consulta
     /**
      * @param string $string
      */
-    public function setOrndenarPor($string)
+    public function setOrdenarPor($string)
     {
         if (!is_null($string) && is_string($string)) {
             $this->ordenarPor = $string;

@@ -8,9 +8,7 @@ class UserCreateRequest extends UserLoginRequest
 {
     private function setReglaName()
     {
-        $name = array('bail', 'required', 'string', 'max:50');
-
-        $this->reglas['name'] = $name;
+        $this->reglas['name'] = ['bail', 'required', 'string', 'max:50', ];
     }
 
     private function setReglaUniqueEmail()

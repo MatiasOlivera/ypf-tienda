@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use App\User;
 
-class UsuariosDevelopeSeeder extends Seeder
+class UsuariosDesarrolloSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -24,4 +24,3 @@ class UsuariosDevelopeSeeder extends Seeder
         }
     }
 }
-
