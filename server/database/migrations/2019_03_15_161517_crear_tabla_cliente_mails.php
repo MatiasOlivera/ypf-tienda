@@ -22,6 +22,8 @@ class CrearTablaClienteMails extends Migration
             $table->timestamps();
             $table->softDeletes();
 
+            $table->unique(['cliente_id', 'email']);
+
             $table->foreign('cliente_id')->references('id_cliente')->on('clientes');
             $table->foreign('contacto_id')->references('id')->on('con_cliente');
         });
