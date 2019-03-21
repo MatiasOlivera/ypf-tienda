@@ -113,7 +113,7 @@ class MailController extends Controller
                 'descripcion' => "{$nombre} se ha modificado",
             ],
             'error' => [
-                'descripcion' => "Hubo un error al intentar modificar el Usuario {$nombre}",
+                'descripcion' => "Hubo un error al intentar modificar el Mail {$nombre}",
                 'codigo' => 'CATCH_MAIL_UPDATE'
             ],
         ];
