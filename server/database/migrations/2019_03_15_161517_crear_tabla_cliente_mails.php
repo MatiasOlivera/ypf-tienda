@@ -16,13 +16,13 @@ class CrearTablaClienteMails extends Migration
         Schema::create('cliente_mails', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('cliente_id')->length(11);
-            $table->string('email');
+            $table->string('mail');
             $table->integer('contacto_id')->length(11)->nullable();
 
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique(['cliente_id', 'email']);
+            $table->unique(['cliente_id', 'mail']);
 
             $table->foreign('cliente_id')->references('id_cliente')->on('clientes');
             $table->foreign('contacto_id')->references('id')->on('con_cliente');

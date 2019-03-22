@@ -49,7 +49,7 @@ class CrearTriggerOnUpdateConCliente extends Migration
 
                                 UPDATE cliente_mails
                                     SET
-                                      email=new.mail,
+                                      mail=new.mail,
                                       created_at = @creado,
                                       updated_at = @updated,
                                       deleted_at = @eliminado

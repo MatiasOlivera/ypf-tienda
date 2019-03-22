@@ -23,7 +23,7 @@ class CrearTriggerOnInsertConCliente extends Migration
                             SET @created     := (SELECT  CURRENT_TIMESTAMP);
 
                                 IF @mail IS NOT NULL THEN
-                                    INSERT INTO cliente_mails (cliente_id, email, contacto_id,  created_at)
+                                    INSERT INTO cliente_mails (cliente_id, mail, contacto_id,  created_at)
                                                         value (@cliente,   @mail, @id_contacto,  @created);
                                 END IF;
                         END;

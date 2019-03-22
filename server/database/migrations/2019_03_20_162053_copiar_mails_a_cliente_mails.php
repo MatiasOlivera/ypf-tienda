@@ -34,7 +34,7 @@ class CopiarMailsAClienteMails extends Migration
                             LEAVE copiar_mails;
                         END IF;
 
-                        INSERT INTO cliente_mails (contacto_id, cliente_id, email, created_at, deleted_at)
+                        INSERT INTO cliente_mails (contacto_id, cliente_id, mail, created_at, deleted_at)
                                             VALUES (contacto_id, cliente_id, email, creado,     eliminado);
 
                     END LOOP copiar_mails;
