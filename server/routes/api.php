@@ -34,4 +34,28 @@ Route::middleware('jwt.auth')->group(function () {
         ->parameters(['usuarios' => 'user']);
     //Restaurar usuario
     Route::post('/usuarios/{user}/restaurar/', 'UsersController@restore')->name('usuarios.restore');
+
+    //clientes Group
+    Route::apiResource('/clientes', 'ClientesController')
+        ->parameters(['clientes' => 'cliente']);
+    //Restaurar cliente
+    Route::post('/clientes/{cliente}/restaurar/', 'ClientesController@restore')->name('clientes.restore');
+
+    //mails Group
+    Route::apiResource('/mails', 'MailController')
+        ->parameters(['mails' => 'mail']);
+    //Restaurar mail
+    Route::post('/mails/{mail}/restaurar/', 'MailController@restore')->name('mails.restore');
+
+    //Telefonos Group
+    Route::apiResource('/telefonos', 'TelefonoController')
+        ->parameters(['telefonos' => 'telefono']);
+    //Restaurar telefono
+    Route::post('/telefonos/{telefono}/restaurar/', 'TelefonoController@restore')->name('telefonos.restore');
+
+    //Razones Group
+    Route::apiResource('/razones', 'RazonSocialController')
+        ->parameters(['razones' => 'razonSocial']);
+    //Restaurar razon
+    Route::post('/razones/{razonSocial}/restaurar/', 'RazonSocialController@restore')->name('razones.restore');
 });
