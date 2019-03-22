@@ -36,7 +36,7 @@ class TelefonoController extends Controller
             ],
             'exito' => [
                 'descripcion' => 'operacion exitosa',
-                'codigo'      => 'TELEFONO_CATCH_INDEX_CONTROLLER',
+                'codigo'      => 'CATCH_TELEFONO_INDEX',
             ]
         ];
 
@@ -145,7 +145,7 @@ class TelefonoController extends Controller
             ],
             'error' => [
                 'descripcion' => "Hubo un error al intentar eliminar a {$nombre}",
-                'codigo' => 'TELEFONO_DESTROY_CONTROLLER'
+                'codigo' => 'CATCH_TELEFONO_DESTROY'
             ],
         ];
 
@@ -155,7 +155,7 @@ class TelefonoController extends Controller
     /**
      * Restaurar el usuario que ha sido eliminado
      *
-     * @param  \App\Mail  $mail
+     * @param  \App\Telefono  $telefono
      * @return \Illuminate\Http\Response
      */
     public function restore(Telefono $telefono)
@@ -171,7 +171,7 @@ class TelefonoController extends Controller
             ],
             'error' => [
                 'descripcion' => "Hubo un error al intentar dar de alta {$nombre}",
-                'codigo' => 'TELEFONO_RESTORE_CONTROLLER'
+                'codigo' => 'CATCH_TELEFONO_RESTORE'
             ],
         ];
 

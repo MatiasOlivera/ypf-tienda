@@ -141,7 +141,7 @@ class MailController extends Controller
             ],
             'error' => [
                 'descripcion' => "Hubo un error al intentar eliminar a {$nombre}",
-                'codigo' => 'MAIL_DESTROY_CONTROLLER'
+                'codigo' => 'CATCH_MAIL_DESTROY'
             ],
         ];
 
