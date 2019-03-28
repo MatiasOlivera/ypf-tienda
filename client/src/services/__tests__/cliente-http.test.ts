@@ -1,32 +1,10 @@
+import 'whatwg-fetch';
+
 import { Diccionario } from '@/types/utilidades';
 
+import { respuestaFetchMock } from '../__mocks__/fetch.mock';
 import { producto, productos } from '../__mocks__/productos.mock';
 import { ClienteHttp } from '../cliente-http';
-
-const fetch = require('whatwg-fetch');
-
-function mockFetch(
-  datos: any,
-  cabeceras: Diccionario<string> = { 'content-type': 'application/json' },
-  status: number = 200
-) {
-  return jest.fn(async () => {
-    const data = datos ? JSON.stringify(datos) : undefined;
-    const statusText = status >= 200 && status < 300 ? 'OK' : 'Error';
-
-    return new Response(data, {
-      status,
-      statusText,
-      headers: cabeceras
-    });
-  });
-}
-
-function mockFetchError(error: string) {
-  return jest.fn(async () => {
-    throw new Error(error);
-  });
-}
 
 const baseUrl: string = 'https://servidor.com/api/';
 
@@ -37,7 +15,7 @@ const cabeceras: Diccionario<string> = {
 
 describe('Cliente HTTP', () => {
   test('debería obtener un listado de elementos usando el método GET', async () => {
-    window.fetch = mockFetch(productos);
+    window.fetch = jest.fn(() => respuestaFetchMock(productos));
 
     const cliente = new ClienteHttp(baseUrl);
     const respuesta = await cliente.peticion({
@@ -76,7 +54,7 @@ describe('Cliente HTTP', () => {
   });
 
   test('debería obtener un elemento usando el método GET', async () => {
-    window.fetch = mockFetch(producto);
+    window.fetch = jest.fn(() => respuestaFetchMock(producto));
 
     const cliente = new ClienteHttp(baseUrl);
     const respuesta = await cliente.peticion({
@@ -113,7 +91,7 @@ describe('Cliente HTTP', () => {
   });
 
   test('debería crear un nuevo elemento usando el método POST', async () => {
-    window.fetch = mockFetch(producto);
+    window.fetch = jest.fn(() => respuestaFetchMock(producto));
 
     const cliente = new ClienteHttp(baseUrl);
     const respuesta = await cliente.peticion({
@@ -154,7 +132,7 @@ describe('Cliente HTTP', () => {
 
   test('debería actualizar un elemento usando el método PUT', async () => {
     const productoActualizado = { id: 1, nombre: 'Ultrabook' };
-    window.fetch = mockFetch(productoActualizado);
+    window.fetch = jest.fn(() => respuestaFetchMock(productoActualizado));
 
     const cliente = new ClienteHttp(baseUrl);
     const respuesta = await cliente.peticion({
@@ -194,7 +172,7 @@ describe('Cliente HTTP', () => {
   });
 
   test('debería eliminar un elemento usando el método DELETE', async () => {
-    window.fetch = mockFetch(producto);
+    window.fetch = jest.fn(() => respuestaFetchMock(producto));
 
     const cliente = new ClienteHttp(baseUrl);
     const respuesta = await cliente.peticion({
@@ -232,7 +210,7 @@ describe('Cliente HTTP', () => {
   });
 
   test('debería hacer una petición cuando se le pase la URL completa', async () => {
-    window.fetch = mockFetch(productos);
+    window.fetch = jest.fn(() => respuestaFetchMock(productos));
 
     const cliente = new ClienteHttp();
     const respuesta = await cliente.peticion({
@@ -269,7 +247,7 @@ describe('Cliente HTTP', () => {
   });
 
   test('debería hacer una petición a un URL con caracteres especiales', async () => {
-    window.fetch = mockFetch(undefined, {});
+    window.fetch = jest.fn(() => respuestaFetchMock(undefined, {}));
 
     const cliente = new ClienteHttp(baseUrl);
     await cliente.peticion({
@@ -300,7 +278,7 @@ describe('Cliente HTTP', () => {
   });
 
   test('debería hacer una petición a un URL que no existe', async () => {
-    window.fetch = mockFetch(undefined, {}, 404);
+    window.fetch = jest.fn(() => respuestaFetchMock(undefined, {}, 404));
 
     const cliente = new ClienteHttp();
     const respuesta = await cliente.peticion({
@@ -317,7 +295,7 @@ describe('Cliente HTTP', () => {
   });
 
   test('debería hacer la petición incluso si no existen cabeceras', async () => {
-    window.fetch = mockFetch('Test', {});
+    window.fetch = jest.fn(() => respuestaFetchMock('Test', {}));
 
     const cliente = new ClienteHttp();
     const respuesta = await cliente.peticion({
@@ -350,7 +328,9 @@ describe('Cliente HTTP', () => {
   });
 
   test('debería envíar texto en la petición y recibir texto en la respuesta', async () => {
-    window.fetch = mockFetch('Test', { 'content-type': 'text/plain' });
+    window.fetch = jest.fn(() =>
+      respuestaFetchMock('Test', { 'content-type': 'text/plain' })
+    );
 
     const cliente = new ClienteHttp();
     const respuesta = await cliente.peticion({
@@ -387,7 +367,9 @@ describe('Cliente HTTP', () => {
   test('debería manejar un error en la petición', async () => {
     expect.assertions(1);
 
-    window.fetch = mockFetchError('Problema de red');
+    window.fetch = jest.fn(async () => {
+      throw new Error('Problema de red');
+    });
 
     const cliente = new ClienteHttp();
     try {
