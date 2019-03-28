@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "bootstrap-vue": "^2.0.0-rc.11",
+    "dayjs": "^1.8.11",
     "feather-icons": "^4.17.0",
     "vue": "^2.5.22",
     "vue-feather": "^1.0.0",
