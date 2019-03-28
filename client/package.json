@@ -20,7 +20,6 @@
   },
   "devDependencies": {
     "@types/jest": "^23.1.4",
-    "@types/whatwg-fetch": "0.0.33",
     "@vue/cli-plugin-babel": "^3.4.0",
     "@vue/cli-plugin-e2e-cypress": "^3.4.0",
     "@vue/cli-plugin-eslint": "^3.4.0",
