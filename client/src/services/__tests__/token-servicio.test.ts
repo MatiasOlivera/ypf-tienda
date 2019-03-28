@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { ServicioToken } from '../token-servicio';
 
 describe('Servicio token', () => {
@@ -7,7 +8,7 @@ describe('Servicio token', () => {
   });
 
   test('debería guardar el token y la fecha de expiración', () => {
-    const fecha = new Date().toISOString();
+    const fecha = dayjs().toISOString();
 
     const servicio = new ServicioToken();
     const tokenGuardado = servicio.setToken('bearer', 'tok3n');
@@ -18,7 +19,7 @@ describe('Servicio token', () => {
   });
 
   test('debería borrar el token y la fecha de expiración', () => {
-    const fecha = new Date().toISOString();
+    const fecha = dayjs().toISOString();
 
     const servicio = new ServicioToken();
     servicio.setToken('bearer', 'tok3n');
@@ -40,9 +41,9 @@ describe('Servicio token', () => {
   });
 
   test('debería devolver true si es posible renovar el token', () => {
-    const fecha = new Date();
-    fecha.setMinutes(fecha.getMinutes() + 5);
-    const fechaExpiracion = fecha.toISOString();
+    const fechaExpiracion = dayjs()
+      .add(20, 'minute')
+      .toISOString();
 
     const servicio = new ServicioToken();
     servicio.setToken('bearer', 'tok3n');
@@ -53,9 +54,9 @@ describe('Servicio token', () => {
   });
 
   test('debería devolver false si no es posible renovar el token', () => {
-    const fecha = new Date();
-    fecha.setMinutes(fecha.getMinutes() - 5);
-    const fechaExpiracion = fecha.toISOString();
+    const fechaExpiracion = dayjs()
+      .subtract(20, 'minute')
+      .toISOString();
 
     const servicio = new ServicioToken();
     servicio.setToken('bearer', 'tok3n');

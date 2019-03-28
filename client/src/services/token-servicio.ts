@@ -1,3 +1,6 @@
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
 import { Almacen, ServicioAlmacenamiento } from './almacen-servicio';
 
 export class ServicioToken {
@@ -21,10 +24,16 @@ export class ServicioToken {
     const fecha = this.getFechaExpiracion();
     if (fecha === null) return false;
 
-    const fechaActual = new Date();
-    const fechaExpiracion = new Date(fecha);
+    dayjs.extend(utc);
 
-    return fechaActual <= fechaExpiracion;
+    const fechaActual = dayjs();
+    const fechaExpiracion = dayjs(fecha);
+    const renovarAPartirDe = fechaExpiracion.clone().subtract(30, 'minute');
+
+    return (
+      fechaActual.isAfter(renovarAPartirDe) &&
+      fechaActual.isBefore(fechaExpiracion)
+    );
   }
 
   public limpiar(): void {
