@@ -3,6 +3,11 @@
 namespace App\Providers;
 
 use App\User;
+use App\Cliente;
+use App\ClienteDomicilio;
+use App\ClienteMail;
+use App\ClienteTelefono;
+use App\ClienteRazonSocial;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
@@ -28,10 +33,45 @@ class RouteServiceProvider extends ServiceProvider
 
         parent::boot();
 
-        //restore User
+        //User
         Route::bind('user', function ($id) {
             return User::withTrashed()
                 ->where('id', $id)
+                ->firstOrFail();
+        });
+
+        //Cliente
+        Route::bind('cliente', function ($id) {
+            return Cliente::withTrashed()
+                ->where('id_cliente', $id)
+                ->firstOrFail();
+        });
+
+        //ClienteDomicilio
+        Route::bind('domiciio', function ($id) {
+            return ClienteDomicilio::withTrashed()
+                ->where('id_dom', $id)
+                ->firstOrFail();
+        });
+
+        //ClienteMail
+        Route::bind('mail', function ($id) {
+            return ClienteMail::withTrashed()
+                ->where('con_cliente', $id)
+                ->firstOrFail();
+        });
+
+        //ClienteTelefono
+        Route::bind('telefono', function ($id) {
+            return ClienteTelefono::withTrashed()
+                ->where('con_cliente', $id)
+                ->firstOrFail();
+        });
+
+        //ClienteRazonSocial
+        Route::bind('razonSocial', function ($id) {
+            return ClienteRazonSocial::withTrashed()
+                ->where('id_razon', $id)
                 ->firstOrFail();
         });
     }
