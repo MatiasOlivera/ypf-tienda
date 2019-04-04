@@ -22,7 +22,7 @@ Route::post('/auth/login',  'AuthController@login');
 Route::post('/usuarios', 'UsersController@store');
 
 //Auth Group
-Route::group(['prefix' => 'auth', 'middleware' => ['jwt.auth', ], ], function () {
+Route::group(['prefix' => 'auth', 'middleware' => ['jwt.auth',],], function () {
     Route::get('usuario', 'AuthController@usuario');
     Route::post('renovar', 'AuthController@renovar');
     Route::post('logout', 'AuthController@logout');
@@ -32,6 +32,7 @@ Route::middleware('jwt.auth')->group(function () {
     //usuarios Group
     Route::apiResource('/usuarios', 'UsersController')
         ->parameters(['usuarios' => 'user']);
+
     //Restaurar usuario
     Route::post('/usuarios/{user}/restaurar/', 'UsersController@restore')->name('usuarios.restore');
 
@@ -41,21 +42,69 @@ Route::middleware('jwt.auth')->group(function () {
     //Restaurar cliente
     Route::post('/clientes/{cliente}/restaurar/', 'ClientesController@restore')->name('clientes.restore');
 
+    /*
+     *  cliente Domicilio
+     */
+    Route::get('clientes/{cliente}/domicilios', 'ClienteDomicilioController@index')->name('DomiciliosCliente');
+
+    Route::post('clientes/{cliente}/domicilios', 'ClienteDomicilioController@store')->name('CrearDomiciliosCliente');
+
+    Route::put('clientes/{cliente}/domicilios/{domicilio}', 'ClienteDomicilioController@update')->name('UpdateDomicilioCliente');
+
+    /*
+     *  cliente Telefono
+     */
+
+    Route::get('clientes/{cliente}/telefonos', 'ClienteTelefonoController@index')->name('TelefonosCliente');
+
+    Route::post('clientes/{cliente}/telefono', 'ClienteTelefonoController@store')->name('CrearTelefonosCliente');
+
+    Route::put('clientes/{cliente}/telefono/{telefono}', 'ClienteTelefonoController@update')->name('UpdateTelefonosCliente');
+
+    /*
+     *  cliente Mails
+     */
+
+    Route::get('clientes/{cliente}/emails', 'ClienteMailController@index')->name('MailsCliente');
+
+    Route::post('clientes/{cliente}/emails', 'ClienteMailController@store')->name('CrearMailsCliente');
+
+    Route::put('clientes/{cliente}/emails/{mail}', 'ClienteMailController@update')->name('UpdateMailsCliente');
+
+    /*
+     *  cliente Razon
+     */
+    Route::get('clientes/{cliente}/razones', 'ClienteRazonSocialController@index')->name('RazonesCliente');
+
+    Route::post('clientes/{cliente}/razon', 'ClienteRazonSocialController@store')->name('CrearRazonCliente');
+
+    Route::post('clientes/{cliente}/razon/{razonSocial}', 'ClienteRazonSocialController@asociar')->name('AsociarRazonesCliente');
+
+    Route::delete('clientes/{cliente}/razon/{razonSocial}', 'ClienteRazonSocialController@desasociar')->name('DesasociarRazonesCliente');
+
+
+
     //mails Group
-    Route::apiResource('/mails', 'MailController')
+    Route::apiResource('/mails', 'ClienteMailController')
         ->parameters(['mails' => 'mail']);
     //Restaurar mail
-    Route::post('/mails/{mail}/restaurar/', 'MailController@restore')->name('mails.restore');
+    Route::post('/mails/{mail}/restaurar/', 'ClienteMailController@restore')->name('mails.restore');
 
     //Telefonos Group
-    Route::apiResource('/telefonos', 'TelefonoController')
+    Route::apiResource('/telefonos', 'ClienteTelefonoController')
         ->parameters(['telefonos' => 'telefono']);
     //Restaurar telefono
-    Route::post('/telefonos/{telefono}/restaurar/', 'TelefonoController@restore')->name('telefonos.restore');
+    Route::post('/telefonos/{telefono}/restaurar/', 'ClienteTelefonoController@restore')->name('telefonos.restore');
 
     //Razones Group
-    Route::apiResource('/razones', 'RazonSocialController')
+    Route::apiResource('/razones', 'ClienteRazonSocialController')
         ->parameters(['razones' => 'razonSocial']);
     //Restaurar razon
-    Route::post('/razones/{razonSocial}/restaurar/', 'RazonSocialController@restore')->name('razones.restore');
+    Route::post('/razones/{razonSocial}/restaurar/', 'ClienteRazonSocialController@restore')->name('razones.restore');
+
+    //Domicilios Group
+    Route::apiResource('/razones', 'ClienteDomicilioController')
+        ->parameters(['domicilios' => 'domicilio']);
+    //Restaurar domicilio
+    Route::post('/razones/{razonSocial}/restaurar/', 'ClienteRazonSocialController@restore')->name('razones.restore');
 });
