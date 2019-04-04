@@ -4,9 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class RazonSocial extends Model
+class Localidad extends Model
 {
-    protected $table = 'razones_sociales';
+    protected $table = 'localidades';
+    protected $primaryKey = 'id_localidad';
 
     /**
     * The attributes that should be mutated to dates.
@@ -19,5 +20,5 @@ class RazonSocial extends Model
      *
      * @var array
      */
-    protected $fillable = ['nombre', 'cuit', 'id_loc', 'calle', 'altura', 'area_tel', 'tel', 'mail', ];
+    protected $fillable = ['id_localidad', 'nom_localidad', 'id_provincia'];
 }
