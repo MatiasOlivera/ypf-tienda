@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Mail extends Model
+class ClienteTelefono extends Model
 {
     protected $table = 'con_cliente';
 
@@ -20,14 +20,14 @@ class Mail extends Model
      *
      * @var array
      */
-    protected $fillable = ['id_cliente', 'mail', ];
+    protected $fillable = ['id_cliente', 'area', 'tel', 'nombre_contacto', ];
 
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
-    protected $hidden = ['area', 'tel', 'nombre_contacto', 'estado', ];
+    protected $hidden = ['mail',  'estado', ];
 
     public function cliente()
     {
