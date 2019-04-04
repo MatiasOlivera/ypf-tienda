@@ -56,7 +56,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function cliente()
     {
-        return $this->hasOne('App\Clientes', 'id_cliente', 'id_cliente');
+        return $this->belongsTo('App\Cliente', 'id_cliente', 'id_cliente');
     }
 
     /**
