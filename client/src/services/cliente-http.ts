@@ -5,16 +5,21 @@ export class ClienteHttp {
     this.urlBase = urlBase;
   }
 
-  public async peticion(config: Configuracion): Promise<Respuesta> {
+  public async peticion<RespuestaApi extends Respuesta>(
+    config: Configuracion
+  ): Promise<RespuestaApi> {
     const metodo: Metodo = config.metodo || 'GET';
     const urlInterna: string = this.getUrl(config.url, metodo, config.datos);
-    const opciones = this.getOpciones(urlInterna, { ...config, metodo });
+    const opciones = this.getOpciones(urlInterna, {
+      ...config,
+      metodo
+    });
 
     return fetch(urlInterna, opciones)
       .then((respuesta: Response) => {
         // La promesa será resuelta si se ha podido realizar la petición,
         // sin importar cuál es el código de estado de la respuesta
-        return this.getRespuesta(respuesta);
+        return (this.getRespuesta(respuesta) as unknown) as RespuestaApi;
       })
       .catch((error) => {
         // La promesa será rechazada si hubo un fallo de red
@@ -112,15 +117,19 @@ interface ConfiguracionInterna {
   datos?: any;
 }
 
-type Cabeceras = Diccionario<string>;
+export type Cabeceras = Diccionario<string>;
 
 export type Metodo = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
-interface Respuesta {
-  ok: boolean;
-  estado: number;
+export interface Respuesta<
+  Ok extends boolean = boolean,
+  Estado extends number = number,
+  Datos extends any = any
+> {
+  ok: Ok;
+  estado: Estado;
   textoEstado: string;
-  datos: any;
+  datos: Datos;
 }
 
 export default ClienteHttp;
