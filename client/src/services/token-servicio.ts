@@ -54,6 +54,6 @@ export class ServicioToken {
   }
 }
 
-type Renovacion = 'NO_RENOVAR' | 'RENOVAR' | 'LOGIN';
+export type Renovacion = 'NO_RENOVAR' | 'RENOVAR' | 'LOGIN';
 
 export default ServicioToken;
