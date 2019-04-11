@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "bootstrap-vue": "^2.0.0-rc.11",
+    "dayjs": "^1.8.11",
     "feather-icons": "^4.17.0",
     "vue": "^2.5.22",
     "vue-feather": "^1.0.0",
@@ -41,6 +42,7 @@
     "sass-loader": "^7.1.0",
     "ts-jest": "^23.0.0",
     "typescript": "~3.2.2",
-    "vue-template-compiler": "^2.5.21"
+    "vue-template-compiler": "^2.5.21",
+    "whatwg-fetch": "^3.0.0"
   }
 }
