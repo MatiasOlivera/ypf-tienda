@@ -10,6 +10,7 @@ use Hash;
 use tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Carbon\Carbon;
 
 //Users Request
 use App\Http\Requests\UsersRequest\UserLoginRequest;
@@ -89,10 +90,16 @@ class AuthController extends Controller
      */
     protected function setRespuestaToken($token)
     {
+        $ttl = $this->guard()->factory()->getTTL();
+
+        $fechaActual = Carbon::now();
+        $fechaExpiracion = $fechaActual->addMinutes($ttl);
+        $fechaExpiracionJSON = $fechaExpiracion->toIso8601String();
+
         return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => $this->guard()->factory()->getTTL() * 60 //para convertir a segundos
+            'token' => $token,
+            'tipoToken' => 'bearer',
+            'fechaExpiracion' => $fechaExpiracionJSON
         ]);
     }
 
