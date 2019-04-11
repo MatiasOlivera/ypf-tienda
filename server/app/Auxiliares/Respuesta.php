@@ -17,13 +17,13 @@ final class Respuesta
         return Respuesta::getRespuesta($datos, $mensaje, $codigoEstado);
     }
 
-    public static function error(array $datos, MensajeError $mensaje, int $codigoEstado = 500): JsonResponse
+    public static function error(MensajeError $mensaje, int $codigoEstado = 500): JsonResponse
     {
         if ($codigoEstado < 400) {
             throw new Exception("El código de estado no se encuentra dentro del rango de respuestas con errores");
         }
 
-        return Respuesta::getRespuesta($datos, $mensaje, $codigoEstado);
+        return Respuesta::getRespuesta([], $mensaje, $codigoEstado);
     }
 
     private static function getRespuesta(array $datos, ?Mensaje $mensaje, $codigoEstado)

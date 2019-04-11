@@ -63,10 +63,9 @@ class RespuestaTest extends TestCase
     public function testDevolverRespuestaError()
     {
         $mensaje = new MensajeError('Oops, operación fallida!', 'FALLO');
-        $actual = Respuesta::error(['personaje' => null], $mensaje, 500);
+        $actual = Respuesta::error($mensaje, 500);
 
         $esperado = [
-            'personaje' => null,
             'mensaje' => [
                 'tipo' => 'error',
                 'codigo' => 'FALLO',
@@ -89,6 +88,6 @@ class RespuestaTest extends TestCase
         );
 
         $mensaje = new MensajeError('Oops, operación fallida!', 'FALLO');
-        Respuesta::error([], $mensaje, 200);
+        Respuesta::error($mensaje, 200);
     }
 }
