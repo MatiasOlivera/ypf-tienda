@@ -44,15 +44,19 @@ class AuthController extends Controller
      */
     public function logout()
     {
-        $mensaje = 'Session Cerrada';
-        $status = 200;
+        try {
+            auth()->logout();
 
-        if (!$this->guard()->logout()) {
-            $mensaje = 'Tuvimos un Problema';
+            $mensaje = 'Sesión cerrada';
+            $status = 200;
+
+            return response()->json(compact('mensaje'), $status);
+        } catch (\Throwable $th) {
+            $mensaje = 'Tuvimos un problema';
             $status = 500;
-        }
 
-        return response()->json(compact('mensaje'), $status);
+            return response()->json(compact('mensaje'), $status);
+        }
     }
 
     /**
