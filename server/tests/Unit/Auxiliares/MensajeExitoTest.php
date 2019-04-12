@@ -11,12 +11,12 @@ class MensajeExitoTest extends TestCase
 {
     public function testDeberiaCrearUnaInstanciaDeMensajeExito()
     {
-        $mensaje = new MensajeExito('Operación completada!');
+        $mensaje = new MensajeExito('Operación completada!', 'COMPLETADO');
         $actual = $mensaje->getObjeto();
 
         $esperado = [
             'tipo' => 'exito',
-            'codigo' => null,
+            'codigo' => 'COMPLETADO',
             'descripcion' => 'Operación completada!'
         ];
 

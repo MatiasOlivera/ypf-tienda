@@ -8,7 +8,7 @@ class Mensaje
     private $codigo;
     private $descripcion;
 
-    public function __construct(string $descripcion, ?string $codigo)
+    public function __construct(string $descripcion, string $codigo)
     {
         $this->descripcion = $descripcion;
         $this->codigo = $codigo;

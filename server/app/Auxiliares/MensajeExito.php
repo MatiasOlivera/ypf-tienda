@@ -6,8 +6,8 @@ final class MensajeExito extends Mensaje
 {
     protected $tipo = 'exito';
 
-    public function __construct(string $descripcion)
+    public function __construct(string $descripcion, string $codigo)
     {
-        parent::__construct($descripcion, null);
+        parent::__construct($descripcion, $codigo);
     }
 }
