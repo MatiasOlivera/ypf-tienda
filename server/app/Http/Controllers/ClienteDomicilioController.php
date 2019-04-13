@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\ClienteDomicilio;
 use App\Cliente;
 use Illuminate\Http\Request;
+use App\Http\Requests\Cliente\Domicilio\ClienteDomicilioRequest;
 use App\Http\Controllers\BaseController;
 
 class ClienteDomicilioController extends Controller
@@ -17,27 +18,35 @@ class ClienteDomicilioController extends Controller
      */
     public function index(Request $request, Cliente $cliente)
     {
-        $mensajes = [
+        $mensaje = [
             'error' => [
                 'descripcion'   => 'Hemos tenido un error durante la consulta de datos, intente nuevamente',
-                'codigo'        => 'DOMICILIO_INDEX_CONTROLLER',
+                'codigo'        => 'CATCH_DOMICILIO_INDEX',
             ],
         ];
         try {
             $domicilios = $cliente->domicilios;
             return response()->json(['datos' => $domicilios,], 200);
         } catch (\Throwable $th) {
-            return response()->json($mensajes['error'], '400');
+            $respuesta = [
+                'datos'     => null,
+                'mensajes'  => [
+                    'tipo'      => 'error',
+                    'codigo'    => $mensaje['error']['codigo'],
+                    'mensaje'   => $mensaje['error']['descripcion'],
+                ],
+            ];
+            return response()->json($respuesta, 400);
         }
     }
 
     /**
      * Store a newly created resource in storage.
      * @param App\Cliente $cliente
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\Cliente\Domicilio\ClienteDomicilioRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Cliente $cliente)
+    public function store(ClienteDomicilioRequest $request, Cliente $cliente)
     {
         //mensajes
         $mensaje = [
@@ -52,48 +61,54 @@ class ClienteDomicilioController extends Controller
         ];
 
         try {
-            $inputs = [
-                'id_loc'            =>  $request->input('localidad_id'),
-                'tel'               =>  $request->input('calle'),
-                'nombre_contacto'   =>  $request->input('altura'),
-                'acla'              =>  $request->input('aclaracion'),
-            ];
+            $inputs = $request->input('localidad_id', 'calle', 'numero', 'aclaracion');
 
             $domicilio = new ClienteDomicilio($inputs);
             $cliente->domicilios()->save($domicilio);
-            $domicilios = $cliente->domicilios;
-
-            return response()->json(
-                [
-                    'datos'     => $domicilios,
-                    'mensajes'  => $mensaje['exito'],
+            $domicilio->localidad;
+            $respuesta = [
+                'datos'     => $domicilio,
+                'mensajes'  => [
+                    'tipo'      => 'exito',
+                    'codigo'    => $mensaje['exito']['codigo'],
+                    'mensaje'   => $mensaje['exito']['descripcion'],
                 ],
-                200
-            );
+            ];
+
+            return response()->json($respuesta, 200);
         } catch (\Throwable $th) {
-            return response()->json(['error' => $mensaje['error'],], 400);
+            $respuesta = [
+                'datos'     => null,
+                'mensajes'  => [
+                    'tipo'      => 'error',
+                    'codigo'    => $mensaje['error']['codigo'],
+                    'mensaje'   => $mensaje['error']['descripcion'],
+                ],
+            ];
+            return response()->json($respuesta, 400);
         }
     }
 
     /**
      * Display the specified resource.
-     * @param App\Cliente $cliente
-     * @param  \App\ClienteDomicilio  $domicilio
+     * @param  App\Cliente $cliente
+     * @param  App\ClienteDomicilio  $domicilio
      * @return \Illuminate\Http\Response
      */
     public function show(ClienteDomicilio $domicilio)
     {
+        $domicilio->localidad;
         return $domicilio;
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\ClienteDomicilio  $domicilio
+     * @param  App\Http\Requests\Cliente\Domicilio\ClienteDomicilioRequest $request
+     * @param  App\ClienteDomicilio  $domicilio
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Cliente $cliente, ClienteDomicilio $domicilio)
+    public function update(ClienteDomicilioRequest $request, ClienteDomicilio $domicilio)
     {
         //mensajes
         $mensaje = [
@@ -103,43 +118,47 @@ class ClienteDomicilioController extends Controller
             ],
             'error' => [
                 'descripcion'   => "Hubo un error al intentar modificar el domicilio",
-                'codigo'        => 'CATCH_DOMICILIO_STORE'
+                'codigo'        => 'CATCH_DOMICILIO_STORE',
             ],
         ];
 
         try {
-            $inputs = [
-                'id_loc'            =>  $request->input('localidad_id'),
-                'tel'               =>  $request->input('calle'),
-                'nombre_contacto'   =>  $request->input('altura'),
-                'acla'              =>  $request->input('aclaracion'),
-            ];
+            $inputs = $request->input('localidad_id', 'calle', 'numero', 'aclaracion');
 
             $domicilio->fill($inputs);
             $domicilio->save();
-            $domicilios = $cliente->domicilios;
-
-            return response()->json(
-                [
-                    'datos'     => $domicilios,
-                    'mensajes'  => $mensaje['exito'],
+            $domicilio->localidad;
+            $respuesta = [
+                'datos'     => $domicilio,
+                'mensajes'  => [
+                    'tipo'      => 'exito',
+                    'codigo'    => $mensaje['exito']['codigo'],
+                    'mensaje'   => $mensaje['exito']['descripcion'],
                 ],
-                200
-            );
+            ];
+
+            return response()->json($respuesta, 200);
         } catch (\Throwable $th) {
-            return response()->json(['error' => $mensaje['error'],], 400);
+            $respuesta = [
+                'datos'     => null,
+                'mensajes'  => [
+                    'tipo'      => 'error',
+                    'codigo'    => $mensaje['error']['codigo'],
+                    'mensaje'   => $mensaje['error']['descripcion'],
+                ],
+            ];
+            return response()->json($respuesta, 400);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\ClienteDomicilio  $domicilio
+     * @param  App\ClienteDomicilio  $domicilio
      * @return \Illuminate\Http\Response
      */
     public function destroy(ClienteDomicilio $domicilio)
     {
-        $BaseController  = new BaseController();
 
         //mensajes
         $mensaje = [
@@ -153,31 +172,31 @@ class ClienteDomicilioController extends Controller
             ],
         ];
 
+        $BaseController  = new BaseController();
         return $BaseController->destroy($domicilio, $mensaje);
     }
 
     /**
-     * Restaurar el usuario que ha sido eliminado
+     * Restaurar el domicilio que ha sido eliminado
      *
-     * @param  \App\ClienteDomicilio  $domicilio
+     * @param  App\ClienteDomicilio  $domicilio
      * @return \Illuminate\Http\Response
      */
     public function restore(ClienteDomicilio $domicilio)
     {
-        $BaseController  = new BaseController();
-
         //mensajes
         $mensaje = [
             'exito' => [
-                'codigo' => 'TELEFONO_RESTORE_CONTROLLER',
+                'codigo' => 'DOMICILIO_RESTORE_CONTROLLER',
                 'descripcion' => "El domicilio ha sido dado de alta",
             ],
             'error' => [
                 'descripcion' => "Hubo un error al intentar dar de alta el domicilio",
-                'codigo' => 'CATCH_TELEFONO_RESTORE'
+                'codigo' => 'CATCH_DOMICILIO_RESTORE'
             ],
         ];
 
+        $BaseController  = new BaseController();
         return $BaseController->restore($domicilio, $mensaje);
     }
 }

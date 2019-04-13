@@ -6,7 +6,7 @@ use App\Cliente;
 use App\ClienteRazonSocial;
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
-use Illuminate\Support\Carbon;
+use App\Http\Requests\Cliente\RazonSocial\ClienteRazonSocialRequest;
 
 class ClienteRazonSocialController extends Controller
 {
@@ -18,7 +18,7 @@ class ClienteRazonSocialController extends Controller
      */
     public function index(Request $request, Cliente $cliente)
     {
-        $mensajes = [
+        $mensaje = [
             'error' => [
                 'descripcion' => 'Hemos tenido un error durante la consulta de datos, intente nuevamente',
                 'codigo'      => 'RAZON_INDEX_CONTROLLER',
@@ -28,21 +28,29 @@ class ClienteRazonSocialController extends Controller
             $razones = $cliente->razonesSociales;
             return response()->json(['datos' => $razones,], 200);
         } catch (\Throwable $th) {
-            return response()->json($mensajes['error'], '400');
+            $respuesta = [
+                'datos'     => null,
+                'mensajes'  => [
+                    'tipo'      => 'error',
+                    'codigo'    => $mensaje['error']['codigo'],
+                    'mensaje'   => $mensaje['error']['descripcion'],
+                ],
+            ];
+            return response()->json($respuesta, 400);
         }
     }
 
     /**
      * Store a newly created resource in storage.
      * @param  App\Cliente $cliente
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\Cliente\RazonSocial\ClienteRazonSocialRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Cliente $cliente)
+    public function store(ClienteRazonSocialRequest $request, Cliente $cliente)
     {
         $nombre  = $request->input('denominacion');
         //mensajes
-        $mensajes = [
+        $mensaje = [
             'exito' => [
                 'codigo'        => 'RAZON_STORE_CONTROLLER',
                 'descripcion'   => " {$nombre} se ha creado con exito",
@@ -66,13 +74,25 @@ class ClienteRazonSocialController extends Controller
             ];
             $cliente->razonesSociales()->create($inputs);
             $razones = $cliente->razonesSociales;
-
-            return response()->json([
+            $respuesta = [
                 'datos'     => $razones,
-                'mensaje'   => $mensajes['exito'],
-            ], 200);
+                'mensajes'  => [
+                    'tipo'      => 'exito',
+                    'codigo'    => $mensaje['exito']['codigo'],
+                    'mensaje'   => $mensaje['exito']['descripcion'],
+                ],
+            ];
+            return response()->json($respuesta, 200);
         } catch (\Throwable $th) {
-            return response()->json($mensajes['error'], '400');
+            $respuesta = [
+                'datos'     => null,
+                'mensajes'  => [
+                    'tipo'      => 'error',
+                    'codigo'    => $mensaje['error']['codigo'],
+                    'mensaje'   => $mensaje['error']['descripcion'],
+                ],
+            ];
+            return response()->json($respuesta, 400);
         }
     }
 
@@ -91,21 +111,22 @@ class ClienteRazonSocialController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\Cliente\RazonSocial\ClienteRazonSocialRequest  $request
      * @param  \App\ClienteRazonSocial  $razonSocial
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Cliente $cliente, ClienteRazonSocial $razonSocial)
+    public function update(ClienteRazonSocialRequest $request, ClienteRazonSocial $razonSocial)
     {
         //mensajes
-        $nombre  = $request->input('denominacion');
-        $mensajes = [
+        $denominacionNew  = $request->input('denominacion');
+        $denominacionOLD  = $razonSocial->nombre;
+        $mensaje = [
             'exito' => [
                 'codigo' => 'RAZON_UPDATE_CONTROLLER',
-                'descripcion' => " {$nombre} se ha modificado con exito",
+                'descripcion' => " {$denominacionNew} se ha modificado con exito",
             ],
             'error' => [
-                'descripcion' => "Hubo un error al intentar modificado a {$nombre}",
+                'descripcion' => "Hubo un error al intentar modificado a {$denominacionOLD}",
                 'codigo' => 'CATCH_RAZON_UPDATE'
             ],
         ];
@@ -121,32 +142,41 @@ class ClienteRazonSocialController extends Controller
                 'mail'      => $request->input('mail'),
             ];
             $razonSocial->fill($inputs);
-            $save = $razonSocial->save();
+            $razonSocial->save();
+            $razonSocial->localidad;
 
-            if ($save) {
-                $razones = $cliente->razonesSociales;
-                return response()->json([
-                    'datos'     => $razones,
-                    'mensaje'   => $mensajes['exito'],
-                ], 200);
-            }
+            $respuesta = [
+                'datos'     => $razonSocial,
+                'mensajes'  => [
+                    'tipo'      => 'exito',
+                    'codigo'    => $mensaje['exito']['codigo'],
+                    'mensaje'   => $mensaje['exito']['descripcion'],
+                ],
+            ];
+            return response()->json($respuesta, 200);
         } catch (\Throwable $th) {
-            return response()->json($mensajes['error'], 400);
+            $respuesta = [
+                'datos'     => null,
+                'mensajes'  => [
+                    'tipo'      => 'error',
+                    'codigo'    => $mensaje['error']['codigo'],
+                    'mensaje'   => $mensaje['error']['descripcion'],
+                ],
+            ];
+            return response()->json($respuesta, 400);
         }
     }
 
     /**
-     * Restaurar el usuario que ha sido eliminado
+     * Restaurar la razonSocial que ha sido eliminada
      *
      * @param  \App\ClienteRazonSocial  $razonSocial
      * @return \Illuminate\Http\Response
      */
     public function restore(ClienteRazonSocial $razonSocial)
     {
-        $nombre  = $razonSocial->nombre;
-        $BaseController  = new BaseController();
-
         //mensajes
+        $nombre  = $razonSocial->nombre;
         $mensaje = [
             'exito' => [
                 'codigo' => 'RAZON_RESTORE_CONTROLLER',
@@ -158,6 +188,7 @@ class ClienteRazonSocialController extends Controller
             ],
         ];
 
+        $BaseController  = new BaseController();
         return $BaseController->restore($razonSocial, $mensaje);
     }
 
@@ -173,7 +204,7 @@ class ClienteRazonSocialController extends Controller
         $nombre = $cliente->cliente;
 
         //mensajes
-        $mensajes = [
+        $mensaje = [
             'exito' => [
                 'codigo' => 'RAZON_ASOCIAR_CONTROLLER',
                 'descripcion' => "{$razon} se ha asociado a {$nombre}",
@@ -187,14 +218,26 @@ class ClienteRazonSocialController extends Controller
         try {
             $razonId = $razonSocial->id_razon;
             $cliente->razonesSociales()->attach($razonId);
-            $razones = $cliente->razonesSociales;
 
-            return response()->json([
-                'datos'     => $razones,
-                'mensaje'   => $mensajes['exito'],
-            ], 200);
+            $respuesta = [
+                'datos'     => $razonSocial,
+                'mensajes'  => [
+                    'tipo'      => 'exito',
+                    'codigo'    => $mensaje['exito']['codigo'],
+                    'mensaje'   => $mensaje['exito']['descripcion'],
+                ],
+            ];
+            return response()->json($respuesta, 200);
         } catch (\Throwable $th) {
-            return response()->json($mensajes['error'], 400);
+            $respuesta = [
+                'datos'     => null,
+                'mensajes'  => [
+                    'tipo'      => 'error',
+                    'codigo'    => $mensaje['error']['codigo'],
+                    'mensaje'   => $mensaje['error']['descripcion'],
+                ],
+            ];
+            return response()->json($respuesta, 400);
         }
     }
 
@@ -210,7 +253,7 @@ class ClienteRazonSocialController extends Controller
         $nombre = $cliente->cliente;
 
         //mensajes
-        $mensajes = [
+        $mensaje = [
             'exito' => [
                 'codigo' => 'RAZON_DESASOCIAR_CONTROLLER',
                 'descripcion' => "{$razon} ha sido desasociado de {$nombre}",
@@ -226,12 +269,25 @@ class ClienteRazonSocialController extends Controller
             $cliente->razonesSociales()->detach($razonId);
             $razones = $cliente->razonesSociales;
 
-            return response()->json([
+            $respuesta = [
                 'datos'     => $razones,
-                'mensaje'   => $mensajes['exito'],
-            ], 200);
+                'mensajes'  => [
+                    'tipo'      => 'exito',
+                    'codigo'    => $mensaje['exito']['codigo'],
+                    'mensaje'   => $mensaje['exito']['descripcion'],
+                ],
+            ];
+            return response()->json($respuesta, 200);
         } catch (\Throwable $th) {
-            return response()->json($mensajes['error'], 400);
+            $respuesta = [
+                'datos'     => null,
+                'mensajes'  => [
+                    'tipo'      => 'error',
+                    'codigo'    => $mensaje['error']['codigo'],
+                    'mensaje'   => $mensaje['error']['descripcion'],
+                ],
+            ];
+            return response()->json($respuesta, 400);
         }
     }
 }

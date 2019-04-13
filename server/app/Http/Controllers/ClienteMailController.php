@@ -6,6 +6,7 @@ use App\Cliente;
 use App\ClienteMail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\Cliente\Mail\ClienteMailRequest;
 
 class ClienteMailController extends Controller
 {
@@ -17,7 +18,7 @@ class ClienteMailController extends Controller
      */
     public function index(Request $request, Cliente $cliente)
     {
-        $mensajes = [
+        $mensaje = [
             'error' => [
                 'descripcion' => 'Hemos tenido un error durante la consulta de datos, intente nuevamente',
                 'codigo'      => 'MAIL_INDEX_CONTROLLER',
@@ -27,42 +28,63 @@ class ClienteMailController extends Controller
             $mail = $cliente->mails;
             return response()->json(['datos' => $mail], 200);
         } catch (\Throwable $th) {
-            return response()->json($mensajes['error'], 400);
+            $respuesta = [
+                'datos'     => null,
+                'mensajes'  => [
+                    'tipo'      => 'error',
+                    'codigo'    => $mensaje['error']['codigo'],
+                    'mensaje'   => $mensaje['error']['descripcion'],
+                ],
+            ];
+            return response()->json($respuesta, 400);
         }
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\Cliente\Mail\ClienteMailRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Cliente $cliente)
+    public function store(ClienteMailRequest $request, Cliente $cliente)
     {
-        $nombre  = $request->input('mail');
+        $email  = $request->input('mail');
 
         //mensajes
-        $mensajes = [
+        $mensaje = [
             'exito' => [
                 'codigo'        => 'MAIL_STORE_CONTROLLER',
-                'descripcion'   => "{$nombre} se ha creado con exito",
+                'descripcion'   => "{$email} se ha creado con exito",
             ],
             'error' => [
-                'descripcion'   => "Hubo un error al intentar guardar a {$nombre}",
+                'descripcion'   => "Hubo un error al intentar guardar {$email}",
                 'codigo'        => 'CATCH_MAIL_STORE'
             ],
         ];
         try {
-            $mail = new ClienteMail(['mail' => $request->input('mail'),]);
+            $inputs = ['mail' => $email,];
+            $mail = new ClienteMail($inputs);
             $cliente->mails()->save($mail);
-            $mails = $cliente->mails;
+            $respuesta = [
+                'datos'     => $mail,
+                'mensajes'  => [
+                    'tipo'      => 'exito',
+                    'codigo'    => $mensaje['exito']['codigo'],
+                    'mensaje'   => $mensaje['exito']['descripcion'],
+                ],
+            ];
 
-            return response()->json([
-                'datos'     => $mails,
-                'mensajes'  => $mensajes['exito'],
-            ], 200);
+            return response()->json($respuesta, 200);
         } catch (\Throwable $th) {
-            return response()->json($mensajes['error'], '400');
+            $respuesta = [
+                'datos'     => null,
+                'mensajes'  => [
+                    'tipo'      => 'error',
+                    'codigo'    => $mensaje['error']['codigo'],
+                    'mensaje'   => $mensaje['error']['descripcion'],
+                ],
+            ];
+            return response()->json($respuesta, 400);
         }
     }
 
@@ -80,39 +102,50 @@ class ClienteMailController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\Cliente\Mail\ClienteMailRequest  $request
      * @param  \App\ClienteMail  $mail
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Cliente $cliente, ClienteMail $mail)
+    public function update(ClienteMailRequest $request, ClienteMail $mail)
     {
         //mensajes
-        $nombre  = $request->input('mail');
-        $mensajes = [
+        $emailNew  = $request->input('mail');
+        $emailOLD  = $mail->mail;
+        $mensaje = [
             'exito' => [
                 'codigo'        => 'MAIL_STORE_CONTROLLER',
-                'descripcion'   => "{$nombre} se ha modificado",
+                'descripcion'   => "{$emailNew} se ha modificado",
             ],
             'error' => [
-                'descripcion'   => "Hubo un error al intentar modificar el Mail {$nombre}",
+                'descripcion'   => "Hubo un error al intentar modificar el Mail {$emailOLD}",
                 'codigo'        => 'CATCH_MAIL_UPDATE'
             ],
         ];
 
         try {
-            $inputs = ['mail' => $request->input('mail'),];
+            $inputs = ['mail' => $email,];
             $mail->fill($inputs);
-            $save = $mail->save();
+            $mail->save();
+            $respuesta = [
+                'datos'     => $mail,
+                'mensajes'  => [
+                    'tipo'      => 'exito',
+                    'codigo'    => $mensaje['exito']['codigo'],
+                    'mensaje'   => $mensaje['exito']['descripcion'],
+                ],
+            ];
 
-            if ($save) {
-                $mails = $cliente->mails;
-                return response()->json([
-                    'datos'     => $mails,
-                    'mensajes'  => $mensajes['exito'],
-                ], 200);
-            }
+            return response()->json($respuesta, 200);
         } catch (\Throwable $th) {
-            return response()->json($mensajes['error'], 400);
+            $respuesta = [
+                'datos'     => null,
+                'mensajes'  => [
+                    'tipo'      => 'error',
+                    'codigo'    => $mensaje['error']['codigo'],
+                    'mensaje'   => $mensaje['error']['descripcion'],
+                ],
+            ];
+            return response()->json($respuesta, 400);
         }
     }
 
@@ -124,47 +157,45 @@ class ClienteMailController extends Controller
      */
     public function destroy(ClienteMail $mail)
     {
-        $nombre  = $mail->mail;
-        $BaseController  = new BaseController();
-
         //mensajes
+        $email  = $mail->mail;
         $mensaje = [
             'exito' => [
                 'codigo'        => 'MAIL_DESTROY_CONTROLLER',
-                'descripcion'   => "{$nombre} ha sido eliminado",
+                'descripcion'   => "{$email} ha sido eliminado",
             ],
             'error' => [
-                'descripcion'   => "Hubo un error al intentar eliminar a {$nombre}",
+                'descripcion'   => "Hubo un error al intentar eliminar a {$email}",
                 'codigo'        => 'CATCH_MAIL_DESTROY'
             ],
         ];
 
+        $BaseController  = new BaseController();
         return $BaseController->destroy($mail, $mensaje);
     }
 
     /**
-     * Restaurar el usuario que ha sido eliminado
+     * Restaurar el Mail que ha sido eliminado
      *
      * @param  \App\ClienteMail  $mail
      * @return \Illuminate\Http\Response
      */
     public function restore(ClienteMail $mail)
     {
-        $nombre  = $mail->mail;
-        $BaseController  = new BaseController();
-
         //mensajes
+        $email  = $mail->mail;
         $mensaje = [
             'exito' => [
                 'codigo'        => 'MAIL_RESTORE_CONTROLLER',
-                'descripcion'   => "{$nombre} ha sido dado de alta",
+                'descripcion'   => "{$email} ha sido dado de alta",
             ],
             'error' => [
-                'descripcion'   => "Hubo un error al intentar dar de alta {$nombre}",
+                'descripcion'   => "Hubo un error al intentar dar de alta {$email}",
                 'codigo'        => 'MAIL_RESTORE_CONTROLLER'
             ],
         ];
 
+        $BaseController  = new BaseController();
         return $BaseController->restore($mail, $mensaje);
     }
 }

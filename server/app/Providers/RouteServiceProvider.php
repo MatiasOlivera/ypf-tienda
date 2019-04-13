@@ -57,14 +57,14 @@ class RouteServiceProvider extends ServiceProvider
         //ClienteMail
         Route::bind('mail', function ($id) {
             return ClienteMail::withTrashed()
-                ->where('con_cliente', $id)
+                ->where('id', $id)
                 ->firstOrFail();
         });
 
         //ClienteTelefono
         Route::bind('telefono', function ($id) {
             return ClienteTelefono::withTrashed()
-                ->where('con_cliente', $id)
+                ->where('id', $id)
                 ->firstOrFail();
         });
 

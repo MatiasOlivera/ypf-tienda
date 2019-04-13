@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Localidad;
+use App\Provincia;
 use Illuminate\Http\Request;
-use App\controller\BaseController;
+use App\Http\Requests\LocalidadRequest;
+use App\Http\controllers\BaseController;
 
 
 class LocalidadController extends Controller
@@ -14,19 +16,32 @@ class LocalidadController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, Provincia $provincia)
     {
-        $mensajes = [
+        //mensajes
+        $mensaje = [
             'error' => [
                 'descripcion' => 'Hemos tenido un error durante la consulta de datos, intente nuevamente',
                 'codigo'      => 'LOCALIDAD_INDEX_CONTROLLER',
             ],
+            'exito' => [
+                'descripcion' => 'operacion exitosa',
+                'codigo'      => 'LOCALIDAD_CATCH_INDEX_CONTROLLER',
+            ]
         ];
         try {
-            $localidades = Localidad::all();
-            return response()->json($localidades, 200);
+            $localidades = $provincia->localidades;
+            return response()->json(['datos' => $localidades,], 200);
         } catch (\Throwable $th) {
-            return response()->json($mensajes['error'], '400');
+            $respuesta = [
+                'datos'     => null,
+                'mensajes'  => [
+                    'tipo'      => 'error',
+                    'codigo'    => $mensaje['error']['codigo'],
+                    'mensaje'   => $mensaje['error']['descripcion'],
+                ],
+            ];
+            return response()->json($respuesta, 400);
         }
     }
     /**
@@ -35,32 +50,48 @@ class LocalidadController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(LocalidadRequest $request, Provincia $provincia)
     {
-        $nombre = $request->input('localidad');
-        $parametros = [
-            'inputs' => [
-                'id_localidad'  => $request->input('id_localidad'),
-                'nom_localidad' => $request->input('localidad'),
-                'id_provincia'  => $request->input('provincia_id'),
-            ],
-            'modelo' => 'Localidad',
-        ];
-
+        $localidad = $request->input('localidad');
         //mensajes
         $mensaje = [
             'exito' => [
                 'codigo' => 'LOCALIDAD_STORE_CONTROLLER',
-                'descripcion' => "La localidad {$nombre} se ha creado con exito",
+                'descripcion' => "La localidad {$localidad} se ha creado con exito",
             ],
             'error' => [
-                'descripcion' => "Hubo un error al intentar guardar la localidad {$nombre}",
+                'descripcion' => "Hubo un error al intentar guardar la localidad {$localidad}",
                 'codigo' => 'CATCH_LOCALIDAD_STORE'
             ],
         ];
+        $inputs = [
+            'nom_localidad' => $localidad,
+        ];
 
-        $BaseController = new BaseController();
-        return $BaseController->store($parametros, $mensaje);
+        try {
+            $localidad = new Localidad($inputs);
+            $provincia->localidades()->save($localidad);
+            $respuesta = [
+                'datos'     => $localidad,
+                'mensajes'  => [
+                    'tipo'      => 'exito',
+                    'codigo'    => $mensaje['exito']['codigo'],
+                    'mensaje'   => $mensaje['exito']['descripcion'],
+                ],
+            ];
+
+            return response()->json($respuesta, 200);
+        } catch (\Throwable $th) {
+            $respuesta = [
+                'datos'     => null,
+                'mensajes'  => [
+                    'tipo'      => 'error',
+                    'codigo'    => $mensaje['error']['codigo'],
+                    'mensaje'   => $mensaje['error']['descripcion'],
+                ],
+            ];
+            return response()->json($respuesta, 400);
+        }
     }
 
     /**
@@ -81,7 +112,7 @@ class LocalidadController extends Controller
      * @param  \App\Localidad  $localidad
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Localidad $localidad)
+    public function update(LocalidadRequest $request, Localidad $localidad)
     {
         $nombre  = $request->input('localidad');
         $parametros = [
@@ -91,7 +122,6 @@ class LocalidadController extends Controller
             ],
             'modelo' => $localidad,
         ];
-
 
         //mensajes
         $mensaje = [
@@ -136,17 +166,15 @@ class LocalidadController extends Controller
     }
 
     /**
-     * Restaurar el usuario que ha sido eliminado
+     * Restaurar la localidad que ha sido eliminada
      *
      * @param  \App\Localidad  $localidad
      * @return \Illuminate\Http\Response
      */
-    public function restore(Telefono $localidad)
+    public function restore(Localidad $localidad)
     {
-        $nombre  = $localidad->nom_localidad;
-        $BaseController  = new BaseController();
-
         //mensajes
+        $nombre  = $localidad->nom_localidad;
         $mensaje = [
             'exito' => [
                 'codigo' => 'LOCALIDAD_RESTORE_CONTROLLER',
@@ -158,6 +186,7 @@ class LocalidadController extends Controller
             ],
         ];
 
+        $BaseController  = new BaseController();
         return $BaseController->restore($localidad, $mensaje);
     }
 }

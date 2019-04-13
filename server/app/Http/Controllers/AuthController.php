@@ -6,17 +6,17 @@ use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use JWTAuth;
-use Hash;
 use tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Exceptions\HttpResponseException;
-
-//Users Request
 use App\Http\Requests\UsersRequest\UserLoginRequest;
 
 class AuthController extends Controller
 {
-
+    /**
+     * LogOut usuario (Invalida el Token)
+     * @param  App\Http\Requests\UsersRequest\UserLoginRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function login(UserLoginRequest $request)
     {
         $credenciales = $request->only('email', 'password');

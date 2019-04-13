@@ -3,16 +3,19 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ClienteMail extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'con_cliente';
 
     /**
-    * The attributes that should be mutated to dates.
-    *
-    * @var array
-    */
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
     /**
@@ -20,14 +23,14 @@ class ClienteMail extends Model
      *
      * @var array
      */
-    protected $fillable = ['id_cliente', 'mail', ];
+    protected $fillable = ['id_cliente', 'mail',];
 
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
-    protected $hidden = ['area', 'tel', 'nombre_contacto', 'estado', ];
+    protected $hidden = ['area', 'tel', 'nombre_contacto', 'estado',];
 
     public function cliente()
     {

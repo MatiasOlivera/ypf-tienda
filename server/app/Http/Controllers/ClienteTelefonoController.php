@@ -6,6 +6,7 @@ use App\Cliente;
 use App\ClienteTelefono;
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\Cliente\Telefono\ClienteTelefonoRequest;
 
 class ClienteTelefonoController extends Controller
 {
@@ -17,7 +18,7 @@ class ClienteTelefonoController extends Controller
      */
     public function index(Request $request, Cliente $cliente)
     {
-        $mensajes = [
+        $mensaje = [
             'error' => [
                 'descripcion' => 'Hemos tenido un error durante la consulta de datos, intente nuevamente',
                 'codigo'      => 'TELEFONO_INDEX_CONTROLLER',
@@ -26,27 +27,31 @@ class ClienteTelefonoController extends Controller
 
         try {
             $telefonos = $cliente->telefonos;
-            return response()->json($telefonos, 200);
+            return response()->json(['ClienteTelefono' => $telefonos,], 200);
         } catch (\Throwable $th) {
-            return response()->json($mensajes['error'], '400');
+            $respuesta = [
+                'ClienteTelefono'     => null,
+                'mensajes'  => [
+                    'tipo'      => 'error',
+                    'codigo'    => $mensaje['error']['codigo'],
+                    'mensaje'   => $mensaje['error']['descripcion'],
+                ],
+            ];
+            return response()->json($respuesta, 400);
         }
     }
 
     /**
      * Store a newly created resource in storage.
      * @param  App\Cliente $cliente
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\Cliente\Telefono\ClienteTelefonoRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Cliente $cliente)
+    public function store(ClienteTelefonoRequest $request, Cliente $cliente)
     {
-        $inputs = [
-            'area'             => $request->input('area'),
-            'tel'              => $request->input('telefono'),
-            'nombre_contacto'  => $request->input('nombreContacto'),
-        ];
+        $inputs = $request->input('area', 'telefono', 'nombreContacto');
 
-        $telefonoMensaje = ($inputs['nombre_contacto'] === null) ? "{$inputs['area']} - {$inputs['tel']}" : $inputs['nombre_contacto'];
+        $telefonoMensaje = ($inputs['nombreContacto'] === null) ? "{$inputs['area']} - {$inputs['telefono']}" : $inputs['nombreContacto'];
 
         //mensajes
         $mensaje = [
@@ -63,17 +68,26 @@ class ClienteTelefonoController extends Controller
         try {
             $telefono = new ClienteTelefono($inputs);
             $cliente->telefonos()->save($telefono);
-            $telefonos = $cliente->telefonos;
-
-            return response()->json(
-                [
-                    'datos'     => $telefonos,
-                    'mensajes'  => $mensaje['exito'],
+            $respuesta = [
+                'datos'     => $telefono,
+                'mensajes'  => [
+                    'tipo'      => 'exito',
+                    'codigo'    => $mensaje['exito']['codigo'],
+                    'mensaje'   => $mensaje['exito']['descripcion'],
                 ],
-                200
-            );
+            ];
+
+            return response()->json($respuesta, 200);
         } catch (\Throwable $th) {
-            return response()->json(['error' => $mensaje['error'],], 400);
+            $respuesta = [
+                'datos'     => null,
+                'mensajes'  => [
+                    'tipo'      => 'error',
+                    'codigo'    => $mensaje['error']['codigo'],
+                    'mensaje'   => $mensaje['error']['descripcion'],
+                ],
+            ];
+            return response()->json($respuesta, 400);
         }
     }
 
@@ -91,19 +105,15 @@ class ClienteTelefonoController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\Cliente\Telefono\ClienteTelefonoRequest  $request
      * @param  \App\ClienteTelefono  $telefono
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Cliente $cliente, ClienteTelefono $telefono)
+    public function update(ClienteTelefonoRequest $request, ClienteTelefono $telefono)
     {
-        $inputs = [
-            'area'             => $request->input('area'),
-            'tel'              => $request->input('telefono'),
-            'nombre_contacto'  => $request->input('nombreContacto'),
-        ];
+        $inputs = $request->input('area', 'telefono', 'nombreContacto');
 
-        $telefonoMensaje = ($inputs['nombre_contacto'] === null) ? "{$inputs['area']} - {$inputs['tel']}" : $inputs['nombre_contacto'];
+        $telefonoMensaje = ($inputs['nombreContacto'] === null) ? "{$inputs['area']} - {$inputs['telefono']}" : $inputs['nombreContacto'];
 
         //mensajes
         $mensaje = [
@@ -119,20 +129,28 @@ class ClienteTelefonoController extends Controller
 
         try {
             $telefono->fill($inputs);
-            $save = $telefono->save();
-            if ($save) {
-                $telefonos = $cliente->telefonos;
+            $telefono->save();
 
-                return response()->json(
-                    [
-                        'datos'     => $telefonos,
-                        'mensajes'  => $mensaje['exito'],
-                    ],
-                    200
-                );
-            }
+            $respuesta = [
+                'datos'     => $telefono,
+                'mensajes'  => [
+                    'tipo'      => 'exito',
+                    'codigo'    => $mensaje['exito']['codigo'],
+                    'mensaje'   => $mensaje['exito']['descripcion'],
+                ],
+            ];
+
+            return response()->json($respuesta, 200);
         } catch (\Throwable $th) {
-            return response()->json(['error' => $mensaje['error'],], 400);
+            $respuesta = [
+                'datos'     => null,
+                'mensajes'  => [
+                    'tipo'      => 'error',
+                    'codigo'    => $mensaje['error']['codigo'],
+                    'mensaje'   => $mensaje['error']['descripcion'],
+                ],
+            ];
+            return response()->json($respuesta, 400);
         }
     }
 
@@ -144,9 +162,8 @@ class ClienteTelefonoController extends Controller
      */
     public function destroy(ClienteTelefono $telefono)
     {
-        $telefonoMensaje = ($telefono->nombre_contacto === null) ? "{$telefono->area} - { $telefono->tel}" : $telefono->nombre_contacto;
-
         //mensajes
+        $telefonoMensaje = ($telefono->nombreContacto === null) ? "{$telefono->area} - { $telefono->telefono}" : $telefono->nombreContacto;
         $mensaje = [
             'exito' => [
                 'codigo' => 'TELEFONO_DESTROY_CONTROLLER',
@@ -163,16 +180,15 @@ class ClienteTelefonoController extends Controller
     }
 
     /**
-     * Restaurar el usuario que ha sido eliminado
+     * Restaurar el Telefono que ha sido eliminado
      *
      * @param  \App\ClienteTelefono  $telefono
      * @return \Illuminate\Http\Response
      */
     public function restore(ClienteTelefono $telefono)
     {
-        $telefonoMensaje = ($telefono->nombre_contacto === null) ? "{$telefono->area} - { $telefono->tel}" : $telefono->nombre_contacto;
-
         //mensajes
+        $telefonoMensaje = ($telefono->nombreContacto === null) ? "{$telefono->area} - { $telefono->telefono}" : $telefono->nombreContacto;
         $mensaje = [
             'exito' => [
                 'codigo' => 'TELEFONO_RESTORE_CONTROLLER',

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Cliente;
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\Cliente\Cliente\ClienteCreateRequest;
+use App\Http\Requests\Cliente\Cliente\ClienteUpdateRequest;
 
 class ClientesController extends Controller
 {
@@ -17,7 +19,7 @@ class ClientesController extends Controller
     {
         $parametros = [
             'modelo' => 'Cliente',
-            'campos' => ['id_cliente', 'dni', 'cliente', 'obsevacion', 'otros', 'created_at', 'updated_at', 'deleted_at', ],
+            'campos' => ['id_cliente', 'dni', 'cliente', 'obsevacion', 'otros', 'created_at', 'updated_at', 'deleted_at',],
             'relaciones' => null,
             'buscar' => $request->input("buscar", null),
             'eliminados' => $request->input("eliminados", false),
@@ -47,14 +49,13 @@ class ClientesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\Cliente\Cliente\ClienteCreateRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ClienteCreateRequest $request)
     {
-        $BaseController   = new BaseController();
-        $inputs   = $request->only('dni', 'cliente', 'obsevacion');
-        $nombre   = $request->input('cliente');
+        $inputs = $request->only('documneto', 'nombre', 'observacion');
+        $nombre   = $request->input('nombre');
 
         //parametros
         $parametros = [
@@ -74,6 +75,7 @@ class ClientesController extends Controller
             ],
         ];
 
+        $BaseController   = new BaseController();
         return $BaseController->store($parametros, $mensaje);
     }
 
@@ -91,31 +93,32 @@ class ClientesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\Cliente\Cliente\ClienteUpdateRequest  $request
      * @param  App\Cliente  $cliente
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Cliente $cliente)
+    public function update(ClienteUpdateRequest $request, Cliente $cliente)
     {
-        $inputs  = $request->only('dni', 'cliente', 'obsevacion');
-        $nombre  = $request->input('cliente');
-        $parametros = [
-            'inputs' => $inputs,
-            'modelo' => $cliente,
-        ];
 
         //mensajes
+        $nombreNew  = $request->input('nombre');
+        $nombreOld  = $cliente->nombre;
         $mensaje = [
             'exito' => [
                 'codigo' => 'CLIENTE_UPDATE_CONTROLLER',
-                'descripcion' => "{$nombre} se ha modificado",
+                'descripcion' => "{$nombreNew} se ha modificado",
             ],
             'error' => [
-                'descripcion' => "Hubo un error al intentar modificar el cliente {$nombre}",
+                'descripcion' => "Hubo un error al intentar modificar el cliente {$nombreOld}",
                 'codigo' => 'CATCH_CLIENTE_UPDATE_CONTROLLER'
             ],
         ];
 
+        $inputs = $request->only('documneto', 'nombre', 'observacion');
+        $parametros = [
+            'inputs' => $inputs,
+            'modelo' => $cliente - fill($inputs)->save(),
+        ];
         $metodo  = new BaseController();
         return $metodo->update($parametros, $mensaje);
     }
@@ -128,8 +131,7 @@ class ClientesController extends Controller
      */
     public function destroy(Cliente $cliente)
     {
-        $nombre  = $cliente->cliente;
-        $BaseController  = new BaseController();
+        $nombre  = $cliente->nombre;
 
         //mensajes
         $mensaje = [
@@ -143,21 +145,20 @@ class ClientesController extends Controller
             ],
         ];
 
+        $BaseController  = new BaseController();
         return $BaseController->destroy($cliente, $mensaje);
     }
 
     /**
-     * Restaurar el usuario que ha sido eliminado
+     * Restaurar el cliente que ha sido eliminado
      *
      * @param   App\Cliente  $cliente
      * @return \Illuminate\Http\Response
      */
     public function restore(Cliente $cliente)
     {
-        $nombre  = $cliente->cliente;
-        $BaseController  = new BaseController();
-
         //mensajes
+        $nombre  = $cliente->nombre;
         $mensaje = [
             'exito' => [
                 'codigo' => 'CLIENTE_RESTORE_CONTROLLER',
@@ -169,6 +170,7 @@ class ClientesController extends Controller
             ],
         ];
 
+        $BaseController  = new BaseController();
         return $BaseController->restore($cliente, $mensaje);
     }
 }
