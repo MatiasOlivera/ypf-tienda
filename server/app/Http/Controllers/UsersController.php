@@ -10,6 +10,12 @@ use App\Http\Controllers\BaseController;
 
 class UsersController extends Controller
 {
+    private $controladorBase;
+
+    public function __construct()
+    {
+        $this->controladorBase = new BaseController('usuario', 'usuarios');
+    }
 
     /**
      * Muestra una lista de usuarios.
@@ -31,19 +37,7 @@ class UsersController extends Controller
             ]
         ];
 
-        $mensajes = [
-            'error' => [
-                'descripcion' => 'Hemos tenido un error durante la consulta de datos, intente nuevamente',
-                'codigo'      => 'USER_INDEX_CONTROLLER',
-            ],
-            'exito' => [
-                'descripcion' => 'operacion exitosa',
-                'codigo'      => 'USER_CATCH_INDEX_CONTROLLER',
-            ]
-        ];
-
-        $metodo   = new BaseController;
-        return $metodo->index($parametros, $mensajes);
+        return $this->controladorBase->index($parametros, 'los usuarios');
     }
 
     /**
@@ -54,7 +48,6 @@ class UsersController extends Controller
      */
     public function store(UserCreateRequest $request)
     {
-        $metodo   = new BaseController();
         $inputs   = $request->only('name', 'email', 'password');
         $nombre   = $request->input('name');
         $inputs['password'] = Hash::make($request->input('password'));
@@ -66,18 +59,12 @@ class UsersController extends Controller
         ];
 
         //mensajes
-        $mensaje = [
-            'exito' => [
-                'codigo' => 'USER_STORE_CONTROLLER',
-                'descripcion' => "{$nombre} se ha creado con exito",
-            ],
-            'error' => [
-                'descripcion' => "Hubo un error al intentar guardar a {$nombre}",
-                'codigo' => 'CATCH_USER_STORE'
-            ],
+        $mensajes = [
+            'exito' => "{$nombre}",
+            'error' => "{$nombre}"
         ];
 
-        return $metodo->store($parametros, $mensaje);
+        return $this->controladorBase->store($parametros, $mensajes);
     }
 
     /**
@@ -88,7 +75,7 @@ class UsersController extends Controller
      */
     public function show(User $user)
     {
-        return $user;
+        return $this->controladorBase->show($user);
     }
 
     /**
@@ -107,19 +94,12 @@ class UsersController extends Controller
             'modelo' => $user,
         ];
         //mensajes
-        $mensaje = [
-            'exito' => [
-                'codigo' => 'USER_STORE_CONTROLLER',
-                'descripcion' => "{$nombre} se ha modificado",
-            ],
-            'error' => [
-                'descripcion' => "Hubo un error al intentar modificar el Usuario {$nombre}",
-                'codigo' => 'CATCH_USER_UPDATE'
-            ],
+        $mensajes = [
+            'exito' => "{$nombre}",
+            'error' => "{$nombre}",
         ];
 
-        $metodo  = new BaseController();
-        return $metodo->update($parametros, $mensaje);
+        return $this->controladorBase->update($parametros, $mensajes);
     }
 
     /**
@@ -131,20 +111,13 @@ class UsersController extends Controller
     public function destroy(User $user)
     {
         $nombre  = $user->name;
-        $metodo  = new BaseController();
         //mensajes
-        $mensaje = [
-            'exito' => [
-                'codigo' => 'USER_DESTROY_CONTROLLER',
-                'descripcion' => "{$nombre} ha sido eliminado",
-            ],
-            'error' => [
-                'descripcion' => "Hubo un error al intentar eliminar a {$nombre}",
-                'codigo' => 'USER_DESTROY_CONTROLLER'
-            ],
+        $mensajes = [
+            'exito' => "{$nombre}",
+            'error' => "{$nombre}",
         ];
 
-        return $metodo->destroy($user, $mensaje);
+        return $this->controladorBase->destroy($user, $mensajes);
     }
 
     /**
@@ -156,19 +129,12 @@ class UsersController extends Controller
     public function restore(User $user)
     {
         $nombre  = $user->name;
-        $metodo  = new BaseController();
         //mensajes
-        $mensaje = [
-            'exito' => [
-                'codigo' => 'USER_RESTORE_CONTROLLER',
-                'descripcion' => "{$nombre} ha sido dado de alta",
-            ],
-            'error' => [
-                'descripcion' => "Hubo un error al intentar dar de alta a {$nombre}",
-                'codigo' => 'USER_RESTORE_CONTROLLER'
-            ],
+        $mensajes = [
+            'exito' => "{$nombre}",
+            'error' => "{$nombre}",
         ];
 
-        return $metodo->restore($user, $mensaje);
+        return $this->controladorBase->restore($user, $mensajes);
     }
 }
