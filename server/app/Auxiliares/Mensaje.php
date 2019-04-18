@@ -2,7 +2,9 @@
 
 namespace App\Auxiliares;
 
-class Mensaje
+use Exception;
+
+abstract class Mensaje
 {
     protected $tipo;
     private $codigo;
@@ -22,4 +24,19 @@ class Mensaje
             'descripcion' => $this->descripcion
         ];
     }
+
+    final public function setDescripcion(string $descripcion): void
+    {
+        $this->descripcion = $descripcion;
+    }
+
+    final public function setCodigo(string $codigo): void
+    {
+        $this->codigo = $codigo;
+    }
+
+    abstract public function guardar(string $nombre): void;
+    abstract public function actualizar(string $nombre): void;
+    abstract public function eliminar(string $nombre): void;
+    abstract public function restaurar(string $nombre): void;
 }
