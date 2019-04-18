@@ -80,6 +80,17 @@ class BaseController
     }
 
     /**
+     * Muestra un modelo específico
+     *
+     * @param Modelo $modelo
+     * @return \Illuminate\Http\Response
+     */
+    public function show($modelo)
+    {
+        return Respuesta::exito([$this->modeloSingular => $modelo], null, 200);
+    }
+
+    /**
      * Actualizar el modelo especifico en la BD.
      *
      * @param array  $inputs

@@ -195,6 +195,30 @@ class BaseControllerTest extends TestCase
     }
 
     /**
+     * Debería obtener una instancia
+     *
+     * @return void
+     */
+    public function testDeberiaObtenerUnaInstancia()
+    {
+        $respuestaCreado = $this->crearUnaNuevaInstancia();
+        $this->assertEquals(201, $respuestaCreado->status());
+
+        $instancia = $respuestaCreado->getData(true)['usuario'];
+
+        $controller = new BaseController('usuario', 'usuarios');
+        $respuestaIndex = $controller->show($instancia);
+
+        $status = $respuestaIndex->status();
+        $datos = $respuestaIndex->getData(true);
+
+        $this->assertEquals(200, $status);
+
+        $this->assertArrayHasKey('usuario', $datos);
+        $this->assertEquals($instancia, $datos['usuario']);
+    }
+
+    /**
      * Debería actualizar una instancia existente
      *
      * @return void
