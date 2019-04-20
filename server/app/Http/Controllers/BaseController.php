@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Auxiliares\{Consulta,Respuesta,MensajeExito,MensajeError};
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
+use App\Auxiliares\{Consulta,Respuesta,MensajeExito,MensajeError};
 
 class BaseController
 {
@@ -21,13 +22,11 @@ class BaseController
     /**
      * Muestra una lista de modelos.
      *
-     * @param App\AuxiliaresApp\Auxiliares\Consulta  $consulta
-     * @param Modelo $modelo
-     * @param App\AuxiliaresApp\Auxiliares\Paginacion  $paginacion
-     * @param App\AuxiliaresApp\Auxiliares\Mensajes  $mensajes
-     * @return \Illuminate\Http\Response
+     * @param array $parametros
+     * @param string $nombre
+     * @return JsonResponse
      */
-    public function index($parametros, $nombre)
+    public function index(array $parametros, string $nombre): JsonResponse
     {
         try {
             $consulta = new Consulta;
@@ -53,12 +52,11 @@ class BaseController
     /**
      * Guarda un nuevo modelo en la BD.
      *
-     * @param array  $inputs
-     * @param Modelo $modelo
-     * @param App\Auxiliares\Mensajes  $mensajes
-     * @return \Illuminate\Http\Response
+     * @param array $parametros
+     * @param array $mensajes
+     * @return JsonResponse
      */
-    public function store($parametros, $mensajes)
+    public function store(array $parametros, array $mensajes): JsonResponse
     {
         try {
             $nombreModelo = "App\\{$parametros['modelo']}";
@@ -82,10 +80,10 @@ class BaseController
     /**
      * Muestra un modelo específico
      *
-     * @param Modelo $modelo
-     * @return \Illuminate\Http\Response
+     * @param Model $modelo
+     * @return JsonResponse
      */
-    public function show($modelo)
+    public function show($modelo): JsonResponse
     {
         return Respuesta::exito([$this->modeloSingular => $modelo], null, 200);
     }
@@ -93,12 +91,11 @@ class BaseController
     /**
      * Actualizar el modelo especifico en la BD.
      *
-     * @param array  $inputs
-     * @param Modelo $modelo
-     * @param App\Auxiliares\Mensajes  $mensajes
-     * @return \Illuminate\Http\Response
+     * @param array $parametros
+     * @param array $mensajes
+     * @return JsonResponse
      */
-    public function update($parametros, $mensajes)
+    public function update(array $parametros, array $mensajes): JsonResponse
     {
         try {
             $modelo = $parametros['modelo'];
@@ -118,13 +115,13 @@ class BaseController
     }
 
     /**
-     * elimina el modelo especifico de la BD
+     * Elimina el modelo especifico de la BD
      *
-     * @param Modelo $modelo
-     * @param App\Auxiliares\Mensajes  $mensajes
-     * @return \Illuminate\Http\Response
+     * @param Model $modelo
+     * @param array $mensajes
+     * @return JsonResponse
      */
-    public function destroy($modelo, $mensajes)
+    public function destroy($modelo, array $mensajes): JsonResponse
     {
         try {
             $eliminado = $modelo->delete();
@@ -144,13 +141,13 @@ class BaseController
     }
 
     /**
-     * Restaurar el modelo que ha sido eliminado
+     *  Restaurar el modelo que ha sido eliminado
      *
-     * @param Modelo $modelo
-     * @param App\Auxiliares\Mensajes  $mensajes
-     * @return \Illuminate\Http\Response
+     * @param Model $modelo
+     * @param array $mensajes
+     * @return JsonResponse
      */
-    public function restore($modelo, $mensajes)
+    public function restore($modelo, array $mensajes): JsonResponse
     {
         try {
             $restaurada = $modelo->restore();
