@@ -53,10 +53,10 @@ class BaseController
      * Guarda un nuevo modelo en la BD.
      *
      * @param array $parametros
-     * @param array $mensajes
+     * @param array $nombres
      * @return JsonResponse
      */
-    public function store(array $parametros, array $mensajes): JsonResponse
+    public function store(array $parametros, array $nombres): JsonResponse
     {
         try {
             $nombreModelo = "App\\{$parametros['modelo']}";
@@ -65,13 +65,13 @@ class BaseController
 
             if ($modelo->save()) {
                 $mensajeExito = new MensajeExito();
-                $mensajeExito->guardar($mensajes['exito']);
+                $mensajeExito->guardar($nombres['exito']);
 
                 return Respuesta::exito([$this->modeloSingular => $modelo], $mensajeExito, 201);
             }
         } catch (\Throwable $th) {
             $mensajeError = new MensajeError();
-            $mensajeError->guardar($mensajes['error']);
+            $mensajeError->guardar($nombres['error']);
 
             return Respuesta::error($mensajeError, 500);
         }
@@ -92,23 +92,23 @@ class BaseController
      * Actualizar el modelo especifico en la BD.
      *
      * @param array $parametros
-     * @param array $mensajes
+     * @param array $nombres
      * @return JsonResponse
      */
-    public function update(array $parametros, array $mensajes): JsonResponse
+    public function update(array $parametros, array $nombres): JsonResponse
     {
         try {
             $modelo = $parametros['modelo'];
             $modelo->fill($parametros['inputs']);
             if ($modelo->save()) {
                 $mensajeExito = new MensajeExito();
-                $mensajeExito->actualizar($mensajes['exito']);
+                $mensajeExito->actualizar($nombres['exito']);
 
                 return Respuesta::exito([$this->modeloSingular => $modelo], $mensajeExito, 200);
             }
         } catch (\Throwable $th) {
             $mensajeError = new MensajeError();
-            $mensajeError->actualizar($mensajes['error']);
+            $mensajeError->actualizar($nombres['error']);
 
             return Respuesta::error($mensajeError, 500);
         }
@@ -118,23 +118,23 @@ class BaseController
      * Elimina el modelo especifico de la BD
      *
      * @param Model $modelo
-     * @param array $mensajes
+     * @param array $nombres
      * @return JsonResponse
      */
-    public function destroy($modelo, array $mensajes): JsonResponse
+    public function destroy($modelo, array $nombres): JsonResponse
     {
         try {
             $eliminado = $modelo->delete();
 
             if ($eliminado) {
                 $mensajeExito = new MensajeExito();
-                $mensajeExito->eliminar($mensajes['exito']);
+                $mensajeExito->eliminar($nombres['exito']);
 
                 return Respuesta::exito([$this->modeloSingular => $modelo], $mensajeExito, 200);
             }
         } catch (\Throwable $th) {
             $mensajeError = new MensajeError();
-            $mensajeError->eliminar($mensajes['error']);
+            $mensajeError->eliminar($nombres['error']);
 
             return Respuesta::error($mensajeError, 500);
         }
@@ -144,23 +144,23 @@ class BaseController
      *  Restaurar el modelo que ha sido eliminado
      *
      * @param Model $modelo
-     * @param array $mensajes
+     * @param array $nombres
      * @return JsonResponse
      */
-    public function restore($modelo, array $mensajes): JsonResponse
+    public function restore($modelo, array $nombres): JsonResponse
     {
         try {
             $restaurada = $modelo->restore();
 
             if ($restaurada) {
                 $mensajeExito = new MensajeExito();
-                $mensajeExito->restaurar($mensajes['exito']);
+                $mensajeExito->restaurar($nombres['exito']);
 
                 return Respuesta::exito([$this->modeloSingular => $modelo], $mensajeExito, 200);
             }
         } catch (\Throwable $th) {
             $mensajeError = new MensajeError();
-            $mensajeError->restaurar($mensajes['error']);
+            $mensajeError->restaurar($nombres['error']);
 
             return Respuesta::error($mensajeError, 500);
         }
