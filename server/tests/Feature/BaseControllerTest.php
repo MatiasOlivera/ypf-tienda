@@ -16,7 +16,7 @@ class BaseControllerTest extends TestCase
     {
         $parametros = [
             'modelo' => 'User',
-            'inputs' => [
+            'input' => [
                 'name' => 'John',
                 'email' => 'John@email.com',
                 'password' => Hash::make(12345678)
@@ -230,7 +230,7 @@ class BaseControllerTest extends TestCase
 
         $parametros = [
             'modelo' => User::find($id),
-            'inputs' => [
+            'input' => [
                 'name' => 'John Doe',
                 'email' => 'JohnDoe@email.com'
             ]
