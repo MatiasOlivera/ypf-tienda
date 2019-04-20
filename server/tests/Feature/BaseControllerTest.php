@@ -229,7 +229,7 @@ class BaseControllerTest extends TestCase
         $id = $respuestaCreado->getData(true)['usuario']['id'];
 
         $parametros = [
-            'modelo' => User::find($id),
+            'instancia' => User::find($id),
             'input' => [
                 'name' => 'John Doe',
                 'email' => 'JohnDoe@email.com'
@@ -270,7 +270,7 @@ class BaseControllerTest extends TestCase
     public function testUpdateDeberiaDevolverMensajeError()
     {
         $controller = new BaseController('usuario', 'usuarios');
-        $parametros = ['modelo' => 'NoExiste'];
+        $parametros = ['instancia' => 'NoExiste'];
         $nombres = ['error' => 'al usuario'];
         $respuesta = $controller->update($parametros, $nombres);
 
@@ -336,7 +336,7 @@ class BaseControllerTest extends TestCase
     public function testDestroyDeberiaDevolverMensajeError()
     {
         $controller = new BaseController('usuario', 'usuarios');
-        $parametros = ['modelo' => 'NoExiste'];
+        $parametros = ['instancia' => 'NoExiste'];
         $nombres = ['error' => 'al usuario'];
         $respuesta = $controller->destroy($parametros, $nombres);
 
@@ -402,7 +402,7 @@ class BaseControllerTest extends TestCase
     public function testRestoreDeberiaDevolverMensajeError()
     {
         $controller = new BaseController('usuario', 'usuarios');
-        $parametros = ['modelo' => 'NoExiste'];
+        $parametros = ['instancia' => 'NoExiste'];
         $nombres = ['error' => 'al usuario'];
         $respuesta = $controller->restore($parametros, $nombres);
 

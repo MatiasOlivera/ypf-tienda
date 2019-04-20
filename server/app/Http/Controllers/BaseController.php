@@ -20,7 +20,7 @@ class BaseController
     }
 
     /**
-     * Muestra una lista de modelos.
+     * Muestra una lista de instancias
      *
      * @param array $parametros
      * @param string $nombre
@@ -50,7 +50,7 @@ class BaseController
     }
 
     /**
-     * Guarda un nuevo modelo en la BD.
+     * Guarda una instancia en la BD.
      *
      * @param array $parametros
      * @param array $nombres
@@ -60,14 +60,14 @@ class BaseController
     {
         try {
             $nombreModelo = "App\\{$parametros['modelo']}";
-            $modelo = new $nombreModelo;
-            $modelo->fill($parametros['input']);
+            $instancia = new $nombreModelo;
+            $instancia->fill($parametros['input']);
 
-            if ($modelo->save()) {
+            if ($instancia->save()) {
                 $mensajeExito = new MensajeExito();
                 $mensajeExito->guardar($nombres['exito']);
 
-                return Respuesta::exito([$this->modeloSingular => $modelo], $mensajeExito, 201);
+                return Respuesta::exito([$this->modeloSingular => $instancia], $mensajeExito, 201);
             }
         } catch (\Throwable $th) {
             $mensajeError = new MensajeError();
@@ -78,18 +78,18 @@ class BaseController
     }
 
     /**
-     * Muestra un modelo específico
+     * Muestra una instancia específica
      *
-     * @param Model $modelo
+     * @param Model $instancia
      * @return JsonResponse
      */
-    public function show($modelo): JsonResponse
+    public function show($instancia): JsonResponse
     {
-        return Respuesta::exito([$this->modeloSingular => $modelo], null, 200);
+        return Respuesta::exito([$this->modeloSingular => $instancia], null, 200);
     }
 
     /**
-     * Actualizar el modelo especifico en la BD.
+     * Actualizar la instancia específica en la BD.
      *
      * @param array $parametros
      * @param array $nombres
@@ -98,13 +98,13 @@ class BaseController
     public function update(array $parametros, array $nombres): JsonResponse
     {
         try {
-            $modelo = $parametros['modelo'];
-            $modelo->fill($parametros['input']);
-            if ($modelo->save()) {
+            $instancia = $parametros['instancia'];
+            $instancia->fill($parametros['input']);
+            if ($instancia->save()) {
                 $mensajeExito = new MensajeExito();
                 $mensajeExito->actualizar($nombres['exito']);
 
-                return Respuesta::exito([$this->modeloSingular => $modelo], $mensajeExito, 200);
+                return Respuesta::exito([$this->modeloSingular => $instancia], $mensajeExito, 200);
             }
         } catch (\Throwable $th) {
             $mensajeError = new MensajeError();
@@ -115,22 +115,22 @@ class BaseController
     }
 
     /**
-     * Elimina el modelo especifico de la BD
+     * Elimina la instancia específica de la BD
      *
-     * @param Model $modelo
+     * @param Model $instancia
      * @param array $nombres
      * @return JsonResponse
      */
-    public function destroy($modelo, array $nombres): JsonResponse
+    public function destroy($instancia, array $nombres): JsonResponse
     {
         try {
-            $eliminado = $modelo->delete();
+            $eliminado = $instancia->delete();
 
             if ($eliminado) {
                 $mensajeExito = new MensajeExito();
                 $mensajeExito->eliminar($nombres['exito']);
 
-                return Respuesta::exito([$this->modeloSingular => $modelo], $mensajeExito, 200);
+                return Respuesta::exito([$this->modeloSingular => $instancia], $mensajeExito, 200);
             }
         } catch (\Throwable $th) {
             $mensajeError = new MensajeError();
@@ -141,22 +141,22 @@ class BaseController
     }
 
     /**
-     *  Restaurar el modelo que ha sido eliminado
+     *  Restaurar la instancia que ha sido eliminada
      *
-     * @param Model $modelo
+     * @param Model $instancia
      * @param array $nombres
      * @return JsonResponse
      */
-    public function restore($modelo, array $nombres): JsonResponse
+    public function restore($instancia, array $nombres): JsonResponse
     {
         try {
-            $restaurada = $modelo->restore();
+            $restaurada = $instancia->restore();
 
             if ($restaurada) {
                 $mensajeExito = new MensajeExito();
                 $mensajeExito->restaurar($nombres['exito']);
 
-                return Respuesta::exito([$this->modeloSingular => $modelo], $mensajeExito, 200);
+                return Respuesta::exito([$this->modeloSingular => $instancia], $mensajeExito, 200);
             }
         } catch (\Throwable $th) {
             $mensajeError = new MensajeError();
