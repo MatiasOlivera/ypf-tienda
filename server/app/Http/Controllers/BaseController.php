@@ -2,13 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Auxiliares\{Consulta,Respuesta,MensajeExito,MensajeError};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use App\Auxiliares\Consulta;
 
 class BaseController
 {
+    private $modeloSingular;
+    private $modeloPlural;
+
+    public function __construct(string $modeloSingular, string $modeloPlural)
+    {
+        $this->modeloSingular = $modeloSingular;
+        $this->modeloPlural = $modeloPlural;
+    }
+
     /**
      * Muestra una lista de modelos.
      *
@@ -18,17 +27,26 @@ class BaseController
      * @param App\AuxiliaresApp\Auxiliares\Mensajes  $mensajes
      * @return \Illuminate\Http\Response
      */
-    public function index($parametros, $mensajes)
+    public function index($parametros, $nombre)
     {
         try {
             $consulta = new Consulta;
             $consulta->setParametros($parametros);
-            $lista = $consulta->ejecutarconsulta();
-            if ($lista) {
-                return response()->json($lista, 200);
+            $resultado = $consulta->ejecutarconsulta();
+
+            $respuesta = [
+                $this->modeloPlural => $resultado['datos'],
+                'paginacion' => $resultado['paginacion']
+            ];
+
+            if ($resultado) {
+                return Respuesta::exito($respuesta, null, 200);
             }
         } catch (\Throwable $th) {
-            return response()->json($mensajes['error'], 500);
+            $mensajeError = new MensajeError();
+            $mensajeError->obtenerTodos($nombre);
+
+            return Respuesta::error($mensajeError, 500);
         }
     }
 
@@ -40,7 +58,7 @@ class BaseController
      * @param App\Auxiliares\Mensajes  $mensajes
      * @return \Illuminate\Http\Response
      */
-    public function store($parametros, $mensaje)
+    public function store($parametros, $mensajes)
     {
         try {
             $nombreModelo = "App\\{$parametros['modelo']}";
@@ -48,11 +66,28 @@ class BaseController
             $modelo->fill($parametros['inputs']);
 
             if ($modelo->save()) {
-                return response()->json($mensaje['exito'], 201);
+                $mensajeExito = new MensajeExito();
+                $mensajeExito->guardar($mensajes['exito']);
+
+                return Respuesta::exito([$this->modeloSingular => $modelo], $mensajeExito, 201);
             }
         } catch (\Throwable $th) {
-            return response()->json($mensaje['error'], 500);
+            $mensajeError = new MensajeError();
+            $mensajeError->guardar($mensajes['error']);
+
+            return Respuesta::error($mensajeError, 500);
         }
+    }
+
+    /**
+     * Muestra un modelo específico
+     *
+     * @param Modelo $modelo
+     * @return \Illuminate\Http\Response
+     */
+    public function show($modelo)
+    {
+        return Respuesta::exito([$this->modeloSingular => $modelo], null, 200);
     }
 
     /**
@@ -63,16 +98,22 @@ class BaseController
      * @param App\Auxiliares\Mensajes  $mensajes
      * @return \Illuminate\Http\Response
      */
-    public function update($parametros, $mensaje)
+    public function update($parametros, $mensajes)
     {
         try {
             $modelo = $parametros['modelo'];
             $modelo->fill($parametros['inputs']);
             if ($modelo->save()) {
-                return response()->json($mensaje['exito'], 200);
+                $mensajeExito = new MensajeExito();
+                $mensajeExito->actualizar($mensajes['exito']);
+
+                return Respuesta::exito([$this->modeloSingular => $modelo], $mensajeExito, 200);
             }
         } catch (\Throwable $th) {
-            return response()->json($mensaje['error'], 500);
+            $mensajeError = new MensajeError();
+            $mensajeError->actualizar($mensajes['error']);
+
+            return Respuesta::error($mensajeError, 500);
         }
     }
 
@@ -83,16 +124,22 @@ class BaseController
      * @param App\Auxiliares\Mensajes  $mensajes
      * @return \Illuminate\Http\Response
      */
-    public function destroy($modelo, $mensaje)
+    public function destroy($modelo, $mensajes)
     {
         try {
             $eliminado = $modelo->delete();
 
             if ($eliminado) {
-                return response()->json($mensaje['exito'], 200);
+                $mensajeExito = new MensajeExito();
+                $mensajeExito->eliminar($mensajes['exito']);
+
+                return Respuesta::exito([$this->modeloSingular => $modelo], $mensajeExito, 200);
             }
         } catch (\Throwable $th) {
-            return response()->json($mensaje['error'], 500);
+            $mensajeError = new MensajeError();
+            $mensajeError->eliminar($mensajes['error']);
+
+            return Respuesta::error($mensajeError, 500);
         }
     }
 
@@ -103,16 +150,22 @@ class BaseController
      * @param App\Auxiliares\Mensajes  $mensajes
      * @return \Illuminate\Http\Response
      */
-    public function restore($modelo, $mensaje)
+    public function restore($modelo, $mensajes)
     {
         try {
             $restaurada = $modelo->restore();
 
             if ($restaurada) {
-                return response()->json($mensaje['exito'], 200);
+                $mensajeExito = new MensajeExito();
+                $mensajeExito->restaurar($mensajes['exito']);
+
+                return Respuesta::exito([$this->modeloSingular => $modelo], $mensajeExito, 200);
             }
         } catch (\Throwable $th) {
-            return response()->json($mensaje['error'], 500);
+            $mensajeError = new MensajeError();
+            $mensajeError->restaurar($mensajes['error']);
+
+            return Respuesta::error($mensajeError, 500);
         }
     }
 }

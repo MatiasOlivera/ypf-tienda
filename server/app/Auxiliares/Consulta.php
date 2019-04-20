@@ -121,10 +121,29 @@ class Consulta
                 $lista = $lista->orderBy($this->ordenarPor, $this->orden);
             }
 
-            $Resultado = $lista->paginate($this->paginado);
+            $resultado = $lista->paginate($this->paginado);
 
-            if ($Resultado) {
-                return $Resultado;
+            if ($resultado) {
+                $items = $resultado->items();
+
+                $paginacion = [
+                    "total" => $resultado->total(),
+                    "per_page" => $resultado->perPage(),
+                    "current_page" => $resultado->currentPage(),
+                    "last_page" => $resultado->lastPage(),
+                    "first_page_url" => $resultado->toArray()['first_page_url'],
+                    "last_page_url" => $resultado->toArray()['last_page_url'],
+                    "next_page_url" => $resultado->nextPageUrl(),
+                    "prev_page_url" => $resultado->previousPageUrl(),
+                    "path" => $resultado->resolveCurrentPath(),
+                    "from" => $resultado->firstItem(),
+                    "to" => $resultado->lastItem()
+                ];
+
+                return [
+                    'datos' => $items,
+                    'paginacion' => $paginacion
+                ];
             }
         } catch (\Throwable $th) {
             return false;
