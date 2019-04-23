@@ -61,7 +61,7 @@ class BaseController
         try {
             $nombreModelo = "App\\{$parametros['modelo']}";
             $instancia = new $nombreModelo;
-            $instancia->fill($parametros['input']);
+            $instancia->fill($parametros['inputs']);
 
             if ($instancia->save()) {
                 $mensajeExito = new MensajeExito();
@@ -99,7 +99,7 @@ class BaseController
     {
         try {
             $instancia = $parametros['instancia'];
-            $instancia->fill($parametros['input']);
+            $instancia->fill($parametros['inputs']);
             if ($instancia->save()) {
                 $mensajeExito = new MensajeExito();
                 $mensajeExito->actualizar($nombres['exito']);

@@ -54,7 +54,7 @@ class UsersController extends Controller
 
         //parametros
         $parametros = [
-            'input' => $input,
+            'inputs' => $input,
             'modelo' => 'User',
         ];
 
@@ -90,7 +90,7 @@ class UsersController extends Controller
         $input  = $request->only('name', 'email');
         $nombre  = $request->input('name');
         $parametros = [
-            'input' => $input,
+            'inputs' => $input,
             'instancia' => $user,
         ];
 
