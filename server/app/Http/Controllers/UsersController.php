@@ -48,23 +48,23 @@ class UsersController extends Controller
      */
     public function store(UserCreateRequest $request)
     {
-        $inputs   = $request->only('name', 'email', 'password');
+        $input   = $request->only('name', 'email', 'password');
         $nombre   = $request->input('name');
-        $inputs['password'] = Hash::make($request->input('password'));
+        $input['password'] = Hash::make($request->input('password'));
 
         //parametros
         $parametros = [
-            'inputs' => $inputs,
+            'inputs' => $input,
             'modelo' => 'User',
         ];
 
-        //mensajes
-        $mensajes = [
+
+        $nombres = [
             'exito' => "{$nombre}",
             'error' => "{$nombre}"
         ];
 
-        return $this->controladorBase->store($parametros, $mensajes);
+        return $this->controladorBase->store($parametros, $nombres);
     }
 
     /**
@@ -87,19 +87,19 @@ class UsersController extends Controller
      */
     public function update(UserUpdateRequest $request, User $user)
     {
-        $inputs  = $request->only('name', 'email');
+        $input  = $request->only('name', 'email');
         $nombre  = $request->input('name');
         $parametros = [
-            'inputs' => $inputs,
-            'modelo' => $user,
+            'inputs' => $input,
+            'instancia' => $user,
         ];
-        //mensajes
-        $mensajes = [
+
+        $nombres = [
             'exito' => "{$nombre}",
             'error' => "{$nombre}",
         ];
 
-        return $this->controladorBase->update($parametros, $mensajes);
+        return $this->controladorBase->update($parametros, $nombres);
     }
 
     /**
@@ -111,13 +111,13 @@ class UsersController extends Controller
     public function destroy(User $user)
     {
         $nombre  = $user->name;
-        //mensajes
-        $mensajes = [
+
+        $nombres = [
             'exito' => "{$nombre}",
             'error' => "{$nombre}",
         ];
 
-        return $this->controladorBase->destroy($user, $mensajes);
+        return $this->controladorBase->destroy($user, $nombres);
     }
 
     /**
@@ -129,12 +129,12 @@ class UsersController extends Controller
     public function restore(User $user)
     {
         $nombre  = $user->name;
-        //mensajes
-        $mensajes = [
+
+        $nombres = [
             'exito' => "{$nombre}",
             'error' => "{$nombre}",
         ];
 
-        return $this->controladorBase->restore($user, $mensajes);
+        return $this->controladorBase->restore($user, $nombres);
     }
 }
