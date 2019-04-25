@@ -129,30 +129,6 @@ class Consulta
         });
     }
 
-    private function getBooleano($boolean)
-    {
-        if (is_null($boolean)) {
-            return null;
-        }
-
-        if (
-            $boolean === true   ||
-            $boolean === "true" ||
-            $boolean === 1      ||
-            $boolean === '1'
-        ) {
-            return true;
-        } elseif (
-            $boolean === false   ||
-            $boolean === 'false' ||
-            $boolean === 0       ||
-            $boolean === '0'
-        ) {
-            return false;
-        }
-        return null;
-    }
-
     private function validarStringArray($array)
     {
         if (!is_null($array) && is_array($array)) {
@@ -178,13 +154,11 @@ class Consulta
     }
 
     /**
-     * @param boolean $boolean
+     * @param bool $soloEliminados
      */
-    private function setEliminados($boolean)
+    private function setEliminados(bool $soloEliminados = false): void
     {
-        $bool = $this->getBooleano($boolean);
-
-        $this->eliminados = $bool;
+        $this->eliminados = $soloEliminados;
     }
 
     private function setModelo($string)
@@ -289,13 +263,10 @@ class Consulta
 
     /**
      * asigna orden ASC o DESC a la consulta
-     * @param boolean $boolean
+     * @param bool $orden
      */
-    private function setOrden($boolean)
+    private function setOrden(bool $orden = true): void
     {
-        if (!is_null($boolean)) {
-            $bool = $this->getBooleano($boolean);
-            $this->orden = ($bool) ? 'ASC' : 'DESC';
-        }
+        $this->orden = $orden ? 'ASC' : 'DESC';
     }
 }
