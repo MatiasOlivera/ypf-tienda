@@ -156,10 +156,10 @@ class Consulta
         $this->eliminados = $soloEliminados;
     }
 
-    private function setModelo($string)
+    private function setModelo($modelo)
     {
-        if (!is_null($string) && is_string($string)) {
-            $model_name = "\\App\\{$string}";
+        if (!is_null($modelo) && is_string($modelo)) {
+            $model_name = "\\App\\{$modelo}";
             $this->modelo = new $model_name;
         } else {
             $this->modelo = null;
