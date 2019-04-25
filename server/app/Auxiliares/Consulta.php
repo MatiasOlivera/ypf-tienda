@@ -136,7 +136,7 @@ class Consulta
         });
     }
 
-    private function getBoolean($boolean)
+    private function getBooleano($boolean)
     {
         if (is_null($boolean)) {
             return null;
@@ -174,7 +174,7 @@ class Consulta
         }
     }
 
-    private function getDateOfString($date)
+    private function getFechaComoCadena($date)
     {
         $date = Carbon::parse($date);
         $fecha = $date->isoFormat('YYYY-MM-DD');
@@ -189,7 +189,7 @@ class Consulta
      */
     private function setEliminados($boolean)
     {
-        $bool = $this->getBoolean($boolean);
+        $bool = $this->getBooleano($boolean);
 
         $this->eliminados = $bool;
     }
@@ -222,8 +222,8 @@ class Consulta
     private function setPeriodoBusqueda($dateArray)
     {
         if (!is_null($dateArray) && is_Array($dateArray)) {
-            $inicio = $this->getDateOfString($dateArray['desde']);
-            $fin    = $this->getDateOfString($dateArray['hasta']);
+            $inicio = $this->getFechaComoCadena($dateArray['desde']);
+            $fin    = $this->getFechaComoCadena($dateArray['hasta']);
             if ($inicio && $fin) {
                 $this->periodoDeBusqueda = [$inicio, $fin];
             } else {
@@ -301,7 +301,7 @@ class Consulta
     private function setOrden($boolean)
     {
         if (!is_null($boolean)) {
-            $bool = $this->getBoolean($boolean);
+            $bool = $this->getBooleano($boolean);
             $this->orden = ($bool) ? 'ASC' : 'DESC';
         }
     }
