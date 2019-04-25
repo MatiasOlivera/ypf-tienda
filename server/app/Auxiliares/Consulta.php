@@ -17,22 +17,22 @@ class Consulta
     protected $modelo;
     protected $periodoDeBusqueda;
 
-    public function __Construct()
+    public function __construct()
     {
-        //consulta
+        // consulta
         $this->eliminados = false;
         $this->campos = null;
         $this->relaciones = null;
         $this->buscar = null;
         $this->periodoDeBusqueda = null;
-        //paginado
+
+        // paginación
         $this->paginado = 10;
         $this->ordenarPor = 'id';
         $this->orden = 'ASC';
         $this->modelo = null;
     }
 
-    //parametros
     public function setParametros($array)
     {
         if (!is_array($array)) {
@@ -76,6 +76,7 @@ class Consulta
 
         return $parametros;
     }
+
     public function getParametros()
     {
         return $parametros = [
@@ -149,7 +150,6 @@ class Consulta
             return false;
         }
     }
-
 
     private function buscar($consulta, $campos, $buscar)
     {
@@ -289,7 +289,6 @@ class Consulta
         }
     }
 
-    //ordenamiento
     /**
      * @param integer $int
      */
@@ -320,8 +319,8 @@ class Consulta
     }
 
     /**
-     * @param boolean $boolean
      * asigna orden ASC o DESC a la consulta
+     * @param boolean $boolean
      */
     public function setOrden($boolean)
     {
