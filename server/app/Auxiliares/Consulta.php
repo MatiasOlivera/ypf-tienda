@@ -129,17 +129,12 @@ class Consulta
         });
     }
 
-    private function validarStringArray($array)
+    private function validarArrayDeStrings(array $arreglo): void
     {
-        if (!is_null($array) && is_array($array)) {
-            foreach ($array as $string) {
-                if (!is_string($string)) {
-                    return false;
-                }
-                return true;
+        foreach ($arreglo as $elemento) {
+            if (!is_string($elemento)) {
+                throw new Exception("No es un array de strings");
             }
-        } else {
-            return false;
         }
     }
 
@@ -207,12 +202,8 @@ class Consulta
     private function setModelosRelacionados($array)
     {
         if (!is_null($array)) {
-            $validado = $this->validarStringArray($array);
-            if ($validado) {
-                $this->relaciones = $array;
-            } else {
-                return false;
-            }
+            $this->validarArrayDeStrings($array);
+            $this->relaciones = $array;
         }
     }
 
@@ -221,14 +212,9 @@ class Consulta
      */
     private function setCampos($array)
     {
-        if (is_null($array)) {
-            return false;
-        }
-        $validado = $this->validarStringArray($array);
-        if ($validado) {
+        if (!is_null($array)) {
+            $this->validarArrayDeStrings($array);
             $this->campos = $array;
-        } else {
-            return false;
         }
     }
 
