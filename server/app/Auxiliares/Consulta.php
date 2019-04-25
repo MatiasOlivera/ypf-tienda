@@ -70,28 +70,28 @@ class Consulta
         $modelo = $this->modelo;
 
         if (!is_null($this->relaciones)) {
-            $lista = $modelo::with($this->relaciones);
+            $consulta = $modelo::with($this->relaciones);
         } else {
-            $lista = $modelo;
+            $consulta = $modelo;
         }
 
         if ($this->eliminados) {
-            $lista = $lista->onlyTrashed();
+            $consulta = $consulta->onlyTrashed();
         }
 
         if (!is_null($this->campos)) {
-            $lista = $lista->select($this->campos);
+            $consulta = $consulta->select($this->campos);
         }
 
         if (!is_null($this->buscar)) {
-            $lista = $this->buscar($lista, $this->campos, $this->buscar);
+            $consulta = $this->buscar($consulta, $this->campos, $this->buscar);
         }
 
         if ($this->ordenarPor) {
-            $lista = $lista->orderBy($this->ordenarPor, $this->orden);
+            $consulta = $consulta->orderBy($this->ordenarPor, $this->orden);
         }
 
-        $resultado = $lista->paginate($this->paginado);
+        $resultado = $consulta->paginate($this->paginado);
 
         if ($resultado) {
             $items = $resultado->items();
