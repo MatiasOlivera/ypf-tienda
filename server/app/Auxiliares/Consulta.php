@@ -120,11 +120,11 @@ class Consulta
         }
     }
 
-    private function buscar(Builder $consulta, array $campos, string $buscar): Builder
+    private function buscar(Builder $consulta, array $campos, string $valorBuscado): Builder
     {
-        return $consulta->where(function ($query) use ($campos, $buscar) {
+        return $consulta->where(function ($query) use ($campos, $valorBuscado) {
             foreach ($campos as $campo) {
-                $query->orWhere($campo, 'like', "%{$buscar}%");
+                $query->orWhere($campo, 'like', "%{$valorBuscado}%");
             }
         });
     }
