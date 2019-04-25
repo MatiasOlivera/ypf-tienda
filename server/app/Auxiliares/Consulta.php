@@ -32,29 +32,26 @@ class Consulta
         $this->modelo = null;
     }
 
-    public function setParametros($array)
+    public function setParametros(array $parametros): void
     {
-        if (!is_array($array)) {
-            return false;
+        if (isset($parametros['modelo'])) {
+            $this->setModelo($parametros['modelo']);
         }
-        if (isset($array['modelo'])) {
-            $this->setModelo($array['modelo']);
+        if (isset($parametros['campos'])) {
+            $this->setCampos($parametros['campos']);
         }
-        if (isset($array['campos'])) {
-            $this->setCampos($array['campos']);
+        if (isset($parametros['relaciones'])) {
+            $this->setModelosRelacionados($parametros['relaciones']);
         }
-        if (isset($array['relaciones'])) {
-            $this->setModelosRelacionados($array['relaciones']);
+        if (isset($parametros['eliminados'])) {
+            $this->setEliminados($parametros['eliminados']);
         }
-        if (isset($array['eliminados'])) {
-            $this->setEliminados($array['eliminados']);
-        }
-        if (isset($array['buscar'])) {
-            $this->setBuscar($array['buscar']);
+        if (isset($parametros['buscar'])) {
+            $this->setBuscar($parametros['buscar']);
         }
 
-        if (isset($array['paginado'])) {
-            $paginado = $array['paginado'];
+        if (isset($parametros['paginado'])) {
+            $paginado = $parametros['paginado'];
 
             if (isset($paginado['porPagina'])) {
                 $this->setRegistrosPorPagina($paginado['porPagina']);
