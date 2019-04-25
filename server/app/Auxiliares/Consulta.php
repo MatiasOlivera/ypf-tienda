@@ -2,7 +2,6 @@
 
 namespace App\Auxiliares;
 
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class Consulta
@@ -67,29 +66,6 @@ class Consulta
                 $this->setOrden($paginado['orden']);
             }
         }
-    }
-
-    public function validarParametros($array)
-    {
-        $this->setParametros($array);
-        $parametros =  $this->getParametros();
-
-        return $parametros;
-    }
-
-    public function getParametros()
-    {
-        return $parametros = [
-            'campos'     => $this->campos,
-            'relaciones' => $this->relaciones,
-            'buscar'     => $this->buscar,
-            'eliminados' => $this->eliminados,
-            'paginado'   => [
-                'porPagina'   => $this->paginado,
-                'ordenadoPor' => $this->ordenarPor,
-                'orden'       => $this->orden,
-            ]
-        ];
     }
 
     public function ejecutarConsulta()
