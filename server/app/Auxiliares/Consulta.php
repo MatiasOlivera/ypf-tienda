@@ -7,15 +7,15 @@ use Carbon\Carbon;
 
 class Consulta
 {
-    protected $eliminados;
-    protected $buscar;
-    protected $relaciones;
-    protected $campos;
-    protected $paginado;
-    protected $orden;
-    protected $ordenarPor;
-    protected $modelo;
-    protected $periodoDeBusqueda;
+    private $eliminados;
+    private $buscar;
+    private $relaciones;
+    private $campos;
+    private $paginado;
+    private $orden;
+    private $ordenarPor;
+    private $modelo;
+    private $periodoDeBusqueda;
 
     public function __construct()
     {
@@ -198,7 +198,7 @@ class Consulta
         }
     }
 
-    public function getDateOfString($date)
+    private function getDateOfString($date)
     {
         $date = Carbon::parse($date);
         $fecha = $date->isoFormat('YYYY-MM-DD');
@@ -211,14 +211,14 @@ class Consulta
     /**
      * @param boolean $boolean
      */
-    public function setEliminados($boolean)
+    private function setEliminados($boolean)
     {
         $bool = $this->getBoolean($boolean);
 
         $this->eliminados = $bool;
     }
 
-    public function setModelo($string)
+    private function setModelo($string)
     {
         if (!is_null($string) && is_string($string)) {
             $model_name = "\\App\\{$string}";
@@ -231,7 +231,7 @@ class Consulta
     /**
      * @param string $string
      */
-    public function setBuscar($string)
+    private function setBuscar($string)
     {
         if (!is_null($string) && is_string($string)) {
             $this->buscar = $string;
@@ -243,7 +243,7 @@ class Consulta
     /**
      * @param array $dateArray [desde, hasta]
      */
-    public function setPeriodoBusqueda($dateArray)
+    private function setPeriodoBusqueda($dateArray)
     {
         if (!is_null($dateArray) && is_Array($dateArray)) {
             $inicio = $this->getDateOfString($dateArray['desde']);
@@ -261,7 +261,7 @@ class Consulta
     /**
      * @param array $array
      */
-    public function setModelosRelacionados($array)
+    private function setModelosRelacionados($array)
     {
         if (!is_null($array)) {
             $validado = $this->validarStringArray($array);
@@ -276,7 +276,7 @@ class Consulta
     /**
      * @param array $array
      */
-    public function setCampos($array)
+    private function setCampos($array)
     {
         if (is_null($array)) {
             return false;
@@ -292,7 +292,7 @@ class Consulta
     /**
      * @param integer $int
      */
-    public function setRegistrosPorPagina($int)
+    private function setRegistrosPorPagina($int)
     {
         if (is_numeric($int)) {
             $numero = $int + 0;
@@ -309,7 +309,7 @@ class Consulta
     /**
      * @param string $string
      */
-    public function setOrdenarPor($string)
+    private function setOrdenarPor($string)
     {
         if (!is_null($string) && is_string($string)) {
             $this->ordenarPor = $string;
@@ -322,7 +322,7 @@ class Consulta
      * asigna orden ASC o DESC a la consulta
      * @param boolean $boolean
      */
-    public function setOrden($boolean)
+    private function setOrden($boolean)
     {
         if (!is_null($boolean)) {
             $bool = $this->getBoolean($boolean);
