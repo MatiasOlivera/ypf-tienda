@@ -65,62 +65,55 @@ class Consulta
         }
     }
 
-    public function ejecutarConsulta()
+    public function ejecutarConsulta(): array
     {
-        try {
-            $modelo = $this->modelo;
-            if ($modelo == null || $modelo == false) {
-                return false;
-            }
+        $modelo = $this->modelo;
 
-            if (!is_null($this->relaciones)) {
-                $lista = $modelo::with($this->relaciones);
-            } else {
-                $lista = $modelo;
-            }
+        if (!is_null($this->relaciones)) {
+            $lista = $modelo::with($this->relaciones);
+        } else {
+            $lista = $modelo;
+        }
 
-            if ($this->eliminados) {
-                $lista = $lista->onlyTrashed();
-            }
+        if ($this->eliminados) {
+            $lista = $lista->onlyTrashed();
+        }
 
-            if (!is_null($this->campos)) {
-                $lista = $lista->select($this->campos);
-            }
+        if (!is_null($this->campos)) {
+            $lista = $lista->select($this->campos);
+        }
 
-            if (!is_null($this->buscar)) {
-                $lista = $this->buscar($lista, $this->campos, $this->buscar);
-            }
+        if (!is_null($this->buscar)) {
+            $lista = $this->buscar($lista, $this->campos, $this->buscar);
+        }
 
-            if ($this->ordenarPor) {
-                $lista = $lista->orderBy($this->ordenarPor, $this->orden);
-            }
+        if ($this->ordenarPor) {
+            $lista = $lista->orderBy($this->ordenarPor, $this->orden);
+        }
 
-            $resultado = $lista->paginate($this->paginado);
+        $resultado = $lista->paginate($this->paginado);
 
-            if ($resultado) {
-                $items = $resultado->items();
+        if ($resultado) {
+            $items = $resultado->items();
 
-                $paginacion = [
-                    "total" => $resultado->total(),
-                    "per_page" => $resultado->perPage(),
-                    "current_page" => $resultado->currentPage(),
-                    "last_page" => $resultado->lastPage(),
-                    "first_page_url" => $resultado->toArray()['first_page_url'],
-                    "last_page_url" => $resultado->toArray()['last_page_url'],
-                    "next_page_url" => $resultado->nextPageUrl(),
-                    "prev_page_url" => $resultado->previousPageUrl(),
-                    "path" => $resultado->resolveCurrentPath(),
-                    "from" => $resultado->firstItem(),
-                    "to" => $resultado->lastItem()
-                ];
+            $paginacion = [
+                "total" => $resultado->total(),
+                "per_page" => $resultado->perPage(),
+                "current_page" => $resultado->currentPage(),
+                "last_page" => $resultado->lastPage(),
+                "first_page_url" => $resultado->toArray()['first_page_url'],
+                "last_page_url" => $resultado->toArray()['last_page_url'],
+                "next_page_url" => $resultado->nextPageUrl(),
+                "prev_page_url" => $resultado->previousPageUrl(),
+                "path" => $resultado->resolveCurrentPath(),
+                "from" => $resultado->firstItem(),
+                "to" => $resultado->lastItem()
+            ];
 
-                return [
-                    'datos' => $items,
-                    'paginacion' => $paginacion
-                ];
-            }
-        } catch (\Throwable $th) {
-            return false;
+            return [
+                'datos' => $items,
+                'paginacion' => $paginacion
+            ];
         }
     }
 
