@@ -83,7 +83,7 @@ class Consulta
             $consulta = $consulta->select($this->campos);
         }
 
-        if ($this->buscar) {
+        if ($this->campos && $this->buscar) {
             $consulta = $this->buscar($consulta, $this->campos, $this->buscar);
         }
 
