@@ -69,7 +69,7 @@ class Consulta
     {
         $modelo = $this->modelo;
 
-        if (!is_null($this->relaciones)) {
+        if ($this->relaciones) {
             $consulta = $modelo::with($this->relaciones);
         } else {
             $consulta = $modelo;
@@ -79,11 +79,11 @@ class Consulta
             $consulta = $consulta->onlyTrashed();
         }
 
-        if (!is_null($this->campos)) {
+        if ($this->campos) {
             $consulta = $consulta->select($this->campos);
         }
 
-        if (!is_null($this->buscar)) {
+        if ($this->buscar) {
             $consulta = $this->buscar($consulta, $this->campos, $this->buscar);
         }
 
