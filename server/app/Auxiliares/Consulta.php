@@ -3,6 +3,7 @@
 namespace App\Auxiliares;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 
 class Consulta
 {
@@ -119,7 +120,7 @@ class Consulta
         }
     }
 
-    private function buscar($consulta, $campos, $buscar)
+    private function buscar(Builder $consulta, array $campos, string $buscar): Builder
     {
         return $consulta->where(function ($query) use ($campos, $buscar) {
             foreach ($campos as $campo) {
