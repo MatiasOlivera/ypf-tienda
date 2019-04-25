@@ -94,24 +94,26 @@ class Consulta
         $resultado = $consulta->paginate($this->paginado);
 
         if ($resultado) {
-            $items = $resultado->items();
+            $datos = $resultado->items();
 
             $paginacion = [
                 "total" => $resultado->total(),
-                "per_page" => $resultado->perPage(),
-                "current_page" => $resultado->currentPage(),
-                "last_page" => $resultado->lastPage(),
-                "first_page_url" => $resultado->toArray()['first_page_url'],
-                "last_page_url" => $resultado->toArray()['last_page_url'],
-                "next_page_url" => $resultado->nextPageUrl(),
-                "prev_page_url" => $resultado->previousPageUrl(),
-                "path" => $resultado->resolveCurrentPath(),
-                "from" => $resultado->firstItem(),
-                "to" => $resultado->lastItem()
+                "porPagina" => $resultado->perPage(),
+                "paginaActual" => $resultado->currentPage(),
+                "ultimaPagina" => $resultado->lastPage(),
+                "desde" => $resultado->firstItem(),
+                "hasta" => $resultado->lastItem(),
+                "rutas" => [
+                    "primeraPagina" => $resultado->toArray()['first_page_url'],
+                    "ultimaPagina" => $resultado->toArray()['last_page_url'],
+                    "siguientePagina" => $resultado->nextPageUrl(),
+                    "paginaAnterior" => $resultado->previousPageUrl(),
+                    "base" => $resultado->resolveCurrentPath(),
+                ]
             ];
 
             return [
-                'datos' => $items,
+                'datos' => $datos,
                 'paginacion' => $paginacion
             ];
         }

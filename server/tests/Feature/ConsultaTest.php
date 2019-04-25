@@ -51,20 +51,28 @@ class ConsultaTest extends TestCase
 
         $claves = [
             'total',
-            'per_page',
-            'current_page',
-            'last_page',
-            'first_page_url',
-            'last_page_url',
-            'next_page_url',
-            'prev_page_url',
-            'path',
-            'from',
-            'to'
+            'porPagina',
+            'paginaActual',
+            'ultimaPagina',
+            'rutas',
+            'desde',
+            'hasta'
         ];
 
         foreach ($claves as $clave) {
             $this->assertArrayHasKey($clave, $respuesta['paginacion']);
+        }
+
+        $clavesRutas = [
+            'primeraPagina',
+            'ultimaPagina',
+            'siguientePagina',
+            'paginaAnterior',
+            'base'
+        ];
+
+        foreach ($clavesRutas as $clave) {
+            $this->assertArrayHasKey($clave, $respuesta['paginacion']['rutas']);
         }
     }
 
@@ -97,16 +105,18 @@ class ConsultaTest extends TestCase
         $usuarios = User::paginate(10)->items();
         $paginacion =  [
             "total" => 20,
-            "per_page" => 10,
-            "current_page" => 1,
-            "last_page" => 2,
-            "first_page_url" => "http://localhost?page=1",
-            "last_page_url" => "http://localhost?page=2",
-            "next_page_url" => "http://localhost?page=2",
-            "prev_page_url" => null,
-            "path" => "http://localhost",
-            "from" => 1,
-            "to" => 10
+            "porPagina" => 10,
+            "paginaActual" => 1,
+            "ultimaPagina" => 2,
+            "rutas" => [
+                "primeraPagina" => "http://localhost?page=1",
+                "ultimaPagina" => "http://localhost?page=2",
+                "siguientePagina" => "http://localhost?page=2",
+                "paginaAnterior" => null,
+                "base" => "http://localhost"
+            ],
+            "desde" => 1,
+            "hasta" => 10
         ];
 
         $this->assertEquals($usuarios, $respuesta['datos']);
@@ -133,16 +143,18 @@ class ConsultaTest extends TestCase
         $usuarios = User::select(['id', 'name', 'email'])->paginate(10);
         $paginacion =  [
             "total" => 20,
-            "per_page" => 10,
-            "current_page" => 1,
-            "last_page" => 2,
-            "first_page_url" => "http://localhost?page=1",
-            "last_page_url" => "http://localhost?page=2",
-            "next_page_url" => "http://localhost?page=2",
-            "prev_page_url" => null,
-            "path" => "http://localhost",
-            "from" => 1,
-            "to" => 10
+            "porPagina" => 10,
+            "paginaActual" => 1,
+            "ultimaPagina" => 2,
+            "rutas" => [
+                "primeraPagina" => "http://localhost?page=1",
+                "ultimaPagina" => "http://localhost?page=2",
+                "siguientePagina" => "http://localhost?page=2",
+                "paginaAnterior" => null,
+                "base" => "http://localhost"
+            ],
+            "desde" => 1,
+            "hasta" => 10
         ];
 
         $this->assertEquals($usuarios->items(), $respuesta['datos']);
@@ -169,16 +181,18 @@ class ConsultaTest extends TestCase
         $usuarios = User::with('cliente')->paginate(10);
         $paginacion =  [
             "total" => 20,
-            "per_page" => 10,
-            "current_page" => 1,
-            "last_page" => 2,
-            "first_page_url" => "http://localhost?page=1",
-            "last_page_url" => "http://localhost?page=2",
-            "next_page_url" => "http://localhost?page=2",
-            "prev_page_url" => null,
-            "path" => "http://localhost",
-            "from" => 1,
-            "to" => 10
+            "porPagina" => 10,
+            "paginaActual" => 1,
+            "ultimaPagina" => 2,
+            "rutas" => [
+                "primeraPagina" => "http://localhost?page=1",
+                "ultimaPagina" => "http://localhost?page=2",
+                "siguientePagina" => "http://localhost?page=2",
+                "paginaAnterior" => null,
+                "base" => "http://localhost"
+            ],
+            "desde" => 1,
+            "hasta" => 10
         ];
 
         $this->assertEquals($usuarios->items(), $respuesta['datos']);
@@ -210,16 +224,18 @@ class ConsultaTest extends TestCase
 
         $paginacion =  [
             "total" => 10,
-            "per_page" => 10,
-            "current_page" => 1,
-            "last_page" => 1,
-            "first_page_url" => "http://localhost?page=1",
-            "last_page_url" => "http://localhost?page=1",
-            "next_page_url" => null,
-            "prev_page_url" => null,
-            "path" => "http://localhost",
-            "from" => 1,
-            "to" => 10
+            "porPagina" => 10,
+            "paginaActual" => 1,
+            "ultimaPagina" => 1,
+            "rutas" => [
+                "primeraPagina" => "http://localhost?page=1",
+                "ultimaPagina" => "http://localhost?page=1",
+                "siguientePagina" => null,
+                "paginaAnterior" => null,
+                "base" => "http://localhost"
+            ],
+            "desde" => 1,
+            "hasta" => 10
         ];
 
         $this->assertEquals($usuariosEliminados, $respuesta['datos']);
@@ -249,16 +265,18 @@ class ConsultaTest extends TestCase
 
         $paginacion =  [
             "total" => 2,
-            "per_page" => 10,
-            "current_page" => 1,
-            "last_page" => 1,
-            "first_page_url" => "http://localhost?page=1",
-            "last_page_url" => "http://localhost?page=1",
-            "next_page_url" => null,
-            "prev_page_url" => null,
-            "path" => "http://localhost",
-            "from" => 1,
-            "to" => 2
+            "porPagina" => 10,
+            "paginaActual" => 1,
+            "ultimaPagina" => 1,
+            "rutas" => [
+                "primeraPagina" => "http://localhost?page=1",
+                "ultimaPagina" => "http://localhost?page=1",
+                "siguientePagina" => null,
+                "paginaAnterior" => null,
+                "base" => "http://localhost"
+            ],
+            "desde" => 1,
+            "hasta" => 2
         ];
 
         $this->assertEquals($usuarios, $respuesta['datos']);
@@ -284,16 +302,18 @@ class ConsultaTest extends TestCase
         $usuarios = User::paginate(5)->items();
         $paginacion =  [
             "total" => 20,
-            "per_page" => 5,
-            "current_page" => 1,
-            "last_page" => 4,
-            "first_page_url" => "http://localhost?page=1",
-            "last_page_url" => "http://localhost?page=4",
-            "next_page_url" => "http://localhost?page=2",
-            "prev_page_url" => null,
-            "path" => "http://localhost",
-            "from" => 1,
-            "to" => 5
+            "porPagina" => 5,
+            "paginaActual" => 1,
+            "ultimaPagina" => 4,
+            "rutas" => [
+                "primeraPagina" => "http://localhost?page=1",
+                "ultimaPagina" => "http://localhost?page=4",
+                "siguientePagina" => "http://localhost?page=2",
+                "paginaAnterior" => null,
+                "base" => "http://localhost"
+            ],
+            "desde" => 1,
+            "hasta" => 5
         ];
 
         $this->assertEquals($usuarios, $respuesta['datos']);
@@ -319,16 +339,18 @@ class ConsultaTest extends TestCase
         $usuarios = User::orderBy('name', 'ASC')->paginate(10)->items();
         $paginacion =  [
             "total" => 20,
-            "per_page" => 10,
-            "current_page" => 1,
-            "last_page" => 2,
-            "first_page_url" => "http://localhost?page=1",
-            "last_page_url" => "http://localhost?page=2",
-            "next_page_url" => "http://localhost?page=2",
-            "prev_page_url" => null,
-            "path" => "http://localhost",
-            "from" => 1,
-            "to" => 10
+            "porPagina" => 10,
+            "paginaActual" => 1,
+            "ultimaPagina" => 2,
+            "rutas" => [
+                "primeraPagina" => "http://localhost?page=1",
+                "ultimaPagina" => "http://localhost?page=2",
+                "siguientePagina" => "http://localhost?page=2",
+                "paginaAnterior" => null,
+                "base" => "http://localhost"
+            ],
+            "desde" => 1,
+            "hasta" => 10
         ];
 
         $this->assertEquals($usuarios, $respuesta['datos']);
