@@ -207,11 +207,11 @@ class Consulta
     }
 
     /**
-     * @param integer $int
+     * @param int $limite
      */
-    private function setRegistrosPorPagina(int $int): void
+    private function setRegistrosPorPagina(int $limite): void
     {
-        $this->paginado = $int;
+        $this->paginado = $limite;
     }
 
     /**
