@@ -158,8 +158,8 @@ class Consulta
 
     private function setModelo(string $modelo): void
     {
-        $model_name = "\\App\\{$modelo}";
-        $this->modelo = new $model_name;
+        $nombreModelo = "\\App\\{$modelo}";
+        $this->modelo = new $nombreModelo;
     }
 
     /**
