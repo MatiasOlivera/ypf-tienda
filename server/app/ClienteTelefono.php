@@ -4,8 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Sofa\Eloquence\Eloquence;
-use Sofa\Eloquence\Mappable;
+use Sofa\Eloquence\{ Eloquence, Mappable };
 
 class ClienteTelefono extends Model
 {
