@@ -2,14 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Cliente;
-use App\ClienteTelefono;
+use App\{Cliente, ClienteTelefono};
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
-use App\Http\Requests\Cliente\Telefono\ClienteTelefonoRequest;
+use App\Http\Requscopeests\Cliente\Telefono\ClienteTelefonoRequest;
+use App\Auxiliares\{Respuesta, MensajeExito, MensajeError};
 
 class ClienteTelefonoController extends Controller
 {
+    protected $BaseController;
+    protected $modeloSingular;
+    protected $modeloPlural;
+
+    public function __Construct()
+    {
+        $this->modeloPlural     = 'telefonos';
+        $this->modeloSingular   = 'telefono';
+        $this->BaseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
+    }
+
+    protected function setTextoMensaje(int $area, int $telefono, string $nombreContacto = null): string
+    {
+        return (is_null($nombreContacto)) ? "El telefono {$area} - {$telefono}" : "El telefono de {$nombreContacto}";
+    }
+
     /**
      * Display a listing of the resource.
      * @param  App\Cliente $cliente
@@ -18,26 +34,18 @@ class ClienteTelefonoController extends Controller
      */
     public function index(Request $request, Cliente $cliente)
     {
-        $mensaje = [
-            'error' => [
-                'descripcion' => 'Hemos tenido un error durante la consulta de datos, intente nuevamente',
-                'codigo'      => 'TELEFONO_INDEX_CONTROLLER',
-            ],
-        ];
-
         try {
-            $telefonos = $cliente->telefonos;
-            return response()->json(['ClienteTelefono' => $telefonos,], 200);
+            $porPagina      = (is_numeric($request->input('porPagina'))) ? $request->input('porPagina') : 5;
+            $telefonos      = $cliente->telefonos()->paginate($porPagina);
+            $respuesta      = [$this->modeloPlural => $telefonos];
+
+            return Respuesta::exito($respuesta, null, 200);
         } catch (\Throwable $th) {
-            $respuesta = [
-                'ClienteTelefono'     => null,
-                'mensajes'  => [
-                    'tipo'      => 'error',
-                    'codigo'    => $mensaje['error']['codigo'],
-                    'mensaje'   => $mensaje['error']['descripcion'],
-                ],
-            ];
-            return response()->json($respuesta, 400);
+
+            $mensajeError   = new MensajeError();
+            $mensajeError->obtenerTodos($this->modeloPlural);
+
+            return Respuesta::error($mensajeError, 500);
         }
     }
 
@@ -47,47 +55,26 @@ class ClienteTelefonoController extends Controller
      * @param  App\Http\Requests\Cliente\Telefono\ClienteTelefonoRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ClienteTelefonoRequest $request, Cliente $cliente)
+    public function store(Request $request, Cliente $cliente)
     {
-        $inputs = $request->input('area', 'telefono', 'nombreContacto');
+        $inputs = $request->only('area', 'telefono', 'nombreContacto');
 
-        $telefonoMensaje = ($inputs['nombreContacto'] === null) ? "{$inputs['area']} - {$inputs['telefono']}" : $inputs['nombreContacto'];
-
-        //mensajes
-        $mensaje = [
-            'exito' => [
-                'codigo' => 'TELEFONO_STORE_CONTROLLER',
-                'descripcion' => "El contacto {$telefonoMensaje} se ha creado con exito",
-            ],
-            'error' => [
-                'descripcion' => "Hubo un error al intentar guardar el N° de {$telefonoMensaje}",
-                'codigo' => 'CATCH_TELEFONO_STORE'
-            ],
-        ];
-
+        $telefonoMensaje = $this->setTextoMensaje($inputs['area'], $inputs['telefono'], $inputs['nombreContacto']);
         try {
             $telefono = new ClienteTelefono($inputs);
             $cliente->telefonos()->save($telefono);
-            $respuesta = [
-                'datos'     => $telefono,
-                'mensajes'  => [
-                    'tipo'      => 'exito',
-                    'codigo'    => $mensaje['exito']['codigo'],
-                    'mensaje'   => $mensaje['exito']['descripcion'],
-                ],
-            ];
+            $respuesta      = [$this->modeloSingular => $telefono];
 
-            return response()->json($respuesta, 200);
+            $mensajeExito   = new MensajeExito();
+            $mensajeExito->guardar($telefonoMensaje);
+
+            return Respuesta::exito($respuesta, $mensajeExito, 200);
         } catch (\Throwable $th) {
-            $respuesta = [
-                'datos'     => null,
-                'mensajes'  => [
-                    'tipo'      => 'error',
-                    'codigo'    => $mensaje['error']['codigo'],
-                    'mensaje'   => $mensaje['error']['descripcion'],
-                ],
-            ];
-            return response()->json($respuesta, 400);
+
+            $mensajeError   = new MensajeError();
+            $mensajeError->guardar(lcfirst($telefonoMensaje));
+
+            return Respuesta::error($mensajeError, 500);
         }
     }
 
@@ -99,7 +86,7 @@ class ClienteTelefonoController extends Controller
      */
     public function show(ClienteTelefono $telefono)
     {
-        return $telefono;
+        return $this->BaseController->show($telefono);
     }
 
     /**
@@ -111,47 +98,13 @@ class ClienteTelefonoController extends Controller
      */
     public function update(ClienteTelefonoRequest $request, ClienteTelefono $telefono)
     {
-        $inputs = $request->input('area', 'telefono', 'nombreContacto');
-
-        $telefonoMensaje = ($inputs['nombreContacto'] === null) ? "{$inputs['area']} - {$inputs['telefono']}" : $inputs['nombreContacto'];
-
-        //mensajes
-        $mensaje = [
-            'exito' => [
-                'codigo' => 'TELEFONO_STORE_CONTROLLER',
-                'descripcion' => "El contacto {$telefonoMensaje} se ha modificado",
-            ],
-            'error' => [
-                'descripcion' => "Hubo un error al intentar modificar el contacto {$telefonoMensaje}",
-                'codigo' => 'CATCH_TELEFONO_UPDATE'
-            ],
+        $inputs = $request->only('area', 'telefono', 'nombreContacto');
+        $telefonoMensaje = $this->setTextoMensaje($inputs['area'], $inputs['telefono'], $inputs['nombreContacto']);
+        $parametros = [
+            'inputs' => $inputs,
+            'modelo' => $telefono,
         ];
-
-        try {
-            $telefono->fill($inputs);
-            $telefono->save();
-
-            $respuesta = [
-                'datos'     => $telefono,
-                'mensajes'  => [
-                    'tipo'      => 'exito',
-                    'codigo'    => $mensaje['exito']['codigo'],
-                    'mensaje'   => $mensaje['exito']['descripcion'],
-                ],
-            ];
-
-            return response()->json($respuesta, 200);
-        } catch (\Throwable $th) {
-            $respuesta = [
-                'datos'     => null,
-                'mensajes'  => [
-                    'tipo'      => 'error',
-                    'codigo'    => $mensaje['error']['codigo'],
-                    'mensaje'   => $mensaje['error']['descripcion'],
-                ],
-            ];
-            return response()->json($respuesta, 400);
-        }
+        return $this->BaseController->update($parametros, $telefonoMensaje);
     }
 
     /**
@@ -162,21 +115,8 @@ class ClienteTelefonoController extends Controller
      */
     public function destroy(ClienteTelefono $telefono)
     {
-        //mensajes
-        $telefonoMensaje = ($telefono->nombreContacto === null) ? "{$telefono->area} - { $telefono->telefono}" : $telefono->nombreContacto;
-        $mensaje = [
-            'exito' => [
-                'codigo' => 'TELEFONO_DESTROY_CONTROLLER',
-                'descripcion' => "{$telefonoMensaje} ha sido eliminado",
-            ],
-            'error' => [
-                'descripcion' => "Hubo un error al intentar eliminar a {$telefonoMensaje}",
-                'codigo' => 'CATCH_TELEFONO_DESTROY'
-            ],
-        ];
-
-        $BaseController  = new BaseController();
-        return $BaseController->destroy($telefono, $mensaje);
+        $telefonoMensaje = $this->setTextoMensaje($telefono->area, $telefono->telefono, $telefono->nombreContacto);
+        return $this->BaseController->destroy($telefono, $telefonoMensaje);
     }
 
     /**
@@ -187,20 +127,7 @@ class ClienteTelefonoController extends Controller
      */
     public function restore(ClienteTelefono $telefono)
     {
-        //mensajes
-        $telefonoMensaje = ($telefono->nombreContacto === null) ? "{$telefono->area} - { $telefono->telefono}" : $telefono->nombreContacto;
-        $mensaje = [
-            'exito' => [
-                'codigo' => 'TELEFONO_RESTORE_CONTROLLER',
-                'descripcion' => "{$telefonoMensaje} ha sido dado de alta",
-            ],
-            'error' => [
-                'descripcion' => "Hubo un error al intentar dar de alta {$telefonoMensaje}",
-                'codigo' => 'CATCH_TELEFONO_RESTORE'
-            ],
-        ];
-
-        $BaseController  = new BaseController();
-        return $BaseController->restore($telefono, $mensaje);
+        $telefonoMensaje = $this->setTextoMensaje($telefono->area, $telefono->telefono, $telefono->nombreContacto);
+        return $this->BaseController->restore($telefono, $telefonoMensaje);
     }
 }
