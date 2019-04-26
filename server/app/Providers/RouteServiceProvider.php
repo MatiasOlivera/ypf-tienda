@@ -48,7 +48,7 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         //ClienteDomicilio
-        Route::bind('domiciio', function ($id) {
+        Route::bind('domicilio', function ($id) {
             return ClienteDomicilio::withTrashed()
                 ->where('id_dom', $id)
                 ->firstOrFail();
