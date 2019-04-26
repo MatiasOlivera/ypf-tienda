@@ -7,8 +7,8 @@ use Illuminate\Foundation\Http\FormRequest;
 class ClienteRazonSocialRequest extends FormRequest
 {
     protected $reglas = [
-        'nombre'        => ['bail', 'required', 'string', 'min:3', 'max:100'],
-        'cuit'          => ['bail', 'required', 'integer', 'unique:razones_sociales,cuit', 'digit:11'],
+        'denominacion'   => ['bail', 'required', 'string', 'min:3', 'max:100'],
+        'cuit'          => ['bail', 'required', 'string', 'unique:razones_sociales,cuit', 'min:13', 'max:13',],
         'localidad_id'  => ['bail', 'required', 'integer',],
         'calle'         => ['bail', 'string', 'min:3', 'max:70',],
         'altura'        => ['bail', 'integer', 'digits_between:1,4'],
