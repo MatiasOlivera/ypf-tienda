@@ -189,12 +189,12 @@ class Consulta
     }
 
     /**
-     * @param array $array
+     * @param array $relaciones
      */
-    private function setModelosRelacionados(array $array): void
+    private function setModelosRelacionados(array $relaciones): void
     {
-        $this->validarArrayDeStrings($array);
-        $this->relaciones = $array;
+        $this->validarArrayDeStrings($relaciones);
+        $this->relaciones = $relaciones;
     }
 
     /**
