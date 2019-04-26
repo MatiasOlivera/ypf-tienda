@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Provincia;
 use Illuminate\Http\Request;
 use App\Http\controllers\BaseController;
+use App\Auxiliares\{Respuesta, MensajeExito, MensajeError};
 
 class ProvinciaController extends Controller
 {
@@ -26,19 +27,17 @@ class ProvinciaController extends Controller
      */
     public function index(Request $request)
     {
-        $parametros = [
-            'modelo'            => 'Provincia',
-            'campos'            => ['id', 'nombre', 'created_at', 'updated_at', 'deleted_at',],
-            'relaciones'        => null,
-            'buscar'            => $request->input("buscar", null),
-            'eliminados'        => $request->input("eliminados", false),
-            'paginado'  => [
-                'porPagina'     => $request->input("porPagina", 10),
-                'ordenadoPor'   => $request->input("ordenadoPor", 'cliente'),
-                'orden'         => $request->input("orden", true),
-            ]
-        ];
-        return $this->BaseController->index();
+        try{
+            $provincia      = new Provincia;
+            $provincias     = $provincia::all();
+            $respuesta      = [$this->modeloPlural => $provincias];
+
+            return Respuesta::exito($respuesta, null, 200);
+        } catch (\Throwable $th) {
+            $mensajeError   = new MensajeError();
+            $mensajeError->obtenerTodos($this->modeloPlural);
+            return Respuesta::error($mensajeError, 500);
+        }
     }
 
     /**
