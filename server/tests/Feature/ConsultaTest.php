@@ -109,9 +109,9 @@ class ConsultaTest extends TestCase
             "paginaActual" => 1,
             "ultimaPagina" => 2,
             "rutas" => [
-                "primeraPagina" => "http://localhost?page=1",
-                "ultimaPagina" => "http://localhost?page=2",
-                "siguientePagina" => "http://localhost?page=2",
+                "primeraPagina" => "http://localhost?pagina=1",
+                "ultimaPagina" => "http://localhost?pagina=2",
+                "siguientePagina" => "http://localhost?pagina=2",
                 "paginaAnterior" => null,
                 "base" => "http://localhost"
             ],
@@ -147,9 +147,9 @@ class ConsultaTest extends TestCase
             "paginaActual" => 1,
             "ultimaPagina" => 2,
             "rutas" => [
-                "primeraPagina" => "http://localhost?page=1",
-                "ultimaPagina" => "http://localhost?page=2",
-                "siguientePagina" => "http://localhost?page=2",
+                "primeraPagina" => "http://localhost?pagina=1",
+                "ultimaPagina" => "http://localhost?pagina=2",
+                "siguientePagina" => "http://localhost?pagina=2",
                 "paginaAnterior" => null,
                 "base" => "http://localhost"
             ],
@@ -185,9 +185,9 @@ class ConsultaTest extends TestCase
             "paginaActual" => 1,
             "ultimaPagina" => 2,
             "rutas" => [
-                "primeraPagina" => "http://localhost?page=1",
-                "ultimaPagina" => "http://localhost?page=2",
-                "siguientePagina" => "http://localhost?page=2",
+                "primeraPagina" => "http://localhost?pagina=1",
+                "ultimaPagina" => "http://localhost?pagina=2",
+                "siguientePagina" => "http://localhost?pagina=2",
                 "paginaAnterior" => null,
                 "base" => "http://localhost"
             ],
@@ -228,8 +228,8 @@ class ConsultaTest extends TestCase
             "paginaActual" => 1,
             "ultimaPagina" => 1,
             "rutas" => [
-                "primeraPagina" => "http://localhost?page=1",
-                "ultimaPagina" => "http://localhost?page=1",
+                "primeraPagina" => "http://localhost?pagina=1",
+                "ultimaPagina" => "http://localhost?pagina=1",
                 "siguientePagina" => null,
                 "paginaAnterior" => null,
                 "base" => "http://localhost"
@@ -269,8 +269,8 @@ class ConsultaTest extends TestCase
             "paginaActual" => 1,
             "ultimaPagina" => 1,
             "rutas" => [
-                "primeraPagina" => "http://localhost?page=1",
-                "ultimaPagina" => "http://localhost?page=1",
+                "primeraPagina" => "http://localhost?pagina=1",
+                "ultimaPagina" => "http://localhost?pagina=1",
                 "siguientePagina" => null,
                 "paginaAnterior" => null,
                 "base" => "http://localhost"
@@ -306,9 +306,9 @@ class ConsultaTest extends TestCase
             "paginaActual" => 1,
             "ultimaPagina" => 4,
             "rutas" => [
-                "primeraPagina" => "http://localhost?page=1",
-                "ultimaPagina" => "http://localhost?page=4",
-                "siguientePagina" => "http://localhost?page=2",
+                "primeraPagina" => "http://localhost?pagina=1",
+                "ultimaPagina" => "http://localhost?pagina=4",
+                "siguientePagina" => "http://localhost?pagina=2",
                 "paginaAnterior" => null,
                 "base" => "http://localhost"
             ],
@@ -343,9 +343,9 @@ class ConsultaTest extends TestCase
             "paginaActual" => 1,
             "ultimaPagina" => 2,
             "rutas" => [
-                "primeraPagina" => "http://localhost?page=1",
-                "ultimaPagina" => "http://localhost?page=2",
-                "siguientePagina" => "http://localhost?page=2",
+                "primeraPagina" => "http://localhost?pagina=1",
+                "ultimaPagina" => "http://localhost?pagina=2",
+                "siguientePagina" => "http://localhost?pagina=2",
                 "paginaAnterior" => null,
                 "base" => "http://localhost"
             ],

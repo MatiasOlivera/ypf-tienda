@@ -91,7 +91,7 @@ class Consulta
             $consulta = $consulta->orderBy($this->ordenarPor, $this->orden);
         }
 
-        $resultado = $consulta->paginate($this->paginado);
+        $resultado = $consulta->paginate($this->paginado, ['*'], 'pagina');
 
         if ($resultado) {
             $datos = $resultado->items();
