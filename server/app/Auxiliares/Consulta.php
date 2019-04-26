@@ -165,13 +165,9 @@ class Consulta
     /**
      * @param string $string
      */
-    private function setBuscar($string)
+    private function setBuscar(string $string): void
     {
-        if (!is_null($string) && is_string($string)) {
-            $this->buscar = $string;
-        } else {
-            $this->buscar = null;
-        }
+        $this->buscar = $string;
     }
 
     /**
