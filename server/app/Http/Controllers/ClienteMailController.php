@@ -2,14 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Cliente;
-use App\ClienteMail;
+use App\{ Cliente, ClienteMail };
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Cliente\Mail\ClienteMailRequest;
+use App\Auxiliares\{ Respuesta, MensajeExito, MensajeError };
 
 class ClienteMailController extends Controller
 {
+    protected $BaseController;
+    protected $modeloSingular;
+    protected $modeloPlural;
+
+    public function __Construct()
+    {
+        $this->modeloPlural     = 'emails';
+        $this->modeloSingular   = 'email';
+        $this->BaseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
+    }
+
     /**
      * Display a listing of the resource.
      * @param  App\Cliente $cliente
@@ -18,25 +29,15 @@ class ClienteMailController extends Controller
      */
     public function index(Request $request, Cliente $cliente)
     {
-        $mensaje = [
-            'error' => [
-                'descripcion' => 'Hemos tenido un error durante la consulta de datos, intente nuevamente',
-                'codigo'      => 'MAIL_INDEX_CONTROLLER',
-            ],
-        ];
         try {
-            $mail = $cliente->mails;
-            return response()->json(['datos' => $mail], 200);
+            $porPagina      = ($request->only('porPagina') > 0) ? $request->only('porPagina') : 5;
+            $mails          = $cliente->mails()->paginate($porPagina);
+            $respuesta      = [$this->modeloPlural => $mails];
+            return Respuesta::exito($respuesta, null, 200);
         } catch (\Throwable $th) {
-            $respuesta = [
-                'datos'     => null,
-                'mensajes'  => [
-                    'tipo'      => 'error',
-                    'codigo'    => $mensaje['error']['codigo'],
-                    'mensaje'   => $mensaje['error']['descripcion'],
-                ],
-            ];
-            return response()->json($respuesta, 400);
+            $mensajeError   = new MensajeError();
+            $mensajeError->obtenerTodos("E-Mail's");
+            return Respuesta::error($mensajeError, 500);
         }
     }
 
@@ -49,42 +50,22 @@ class ClienteMailController extends Controller
     public function store(ClienteMailRequest $request, Cliente $cliente)
     {
         $email  = $request->input('mail');
-
-        //mensajes
-        $mensaje = [
-            'exito' => [
-                'codigo'        => 'MAIL_STORE_CONTROLLER',
-                'descripcion'   => "{$email} se ha creado con exito",
-            ],
-            'error' => [
-                'descripcion'   => "Hubo un error al intentar guardar {$email}",
-                'codigo'        => 'CATCH_MAIL_STORE'
-            ],
-        ];
         try {
-            $inputs = ['mail' => $email,];
-            $mail = new ClienteMail($inputs);
-            $cliente->mails()->save($mail);
-            $respuesta = [
-                'datos'     => $mail,
-                'mensajes'  => [
-                    'tipo'      => 'exito',
-                    'codigo'    => $mensaje['exito']['codigo'],
-                    'mensaje'   => $mensaje['exito']['descripcion'],
-                ],
-            ];
+            $inputs = ['mail' => $email];
+            $mail   = new ClienteMail($inputs);
+            $mail   = $cliente->mails()->save($mail);
 
-            return response()->json($respuesta, 200);
+            $mensajeExito = new MensajeExito();
+            $mensajeExito->guardar($email);
+
+            $respuesta      = [$this->modeloSingular => $mail];
+            return Respuesta::exito($respuesta, $mensajeExito, 200);
         } catch (\Throwable $th) {
-            $respuesta = [
-                'datos'     => null,
-                'mensajes'  => [
-                    'tipo'      => 'error',
-                    'codigo'    => $mensaje['error']['codigo'],
-                    'mensaje'   => $mensaje['error']['descripcion'],
-                ],
-            ];
-            return response()->json($respuesta, 400);
+
+            $mensajeError   = new MensajeError();
+            $mensajeError->guardar($this->modeloSingular);
+
+            return Respuesta::error($mensajeError, 500);
         }
     }
 
@@ -96,7 +77,7 @@ class ClienteMailController extends Controller
      */
     public function show(ClienteMail $mail)
     {
-        return $mail;
+        return $this->BaseController->show($mail);
     }
 
     /**
@@ -108,45 +89,12 @@ class ClienteMailController extends Controller
      */
     public function update(ClienteMailRequest $request, ClienteMail $mail)
     {
-        //mensajes
-        $emailNew  = $request->input('mail');
-        $emailOLD  = $mail->mail;
-        $mensaje = [
-            'exito' => [
-                'codigo'        => 'MAIL_STORE_CONTROLLER',
-                'descripcion'   => "{$emailNew} se ha modificado",
-            ],
-            'error' => [
-                'descripcion'   => "Hubo un error al intentar modificar el Mail {$emailOLD}",
-                'codigo'        => 'CATCH_MAIL_UPDATE'
-            ],
+        $email      = $request->input('mail');
+        $parametros = [
+            'inputs' => $email,
+            'modelo' => $mail,
         ];
-
-        try {
-            $inputs = ['mail' => $email,];
-            $mail->fill($inputs);
-            $mail->save();
-            $respuesta = [
-                'datos'     => $mail,
-                'mensajes'  => [
-                    'tipo'      => 'exito',
-                    'codigo'    => $mensaje['exito']['codigo'],
-                    'mensaje'   => $mensaje['exito']['descripcion'],
-                ],
-            ];
-
-            return response()->json($respuesta, 200);
-        } catch (\Throwable $th) {
-            $respuesta = [
-                'datos'     => null,
-                'mensajes'  => [
-                    'tipo'      => 'error',
-                    'codigo'    => $mensaje['error']['codigo'],
-                    'mensaje'   => $mensaje['error']['descripcion'],
-                ],
-            ];
-            return response()->json($respuesta, 400);
-        }
+        return $this->BaseController->update($parametros, $email);
     }
 
     /**
@@ -157,21 +105,8 @@ class ClienteMailController extends Controller
      */
     public function destroy(ClienteMail $mail)
     {
-        //mensajes
-        $email  = $mail->mail;
-        $mensaje = [
-            'exito' => [
-                'codigo'        => 'MAIL_DESTROY_CONTROLLER',
-                'descripcion'   => "{$email} ha sido eliminado",
-            ],
-            'error' => [
-                'descripcion'   => "Hubo un error al intentar eliminar a {$email}",
-                'codigo'        => 'CATCH_MAIL_DESTROY'
-            ],
-        ];
-
-        $BaseController  = new BaseController();
-        return $BaseController->destroy($mail, $mensaje);
+        $email = $mail->mail;
+        return $this->BaseController->destroy($mail, $email);
     }
 
     /**
@@ -182,20 +117,7 @@ class ClienteMailController extends Controller
      */
     public function restore(ClienteMail $mail)
     {
-        //mensajes
         $email  = $mail->mail;
-        $mensaje = [
-            'exito' => [
-                'codigo'        => 'MAIL_RESTORE_CONTROLLER',
-                'descripcion'   => "{$email} ha sido dado de alta",
-            ],
-            'error' => [
-                'descripcion'   => "Hubo un error al intentar dar de alta {$email}",
-                'codigo'        => 'MAIL_RESTORE_CONTROLLER'
-            ],
-        ];
-
-        $BaseController  = new BaseController();
-        return $BaseController->restore($mail, $mensaje);
+        return $this->BaseController->restore($mail, $email);
     }
 }
