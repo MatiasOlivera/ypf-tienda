@@ -2,7 +2,6 @@
 
 namespace App\Auxiliares;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 
 class Consulta
@@ -138,16 +137,6 @@ class Consulta
         }
     }
 
-    private function getFechaComoCadena($date)
-    {
-        $date = Carbon::parse($date);
-        $fecha = $date->isoFormat('YYYY-MM-DD');
-        if ($fecha) {
-            return  $date;
-        }
-        return false;
-    }
-
     /**
      * @param bool $soloEliminados
      */
@@ -170,23 +159,7 @@ class Consulta
         $this->buscar = $valorBuscado;
     }
 
-    /**
-     * @param array $dateArray [desde, hasta]
-     */
-    private function setPeriodoBusqueda($dateArray)
-    {
-        if (!is_null($dateArray) && is_Array($dateArray)) {
-            $inicio = $this->getFechaComoCadena($dateArray['desde']);
-            $fin    = $this->getFechaComoCadena($dateArray['hasta']);
-            if ($inicio && $fin) {
-                $this->periodoDeBusqueda = [$inicio, $fin];
-            } else {
-                return false;
-            }
-        } else {
-            $this->periodoDeBusqueda = null;
-        }
-    }
+
 
     /**
      * @param array $relaciones
