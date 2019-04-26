@@ -73,20 +73,28 @@ class BaseControllerTest extends TestCase
 
         $claves = [
             'total',
-            'per_page',
-            'current_page',
-            'last_page',
-            'first_page_url',
-            'last_page_url',
-            'next_page_url',
-            'prev_page_url',
-            'path',
-            'from',
-            'to'
+            'porPagina',
+            'paginaActual',
+            'ultimaPagina',
+            'rutas',
+            'desde',
+            'hasta'
         ];
 
         foreach ($claves as $clave) {
             $this->assertArrayHasKey($clave, $datos['paginacion']);
+        }
+
+        $clavesRutas = [
+            'primeraPagina',
+            'ultimaPagina',
+            'siguientePagina',
+            'paginaAnterior',
+            'base'
+        ];
+
+        foreach ($clavesRutas as $clave) {
+            $this->assertArrayHasKey($clave, $datos['paginacion']['rutas']);
         }
     }
 
