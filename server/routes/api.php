@@ -123,4 +123,26 @@ Route::middleware('jwt.auth')->group(function () {
             Route::post('/{razonSocial}/restaurar/', 'ClienteRazonSocialController@restore')->name('ClienteRazones.restore');
         });
     });
+
+     /**
+     * provincia
+     */
+    Route::apiResource('/provincias', 'ProvinciaController')->parameters(['provincias' => 'provincia']);
+
+    /**
+     * localidad
+     */
+    Route::group(['prefix' => '/provincias',], function () {
+        Route::get('/{provincia}/localidades', 'LocalidadController@index')->name('Localidad.index');
+
+        Route::post('/{provincia}/localidades', 'LocalidadController@store')->name('Localidad.store');
+
+        Route::get('/localidades/{localidad}', 'LocalidadController@show')->name('Localidad.show');
+
+        Route::put('/localidades/{localidad}', 'LocalidadController@update')->name('Localidad.update');
+
+        Route::delete('/localidades/{localidad}', 'LocalidadController@destroy')->name('Localidad.destroy');
+
+        Route::post('/localidades/{localidad}/restaurar/', 'LocalidadController@restore')->name('Localidad.restore');
+    });
 });
