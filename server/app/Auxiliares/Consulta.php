@@ -217,13 +217,9 @@ class Consulta
     /**
      * @param string $string
      */
-    private function setOrdenarPor($string)
+    private function setOrdenarPor(string $string): void
     {
-        if (!is_null($string) && is_string($string)) {
-            $this->ordenarPor = $string;
-        } else {
-            $this->ordenarPor = 'id';
-        }
+        $this->ordenarPor = $string;
     }
 
     /**
