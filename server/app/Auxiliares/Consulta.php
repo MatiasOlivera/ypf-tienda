@@ -198,12 +198,12 @@ class Consulta
     }
 
     /**
-     * @param array $array
+     * @param array $campos
      */
-    private function setCampos(array $array): void
+    private function setCampos(array $campos): void
     {
-        $this->validarArrayDeStrings($array);
-        $this->campos = $array;
+        $this->validarArrayDeStrings($campos);
+        $this->campos = $campos;
     }
 
     /**
