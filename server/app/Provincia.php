@@ -4,8 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Sofa\Eloquence\Eloquence;
-use Sofa\Eloquence\Mappable;
+use Sofa\Eloquence\{ Eloquence ,Mappable };
 
 class Provincia extends Model
 {
@@ -37,7 +36,7 @@ class Provincia extends Model
      *
      * @var array
      */
-    protected $fillable = ['id', 'nombre',];
+    protected $fillable = ['nombre',];
 
     public function localidades()
     {

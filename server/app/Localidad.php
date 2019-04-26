@@ -4,8 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Sofa\Eloquence\Eloquence;
-use Sofa\Eloquence\Mappable;
+use Sofa\Eloquence\{ Eloquence, Mappable };
 
 class Localidad extends Model
 {
@@ -25,12 +24,14 @@ class Localidad extends Model
     protected $visibble = ['id', 'nombre', 'provincia_id',];
 
     protected $hidden   = ['id_localidad', 'nom_localidad', 'id_provincia',];
+
     /**
      * The attributes that should be mutated to dates.
      *
      * @var array
      */
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
+
     /**
      * The attributes that are mass assignable.
      *
