@@ -40,66 +40,87 @@ Route::middleware('jwt.auth')->group(function () {
 
     Route::post('/usuarios/{user}/restaurar/', 'UsersController@restore')->name('usuarios.restore');
 
-    /*
-    *  clientes Group
-    */
-
-    Route::post('/clientes/{cliente}/restaurar/', 'ClientesController@restore')->name('clientes.restore');
-
-    Route::apiResource('/clientes', 'ClientesController');
-
     Route::group(['prefix' => 'clientes',], function () {
+
+        /*
+        *  clientes Group
+        */
+        Route::get('/', 'ClientesController@index')->name('clientes.index');
+
+        Route::post('/', 'ClientesController@store')->name('clientes.store');
+
+        Route::get('/{cliente}', 'ClientesController@show')->name('clientes.show');
+
+        Route::put('/{cliente}', 'ClientesController@update')->name('clientes.update');
+
+        Route::delete('/{cliente}', 'ClientesController@destroy')->name('clientes.destroy');
+
+        Route::post('/{cliente}/restaurar/', 'ClientesController@restore')->name('clientes.restore');
+
         /*
          *  cliente Domicilio
          */
-        Route::get('/{cliente}/domicilios', 'ClienteDomicilioController@index')->name('DomiciliosCliente');
+        Route::get('/{cliente}/domicilios', 'ClienteDomicilioController@index')->name('ClienteDomicilio.index');
 
-        Route::post('/{cliente}/domicilios', 'ClienteDomicilioController@store')->name('CrearDomiciliosCliente');
+        Route::post('/{cliente}/domicilios', 'ClienteDomicilioController@store')->name('ClienteDomicilio.store');
 
-        Route::apiResource('/domicilios', 'ClienteDomicilioController')->parameters(['domicilios' => 'domicilio']);
+        Route::get('/domicilios/{domicilio}', 'ClienteDomicilioController@show')->name('ClienteDomicilio.show');
+
+        Route::put('/domicilios/{domicilio}', 'ClienteDomicilioController@update')->name('ClienteDomicilio.update');
+
+        Route::delete('/domicilios/{domicilio}', 'ClienteDomicilioController@destroy')->name('ClienteDomicilio.destroy');
 
         Route::post('/domicilios/{domicilio}/restaurar/', 'ClienteDomicilioController@restore')->name('ClienteDomicilio.restore');
 
         /*
          *  cliente Telefono
          */
-        Route::get('/{cliente}/telefonos', 'ClienteTelefonoController@index')->name('TelefonosCliente');
+        Route::get('/{cliente}/telefonos', 'ClienteTelefonoController@index')->name('ClienteTelefono.index');
 
-        Route::post('/{cliente}/telefono', 'ClienteTelefonoController@store')->name('CrearTelefonosCliente');
+        Route::post('/{cliente}/telefonos', 'ClienteTelefonoController@store')->name('ClienteTelefono.store');
 
-        Route::apiResource('/telefonos', 'ClienteTelefonoController')->parameters(['telefonos' => 'telefono']);
+        Route::get('/telefonos/{telefono}', 'ClienteTelefonoController@show')->name('ClienteTelefono.show');
+
+        Route::put('/telefonos/{telefono}', 'ClienteTelefonoController@update')->name('ClienteTelefono.update');
+
+        Route::delete('/telefonos/{telefono}', 'ClienteTelefonoController@destroy')->name('ClienteTelefono.destroy');
 
         Route::post('/telefonos/{telefono}/restaurar/', 'ClienteTelefonoController@restore')->name('ClienteTelefonos.restore');
 
         /*
          *  cliente Mails
          */
-        Route::get('/{cliente}/emails', 'ClienteMailController@index')->name('MailsCliente');
+        Route::get('/{cliente}/emails', 'ClienteMailController@index')->name('ClienteMails.index');
 
-        Route::post('/{cliente}/emails', 'ClienteMailController@store')->name('CrearMailsCliente');
+        Route::post('/{cliente}/emails', 'ClienteMailController@store')->name('ClienteMails.store');
 
-        Route::apiResource('/mails', 'ClienteMailController')->parameters(['mails' => 'mail']);
+        Route::get('/emails/{mail}', 'ClienteMailController@show')->name('ClienteMails.show');
 
-        Route::post('/mails/{mail}/restaurar/', 'ClienteMailController@restore')->name('ClienteMails.restore');
+        Route::put('/emails/{mail}', 'ClienteMailController@update')->name('ClienteMails.update');
+
+        Route::delete('/emails/{mail}', 'ClienteMailController@destroy')->name('ClienteMails.destroy');
+
+        Route::post('/emails/{mail}/restaurar/', 'ClienteMailController@restore')->name('ClienteMails.restore');
 
         /*
          *  cliente Razon
          */
         Route::get('/{cliente}/razones', 'ClienteRazonSocialController@index')->name('RazonesCliente');
 
-        Route::post('/{cliente}/razon', 'ClienteRazonSocialController@store')->name('CrearRazonCliente');
+        Route::post('/{cliente}/razones', 'ClienteRazonSocialController@store')->name('CrearRazonCliente');
 
-        Route::post('/{cliente}/razon/{razonSocial}', 'ClienteRazonSocialController@asociar')->name('AsociarRazonesCliente');
+        Route::post('/{cliente}/razones/{razonSocial}', 'ClienteRazonSocialController@asociar')->name('AsociarRazonesCliente');
 
-        Route::delete('/{cliente}/razon/{razonSocial}', 'ClienteRazonSocialController@desasociar')->name('DesasociarRazonesCliente');
+        Route::delete('/{cliente}/razones/{razonSocial}', 'ClienteRazonSocialController@desasociar')->name('DesasociarRazonesCliente');
+
+        Route::group(['prefix' => '/razones',], function () {
+            Route::get('/{razonSocial}', 'ClienteRazonSocialController@show')->name('ClienteRazones.show');
+
+            Route::put('/{razonSocial}', 'ClienteRazonSocialController@update')->name('ClienteRazones.update');
+
+            Route::delete('/{razonSocial}', 'ClienteRazonSocialController@destroy')->name('ClienteRazones.destroy');
+
+            Route::post('/{razonSocial}/restaurar/', 'ClienteRazonSocialController@restore')->name('ClienteRazones.restore');
+        });
     });
-
-    /**
-     * Razones Group
-     */
-    // Route::group(['prefix' => 'razones',], function () {
-    // Route::apiResource('/razones', 'ClienteRazonSocialController')->parameters(['razones' => 'razonSocial']);
-
-    // Route::post('/razones/{razonSocial}/restaurar/', 'ClienteRazonSocialController@restore')->name('ClienteRazones.restore');
-    // });
 });
