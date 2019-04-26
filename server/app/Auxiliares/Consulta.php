@@ -163,11 +163,11 @@ class Consulta
     }
 
     /**
-     * @param string $string
+     * @param string $valorBuscado
      */
-    private function setBuscar(string $string): void
+    private function setBuscar(string $valorBuscado): void
     {
-        $this->buscar = $string;
+        $this->buscar = $valorBuscado;
     }
 
     /**
