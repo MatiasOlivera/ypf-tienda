@@ -191,12 +191,10 @@ class Consulta
     /**
      * @param array $array
      */
-    private function setModelosRelacionados($array)
+    private function setModelosRelacionados(array $array): void
     {
-        if (!is_null($array)) {
-            $this->validarArrayDeStrings($array);
-            $this->relaciones = $array;
-        }
+        $this->validarArrayDeStrings($array);
+        $this->relaciones = $array;
     }
 
     /**
