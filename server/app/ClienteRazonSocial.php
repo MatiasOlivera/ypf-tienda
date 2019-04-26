@@ -34,6 +34,7 @@ class ClienteRazonSocial extends Model
     protected $visibble = ['id', 'denominacion', 'cuit', 'localidad_id', 'calle', 'numero', 'area', 'telefono', 'mail',];
 
     protected $hidden   = ['id_razon', 'nombre', 'id_loc', 'altura', 'area_tel', 'tel', 'fecha_carga', 'estado',];
+
     /**
      * The attributes that should be mutated to dates.
      *
