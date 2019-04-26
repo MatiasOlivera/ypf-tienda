@@ -4,10 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Provincia;
 use Illuminate\Http\Request;
-use App\controller\BaseController;
+use App\Http\controllers\BaseController;
 
 class ProvinciaController extends Controller
 {
+    protected $BaseController;
+    protected $modeloSingular;
+    protected $modeloPlural;
+
+    public function __Construct()
+    {
+        $this->modeloPlural     = 'provincias';
+        $this->modeloSingular   = 'provincia';
+        $this->BaseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
+    }
+
     /**
      * Display a listing of the resource.
      * @param  \Illuminate\Http\Request  $request
@@ -15,26 +26,19 @@ class ProvinciaController extends Controller
      */
     public function index(Request $request)
     {
-        $mensaje = [
-            'error' => [
-                'descripcion'   => 'Hemos tenido un error durante la consulta de datos, intente nuevamente',
-                'codigo'        => 'CATCH_PROVINCIA_INDEX',
-            ],
+        $parametros = [
+            'modelo'            => 'Provincia',
+            'campos'            => ['id', 'nombre', 'created_at', 'updated_at', 'deleted_at',],
+            'relaciones'        => null,
+            'buscar'            => $request->input("buscar", null),
+            'eliminados'        => $request->input("eliminados", false),
+            'paginado'  => [
+                'porPagina'     => $request->input("porPagina", 10),
+                'ordenadoPor'   => $request->input("ordenadoPor", 'cliente'),
+                'orden'         => $request->input("orden", true),
+            ]
         ];
-        try {
-            $provincias = Provincias::all();
-            return response()->json(['datos' => $provincias,], 200);
-        } catch (\Throwable $th) {
-            $respuesta = [
-                'datos'     => null,
-                'mensajes'  => [
-                    'tipo'      => 'error',
-                    'codigo'    => $mensaje['error']['codigo'],
-                    'mensaje'   => $mensaje['error']['descripcion'],
-                ],
-            ];
-            return response()->json($respuesta, 400);
-        }
+        return $this->BaseController->index();
     }
 
     /**
@@ -45,30 +49,13 @@ class ProvinciaController extends Controller
      */
     public function store(Request $request)
     {
-        //mensajes
-        $provincia   = $request->input('provincia');
-        $mensaje = [
-            'exito' => [
-                'codigo' => 'PROVINCIA_STORE_CONTROLLER',
-                'descripcion' => "{$provincia} se ha creado con exito",
-            ],
-            'error' => [
-                'descripcion' => "Hubo un error al intentar guardar {$provincia}",
-                'codigo' => 'PROVINCIA_CATCH_STORE_CONTROLLER'
-            ],
-        ];
-
-        $inputs   = [
-            'nom_provincia' => $provincia,
-        ];
-
+        $inputs   = $request->input('nombre');
+        $mensaje = "la provincia {$inputs['nombre']}";
         $parametros = [
             'inputs' => $inputs,
             'modelo' => 'Provincia',
         ];
-
-        $BaseController   = new BaseController();
-        return $BaseController->store($parametros, $mensaje);
+        return $this->BaseController->store($parametros, $mensaje);
     }
 
     /**
@@ -79,7 +66,7 @@ class ProvinciaController extends Controller
      */
     public function show(Provincia $provincia)
     {
-        return $provincia;
+        return $this->BaseController->show($provincia);
     }
 
     /**
@@ -91,31 +78,13 @@ class ProvinciaController extends Controller
      */
     public function update(Request $request, Provincia $provincia)
     {
-        $nombreProvincia   = $request->input('provincia');
-        $inputs   = [
-            'nom_provincia' => $nombreProvincia,
-        ];
-
-        //parametros
+        $inputs['nombre'] = $request->input('provincia');
+        $mensaje = "la provincia {$inputs['nombre']}";
         $parametros = [
             'inputs' => $inputs,
             'modelo' => $provincia,
         ];
-
-        //mensajes
-        $mensaje = [
-            'exito' => [
-                'codigo' => 'PROVINCIA_UPDATE_CONTROLLER',
-                'descripcion' => "{$nombreProvincia} se ha modificado",
-            ],
-            'error' => [
-                'descripcion' => "Hubo un error al intentar modificar el cliente {$nombreProvincia}",
-                'codigo' => 'CATCH_PROVINCIA_UPDATE_CONTROLLER'
-            ],
-        ];
-
-        $metodo  = new BaseController();
-        return $metodo->update($parametros, $mensaje);
+        return $this->BaseController->update($parametros, lcfirst($mensaje));
     }
 
     /**
@@ -127,20 +96,8 @@ class ProvinciaController extends Controller
     public function destroy(Provincia $provincia)
     {
         //mensajes
-        $nombreProvincia  = $provincia->nom_provincia;
-        $mensaje = [
-            'exito' => [
-                'codigo' => 'CLIENTE_DESTROY_CONTROLLER',
-                'descripcion' => "{$nombreProvincia} ha sido eliminado",
-            ],
-            'error' => [
-                'descripcion' => "Hubo un error al intentar eliminar a {$nombreProvincia}",
-                'codigo' => 'CLIENTE_DESTROY_CONTROLLER'
-            ],
-        ];
-
-        $BaseController  = new BaseController();
-        return $BaseController->destroy($provincia, $mensaje);
+        $mensaje = "la provincia {$provincia->nombre}";
+        return $this->BaseController->destroy($provincia, lcfirst($mensaje));
     }
 
     /**
@@ -151,20 +108,7 @@ class ProvinciaController extends Controller
      */
     public function restore(Provincia $provincia)
     {
-        //mensajes
-        $nombreProvincia  = $provincia->nom_provincia;
-        $mensaje = [
-            'exito' => [
-                'codigo' => 'PROVINCIA_RESTORE_CONTROLLER',
-                'descripcion' => "{$nombreProvincia} ha sido dado de alta",
-            ],
-            'error' => [
-                'descripcion' => "Hubo un error al intentar dar de alta a {$nombreProvincia}",
-                'codigo' => 'CATCH_PROVINCIA_RESTORE'
-            ],
-        ];
-
-        $BaseController  = new BaseController();
-        return $BaseController->restore($provincia, $mensaje);
+        $mensaje = "la provincia {$provincia->nombre}";
+        return $this->BaseController->restore($provincia, lcfirst($mensaje));
     }
 }
