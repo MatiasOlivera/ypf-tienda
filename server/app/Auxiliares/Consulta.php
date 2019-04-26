@@ -200,12 +200,10 @@ class Consulta
     /**
      * @param array $array
      */
-    private function setCampos($array)
+    private function setCampos(array $array): void
     {
-        if (!is_null($array)) {
-            $this->validarArrayDeStrings($array);
-            $this->campos = $array;
-        }
+        $this->validarArrayDeStrings($array);
+        $this->campos = $array;
     }
 
     /**
