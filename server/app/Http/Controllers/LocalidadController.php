@@ -2,95 +2,72 @@
 
 namespace App\Http\Controllers;
 
-use App\Localidad;
-use App\Provincia;
+use App\{Localidad, Provincia};
 use Illuminate\Http\Request;
 use App\Http\Requests\LocalidadRequest;
 use App\Http\controllers\BaseController;
+use App\Auxiliares\{Respuesta, MensajeExito, MensajeError};
 
 
 class LocalidadController extends Controller
 {
+    protected $BaseController;
+    protected $modeloSingular;
+    protected $modeloPlural;
+
+    public function __Construct()
+    {
+        $this->modeloPlural     = 'localidades';
+        $this->modeloSingular   = 'localidad';
+        $this->BaseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
+    }
+
+    protected function setTextoMensaje(string $nombreLocalidad, string $nombreProvincia): string
+    {
+        return "La localidad {$nombreLocalidad} - { $nombreProvincia}";
+    }
+
     /**
      * Display a listing of the resource.
-     *
+     * @param  App\Provincia $provincia
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request, Provincia $provincia)
     {
-        //mensajes
-        $mensaje = [
-            'error' => [
-                'descripcion' => 'Hemos tenido un error durante la consulta de datos, intente nuevamente',
-                'codigo'      => 'LOCALIDAD_INDEX_CONTROLLER',
-            ],
-            'exito' => [
-                'descripcion' => 'operacion exitosa',
-                'codigo'      => 'LOCALIDAD_CATCH_INDEX_CONTROLLER',
-            ]
-        ];
         try {
-            $localidades = $provincia->localidades;
-            return response()->json(['datos' => $localidades,], 200);
+            $porPagina      = ($request->only('porPagina') > 0) ? $request->only('porPagina') : 5;
+            $mails          = $provincia->localidades()->paginate($porPagina);
+            $respuesta      = [$this->modeloPlural => $mails];
+            return Respuesta::exito($respuesta, null, 200);
         } catch (\Throwable $th) {
-            $respuesta = [
-                'datos'     => null,
-                'mensajes'  => [
-                    'tipo'      => 'error',
-                    'codigo'    => $mensaje['error']['codigo'],
-                    'mensaje'   => $mensaje['error']['descripcion'],
-                ],
-            ];
-            return response()->json($respuesta, 400);
+            $mensajeError   = new MensajeError();
+            $mensajeError->obtenerTodos($this->modeloPlural);
+            return Respuesta::error($mensajeError, 500);
         }
     }
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Provincia $provincia
+     * @param  App\Http\Requests\LocalidadRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(LocalidadRequest $request, Provincia $provincia)
     {
-        $localidad = $request->input('localidad');
-        //mensajes
-        $mensaje = [
-            'exito' => [
-                'codigo' => 'LOCALIDAD_STORE_CONTROLLER',
-                'descripcion' => "La localidad {$localidad} se ha creado con exito",
-            ],
-            'error' => [
-                'descripcion' => "Hubo un error al intentar guardar la localidad {$localidad}",
-                'codigo' => 'CATCH_LOCALIDAD_STORE'
-            ],
-        ];
-        $inputs = [
-            'nom_localidad' => $localidad,
-        ];
-
+        $inputs['nombre'] = $request->input('localidad');
+        $Mensaje = $this->setTextoMensaje($inputs['nombre'], $provincia->nombre);
         try {
-            $localidad = new Localidad($inputs);
+            $localidad      = new Localidad($inputs);
             $provincia->localidades()->save($localidad);
-            $respuesta = [
-                'datos'     => $localidad,
-                'mensajes'  => [
-                    'tipo'      => 'exito',
-                    'codigo'    => $mensaje['exito']['codigo'],
-                    'mensaje'   => $mensaje['exito']['descripcion'],
-                ],
-            ];
+            $respuesta      = [$this->modeloSingular  => $localidad,];
 
-            return response()->json($respuesta, 200);
+            $mensajeExito   = new MensajeExito();
+            $mensajeExito->guardar($Mensaje);
+
+            return Respuesta::exito($respuesta, $mensajeExito, 200);
         } catch (\Throwable $th) {
-            $respuesta = [
-                'datos'     => null,
-                'mensajes'  => [
-                    'tipo'      => 'error',
-                    'codigo'    => $mensaje['error']['codigo'],
-                    'mensaje'   => $mensaje['error']['descripcion'],
-                ],
-            ];
-            return response()->json($respuesta, 400);
+            $mensajeError   = new MensajeError();
+            $mensajeError->guardar(lcfirst($Mensaje));
+            return Respuesta::error($mensajeError, 500);
         }
     }
 
@@ -102,41 +79,27 @@ class LocalidadController extends Controller
      */
     public function show(Localidad $localidad)
     {
-        return $localidad;
+        $localidad->provincia;
+        return $this->BaseController->show($localidad);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\LocalidadRequest  $request
      * @param  \App\Localidad  $localidad
      * @return \Illuminate\Http\Response
      */
     public function update(LocalidadRequest $request, Localidad $localidad)
     {
-        $nombre  = $request->input('localidad');
+        $provincia = $localidad->provincia;
+        $inputs['nombre'] = $request->input('localidad');
+        $Mensaje = $this->setTextoMensaje($localidad->nombre, $provincia->nombre);
         $parametros = [
-            'inputs' => [
-                'nom_localidad' => $request->input('localidad'),
-                'id_provincia'  => $request->input('provincia_id'),
-            ],
+            'inputs' => $inputs,
             'modelo' => $localidad,
         ];
-
-        //mensajes
-        $mensaje = [
-            'exito' => [
-                'codigo' => 'LOCALIDAD_STORE_CONTROLLER',
-                'descripcion' => "{$nombre} se ha modificado",
-            ],
-            'error' => [
-                'descripcion' => "Hubo un error al intentar modificar {$nombre}",
-                'codigo' => 'CATCH_LOCALIDAD_UPDATE'
-            ],
-        ];
-
-        $BaseController  = new BaseController();
-        return $BaseController->update($parametros, $mensaje);
+        return $this->BaseController->update($parametros, lcfirst($Mensaje));
     }
 
     /**
@@ -147,22 +110,9 @@ class LocalidadController extends Controller
      */
     public function destroy(Localidad $localidad)
     {
-        $nombre  = $localidad->nom_localidad;
-        $BaseController  = new BaseController();
-
-        //mensajes
-        $mensaje = [
-            'exito' => [
-                'codigo' => 'LOCALIDAD_DESTROY_CONTROLLER',
-                'descripcion' => "{$nombre} ha sido eliminada",
-            ],
-            'error' => [
-                'descripcion' => "Hubo un error al intentar eliminar {$nombre}",
-                'codigo' => 'CATCH_LOCALIDAD_DESTROY'
-            ],
-        ];
-
-        return $BaseController->destroy($localidad, $mensaje);
+        $provincia = $localidad->provincia;
+        $Mensaje = $this->setTextoMensaje($localidad->nombre, $provincia->nombre);
+        return $this->BaseController->destroy($localidad, lcfirst($Mensaje));
     }
 
     /**
@@ -173,20 +123,8 @@ class LocalidadController extends Controller
      */
     public function restore(Localidad $localidad)
     {
-        //mensajes
-        $nombre  = $localidad->nom_localidad;
-        $mensaje = [
-            'exito' => [
-                'codigo' => 'LOCALIDAD_RESTORE_CONTROLLER',
-                'descripcion' => "{$nombre} ha sido dada de alta",
-            ],
-            'error' => [
-                'descripcion' => "Hubo un error al intentar dar de alta {$nombre}",
-                'codigo' => 'CATCH_LOCALIDAD_RESTORE'
-            ],
-        ];
-
-        $BaseController  = new BaseController();
-        return $BaseController->restore($localidad, $mensaje);
+        $provincia = $localidad->provincia;
+        $Mensaje = $this->setTextoMensaje($localidad->nombre, $provincia->nombre);
+        return $this->BaseController->restore($localidad, lcfirst($Mensaje));
     }
 }
