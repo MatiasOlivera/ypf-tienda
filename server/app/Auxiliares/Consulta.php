@@ -209,18 +209,9 @@ class Consulta
     /**
      * @param integer $int
      */
-    private function setRegistrosPorPagina($int)
+    private function setRegistrosPorPagina(int $int): void
     {
-        if (is_numeric($int)) {
-            $numero = $int + 0;
-            if (is_int($numero)) {
-                $this->paginado = $int;
-            } else {
-                $this->paginado = 10;
-            }
-        } else {
-            $this->paginado = 10;
-        }
+        $this->paginado = $int;
     }
 
     /**
