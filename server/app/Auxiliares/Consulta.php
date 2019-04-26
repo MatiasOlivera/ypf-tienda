@@ -215,11 +215,11 @@ class Consulta
     }
 
     /**
-     * @param string $string
+     * @param string $campo
      */
-    private function setOrdenarPor(string $string): void
+    private function setOrdenarPor(string $campo): void
     {
-        $this->ordenarPor = $string;
+        $this->ordenarPor = $campo;
     }
 
     /**
