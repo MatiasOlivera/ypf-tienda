@@ -10,7 +10,7 @@ use App\Auxiliares\{ Respuesta, MensajeExito, MensajeError };
 
 class ClienteMailController extends Controller
 {
-    protected $BaseController;
+    protected $baseController;
     protected $modeloSingular;
     protected $modeloPlural;
 
@@ -18,7 +18,7 @@ class ClienteMailController extends Controller
     {
         $this->modeloPlural     = 'emails';
         $this->modeloSingular   = 'email';
-        $this->BaseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
+        $this->baseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
     }
 
     /**
@@ -77,7 +77,7 @@ class ClienteMailController extends Controller
      */
     public function show(ClienteMail $mail)
     {
-        return $this->BaseController->show($mail);
+        return $this->baseController->show($mail);
     }
 
     /**
@@ -94,7 +94,7 @@ class ClienteMailController extends Controller
             'inputs' => $email,
             'modelo' => $mail,
         ];
-        return $this->BaseController->update($parametros, $email);
+        return $this->baseController->update($parametros, $email);
     }
 
     /**
@@ -106,7 +106,7 @@ class ClienteMailController extends Controller
     public function destroy(ClienteMail $mail)
     {
         $email = $mail->mail;
-        return $this->BaseController->destroy($mail, $email);
+        return $this->baseController->destroy($mail, $email);
     }
 
     /**
@@ -118,6 +118,6 @@ class ClienteMailController extends Controller
     public function restore(ClienteMail $mail)
     {
         $email  = $mail->mail;
-        return $this->BaseController->restore($mail, $email);
+        return $this->baseController->restore($mail, $email);
     }
 }

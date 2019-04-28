@@ -9,7 +9,7 @@ use App\Auxiliares\{Respuesta, MensajeExito, MensajeError};
 
 class ProvinciaController extends Controller
 {
-    protected $BaseController;
+    protected $baseController;
     protected $modeloSingular;
     protected $modeloPlural;
 
@@ -17,7 +17,7 @@ class ProvinciaController extends Controller
     {
         $this->modeloPlural     = 'provincias';
         $this->modeloSingular   = 'provincia';
-        $this->BaseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
+        $this->baseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
     }
 
     /**
@@ -54,7 +54,7 @@ class ProvinciaController extends Controller
             'inputs' => $inputs,
             'modelo' => 'Provincia',
         ];
-        return $this->BaseController->store($parametros, $mensaje);
+        return $this->baseController->store($parametros, $mensaje);
     }
 
     /**
@@ -65,7 +65,7 @@ class ProvinciaController extends Controller
      */
     public function show(Provincia $provincia)
     {
-        return $this->BaseController->show($provincia);
+        return $this->baseController->show($provincia);
     }
 
     /**
@@ -83,7 +83,7 @@ class ProvinciaController extends Controller
             'inputs' => $inputs,
             'modelo' => $provincia,
         ];
-        return $this->BaseController->update($parametros, lcfirst($mensaje));
+        return $this->baseController->update($parametros, lcfirst($mensaje));
     }
 
     /**
@@ -96,7 +96,7 @@ class ProvinciaController extends Controller
     {
         //mensajes
         $mensaje = "la provincia {$provincia->nombre}";
-        return $this->BaseController->destroy($provincia, lcfirst($mensaje));
+        return $this->baseController->destroy($provincia, lcfirst($mensaje));
     }
 
     /**
@@ -108,6 +108,6 @@ class ProvinciaController extends Controller
     public function restore(Provincia $provincia)
     {
         $mensaje = "la provincia {$provincia->nombre}";
-        return $this->BaseController->restore($provincia, lcfirst($mensaje));
+        return $this->baseController->restore($provincia, lcfirst($mensaje));
     }
 }

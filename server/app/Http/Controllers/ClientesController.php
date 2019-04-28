@@ -9,7 +9,7 @@ use App\Http\Requests\Cliente\Cliente\{ ClienteCreateRequest, ClienteUpdateReque
 
 class ClientesController extends Controller
 {
-    protected $BaseController;
+    protected $baseController;
     protected $modeloSingular;
     protected $modeloPlural;
 
@@ -17,7 +17,7 @@ class ClientesController extends Controller
     {
         $this->modeloPlural = 'Clientes';
         $this->modeloSingular = 'Cliente';
-        $this->BaseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
+        $this->baseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
     }
 
     /**
@@ -40,7 +40,7 @@ class ClientesController extends Controller
             ]
         ];
 
-        return $this->BaseController->index($parametros, $this->modeloPlural);
+        return $this->baseController->index($parametros, $this->modeloPlural);
     }
 
     /**
@@ -57,7 +57,7 @@ class ClientesController extends Controller
             'inputs' => $inputs,
             'modelo' =>  $this->modeloSingular,
         ];
-        return $this->BaseController->store($parametros, $nombre);
+        return $this->baseController->store($parametros, $nombre);
     }
 
     /**
@@ -68,7 +68,7 @@ class ClientesController extends Controller
      */
     public function show(Cliente $cliente)
     {
-        return $this->BaseController->show($cliente);
+        return $this->baseController->show($cliente);
     }
 
     /**
@@ -86,7 +86,7 @@ class ClientesController extends Controller
             'inputs' => $inputs,
             'modelo' => $cliente,
         ];
-        return $this->BaseController->update($parametros, $nombre);
+        return $this->baseController->update($parametros, $nombre);
     }
 
     /**
@@ -98,7 +98,7 @@ class ClientesController extends Controller
     public function destroy(Cliente $cliente)
     {
         $nombre  = $cliente->nombre;
-        return $this->BaseController->destroy($cliente, $nombre);
+        return $this->baseController->destroy($cliente, $nombre);
     }
 
     /**
@@ -110,6 +110,6 @@ class ClientesController extends Controller
     public function restore(Cliente $cliente)
     {
         $nombre  = $cliente->nombre;
-        return $this->BaseController->restore($cliente, $nombre);
+        return $this->baseController->restore($cliente, $nombre);
     }
 }

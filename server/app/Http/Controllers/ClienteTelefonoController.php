@@ -10,7 +10,7 @@ use App\Auxiliares\{Respuesta, MensajeExito, MensajeError};
 
 class ClienteTelefonoController extends Controller
 {
-    protected $BaseController;
+    protected $baseController;
     protected $modeloSingular;
     protected $modeloPlural;
 
@@ -18,7 +18,7 @@ class ClienteTelefonoController extends Controller
     {
         $this->modeloPlural     = 'telefonos';
         $this->modeloSingular   = 'telefono';
-        $this->BaseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
+        $this->baseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
     }
 
     protected function setTextoMensaje(int $area, int $telefono, string $nombreContacto = null): string
@@ -86,7 +86,7 @@ class ClienteTelefonoController extends Controller
      */
     public function show(ClienteTelefono $telefono)
     {
-        return $this->BaseController->show($telefono);
+        return $this->baseController->show($telefono);
     }
 
     /**
@@ -104,7 +104,7 @@ class ClienteTelefonoController extends Controller
             'inputs' => $inputs,
             'modelo' => $telefono,
         ];
-        return $this->BaseController->update($parametros, $telefonoMensaje);
+        return $this->baseController->update($parametros, $telefonoMensaje);
     }
 
     /**
@@ -116,7 +116,7 @@ class ClienteTelefonoController extends Controller
     public function destroy(ClienteTelefono $telefono)
     {
         $telefonoMensaje = $this->setTextoMensaje($telefono->area, $telefono->telefono, $telefono->nombreContacto);
-        return $this->BaseController->destroy($telefono, $telefonoMensaje);
+        return $this->baseController->destroy($telefono, $telefonoMensaje);
     }
 
     /**
@@ -128,6 +128,6 @@ class ClienteTelefonoController extends Controller
     public function restore(ClienteTelefono $telefono)
     {
         $telefonoMensaje = $this->setTextoMensaje($telefono->area, $telefono->telefono, $telefono->nombreContacto);
-        return $this->BaseController->restore($telefono, $telefonoMensaje);
+        return $this->baseController->restore($telefono, $telefonoMensaje);
     }
 }

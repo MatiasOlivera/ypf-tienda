@@ -10,7 +10,7 @@ use App\Auxiliares\{ Respuesta, MensajeExito, MensajeError };
 
 class ClienteRazonSocialController extends Controller
 {
-    protected $BaseController;
+    protected $baseController;
     protected $modeloSingular;
     protected $modeloPlural;
 
@@ -18,7 +18,7 @@ class ClienteRazonSocialController extends Controller
     {
         $this->modeloPlural     = 'RazonesSociales';
         $this->modeloSingular   = 'RazonSocial';
-        $this->BaseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
+        $this->baseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
     }
 
     /**
@@ -72,7 +72,7 @@ class ClienteRazonSocialController extends Controller
     public function show(ClienteRazonSocial $razonSocial)
     {
         $razonSocial->localidad;
-        return $this->BaseController->show($razonSocial);
+        return $this->baseController->show($razonSocial);
     }
 
     /**
@@ -90,7 +90,7 @@ class ClienteRazonSocialController extends Controller
             'inputs' => $inputs,
             'modelo' => $razonSocial,
         ];
-        return $this->BaseController->update($parametros, $denominacionNew);
+        return $this->baseController->update($parametros, $denominacionNew);
     }
 
     /**
@@ -102,7 +102,7 @@ class ClienteRazonSocialController extends Controller
     public function destroy(ClienteRazonSocial $razonSocial)
     {
         $nombre  = $razonSocial->denominacion;
-        return $this->BaseController->destroy($razonSocial, $nombre);
+        return $this->baseController->destroy($razonSocial, $nombre);
     }
 
     /**
@@ -114,7 +114,7 @@ class ClienteRazonSocialController extends Controller
     public function restore(ClienteRazonSocial $razonSocial)
     {
         $nombre  = $razonSocial->denominacion;
-        return $this->BaseController->restore($razonSocial, $nombre);
+        return $this->baseController->restore($razonSocial, $nombre);
     }
 
     /**

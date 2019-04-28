@@ -11,7 +11,7 @@ use App\Auxiliares\{Respuesta, MensajeExito, MensajeError};
 
 class LocalidadController extends Controller
 {
-    protected $BaseController;
+    protected $baseController;
     protected $modeloSingular;
     protected $modeloPlural;
 
@@ -19,7 +19,7 @@ class LocalidadController extends Controller
     {
         $this->modeloPlural     = 'localidades';
         $this->modeloSingular   = 'localidad';
-        $this->BaseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
+        $this->baseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
     }
 
     protected function setTextoMensaje(string $nombreLocalidad, string $nombreProvincia): string
@@ -80,7 +80,7 @@ class LocalidadController extends Controller
     public function show(Localidad $localidad)
     {
         $localidad->provincia;
-        return $this->BaseController->show($localidad);
+        return $this->baseController->show($localidad);
     }
 
     /**
@@ -99,7 +99,7 @@ class LocalidadController extends Controller
             'inputs' => $inputs,
             'modelo' => $localidad,
         ];
-        return $this->BaseController->update($parametros, lcfirst($Mensaje));
+        return $this->baseController->update($parametros, lcfirst($Mensaje));
     }
 
     /**
@@ -112,7 +112,7 @@ class LocalidadController extends Controller
     {
         $provincia = $localidad->provincia;
         $Mensaje = $this->setTextoMensaje($localidad->nombre, $provincia->nombre);
-        return $this->BaseController->destroy($localidad, lcfirst($Mensaje));
+        return $this->baseController->destroy($localidad, lcfirst($Mensaje));
     }
 
     /**
@@ -125,6 +125,6 @@ class LocalidadController extends Controller
     {
         $provincia = $localidad->provincia;
         $Mensaje = $this->setTextoMensaje($localidad->nombre, $provincia->nombre);
-        return $this->BaseController->restore($localidad, lcfirst($Mensaje));
+        return $this->baseController->restore($localidad, lcfirst($Mensaje));
     }
 }

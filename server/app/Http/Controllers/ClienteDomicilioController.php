@@ -9,7 +9,7 @@ use App\Auxiliares\{Respuesta, MensajeExito, MensajeError};
 
 class ClienteDomicilioController extends Controller
 {
-    protected $BaseController;
+    protected $baseController;
     protected $modeloSingular;
     protected $modeloPlural;
 
@@ -17,7 +17,7 @@ class ClienteDomicilioController extends Controller
     {
         $this->modeloPlural     = 'Domicilios';
         $this->modeloSingular   = 'Domicilio';
-        $this->BaseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
+        $this->baseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
     }
 
     /**
@@ -74,7 +74,7 @@ class ClienteDomicilioController extends Controller
     public function show(ClienteDomicilio $domicilio)
     {
         $domicilio->localidad;
-        return $this->BaseController->show($domicilio);
+        return $this->baseController->show($domicilio);
     }
 
     /**
@@ -92,7 +92,7 @@ class ClienteDomicilioController extends Controller
             'inputs' => $inputs,
             'modelo' => $domicilio,
         ];
-        return $this->BaseController->update($parametros, $nombre);
+        return $this->baseController->update($parametros, $nombre);
     }
 
     /**
@@ -104,7 +104,7 @@ class ClienteDomicilioController extends Controller
     public function destroy(ClienteDomicilio $domicilio)
     {
         $nombre  = "{$domicilio->calle}-{$domicilio->numero}";
-        return $this->BaseController->destroy($domicilio, $nombre);
+        return $this->baseController->destroy($domicilio, $nombre);
     }
 
     /**
@@ -116,6 +116,6 @@ class ClienteDomicilioController extends Controller
     public function restore(ClienteDomicilio $domicilio)
     {
         $nombre  = "{$domicilio->calle}-{$domicilio->numero}";
-        return $this->BaseController->restore($domicilio, $nombre);
+        return $this->baseController->restore($domicilio, $nombre);
     }
 }
