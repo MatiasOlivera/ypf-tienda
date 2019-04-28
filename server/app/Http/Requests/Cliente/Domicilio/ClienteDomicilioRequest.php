@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class ClienteDomicilioRequest extends FormRequest
 {
     protected $reglas = [
-        'localidad_id'  => ['bail', 'required', 'integer',],
+        'localidad_id'  => ['bail', 'required', 'integer', 'exists:localidades,id_localidad'],
         'calle'         => ['bail', 'required', 'string', 'max:70'],
         'numero'        => ['bail', 'required', 'integer', 'digits_between:1,4',],
         'aclaracion'    => ['bail', 'string', 'min:3', 'max:200',],
