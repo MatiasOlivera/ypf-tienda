@@ -23,13 +23,13 @@ class BaseControllerTest extends TestCase
             ]
         ];
 
-        $mensajes = [
+        $nombres = [
             'exito' => 'John',
             'error' => 'a John'
         ];
 
         $controller = new BaseController('usuario', 'usuarios');
-        return $controller->store($parametros, $mensajes);
+        return $controller->store($parametros, $nombres);
     }
 
     /**
@@ -73,20 +73,28 @@ class BaseControllerTest extends TestCase
 
         $claves = [
             'total',
-            'per_page',
-            'current_page',
-            'last_page',
-            'first_page_url',
-            'last_page_url',
-            'next_page_url',
-            'prev_page_url',
-            'path',
-            'from',
-            'to'
+            'porPagina',
+            'paginaActual',
+            'ultimaPagina',
+            'rutas',
+            'desde',
+            'hasta'
         ];
 
         foreach ($claves as $clave) {
             $this->assertArrayHasKey($clave, $datos['paginacion']);
+        }
+
+        $clavesRutas = [
+            'primeraPagina',
+            'ultimaPagina',
+            'siguientePagina',
+            'paginaAnterior',
+            'base'
+        ];
+
+        foreach ($clavesRutas as $clave) {
+            $this->assertArrayHasKey($clave, $datos['paginacion']['rutas']);
         }
     }
 
@@ -176,8 +184,8 @@ class BaseControllerTest extends TestCase
     {
         $controller = new BaseController('usuario', 'usuarios');
         $parametros = ['modelo' => 'NoExiste'];
-        $mensajes = ['error' => 'al usuario'];
-        $respuesta = $controller->store($parametros, $mensajes);
+        $nombres = ['error' => 'al usuario'];
+        $respuesta = $controller->store($parametros, $nombres);
 
         $status = $respuesta->status();
         $datos = $respuesta->getData(true);
@@ -229,20 +237,20 @@ class BaseControllerTest extends TestCase
         $id = $respuestaCreado->getData(true)['usuario']['id'];
 
         $parametros = [
-            'modelo' => User::find($id),
+            'instancia' => User::find($id),
             'inputs' => [
                 'name' => 'John Doe',
                 'email' => 'JohnDoe@email.com'
             ]
         ];
 
-        $mensajes =  [
+        $nombres =  [
             'exito' => 'John',
             'error' => 'a John'
         ];
 
         $controller = new BaseController('usuario', 'usuarios');
-        $respuestaActualizado = $controller->update($parametros, $mensajes);
+        $respuestaActualizado = $controller->update($parametros, $nombres);
 
         $status = $respuestaActualizado->status();
         $datos = $respuestaActualizado->getData(true);
@@ -270,9 +278,9 @@ class BaseControllerTest extends TestCase
     public function testUpdateDeberiaDevolverMensajeError()
     {
         $controller = new BaseController('usuario', 'usuarios');
-        $parametros = ['modelo' => 'NoExiste'];
-        $mensajes = ['error' => 'al usuario'];
-        $respuesta = $controller->update($parametros, $mensajes);
+        $parametros = ['instancia' => 'NoExiste'];
+        $nombres = ['error' => 'al usuario'];
+        $respuesta = $controller->update($parametros, $nombres);
 
         $status = $respuesta->status();
         $datos = $respuesta->getData(true);
@@ -302,13 +310,13 @@ class BaseControllerTest extends TestCase
 
         $instancia = User::find($id);
 
-        $mensajes = [
+        $nombres = [
             'exito' => 'John',
             'error' => 'a John'
         ];
 
         $controller = new BaseController('usuario', 'usuarios');
-        $respuestaMostrar = $controller->destroy($instancia, $mensajes);
+        $respuestaMostrar = $controller->destroy($instancia, $nombres);
 
         $status = $respuestaMostrar->status();
         $datos = $respuestaMostrar->getData(true);
@@ -336,9 +344,9 @@ class BaseControllerTest extends TestCase
     public function testDestroyDeberiaDevolverMensajeError()
     {
         $controller = new BaseController('usuario', 'usuarios');
-        $parametros = ['modelo' => 'NoExiste'];
-        $mensajes = ['error' => 'al usuario'];
-        $respuesta = $controller->destroy($parametros, $mensajes);
+        $parametros = ['instancia' => 'NoExiste'];
+        $nombres = ['error' => 'al usuario'];
+        $respuesta = $controller->destroy($parametros, $nombres);
 
         $status = $respuesta->status();
         $datos = $respuesta->getData(true);
@@ -368,13 +376,13 @@ class BaseControllerTest extends TestCase
 
         $instancia = User::find($id);
 
-        $mensajes = [
+        $nombres = [
             'exito' => 'John',
             'error' => 'a John'
         ];
 
         $controller = new BaseController('usuario', 'usuarios');
-        $respuestaMostrar = $controller->restore($instancia, $mensajes);
+        $respuestaMostrar = $controller->restore($instancia, $nombres);
 
         $status = $respuestaMostrar->status();
         $datos = $respuestaMostrar->getData(true);
@@ -402,9 +410,9 @@ class BaseControllerTest extends TestCase
     public function testRestoreDeberiaDevolverMensajeError()
     {
         $controller = new BaseController('usuario', 'usuarios');
-        $parametros = ['modelo' => 'NoExiste'];
-        $mensajes = ['error' => 'al usuario'];
-        $respuesta = $controller->restore($parametros, $mensajes);
+        $parametros = ['instancia' => 'NoExiste'];
+        $nombres = ['error' => 'al usuario'];
+        $respuesta = $controller->restore($parametros, $nombres);
 
         $status = $respuesta->status();
         $datos = $respuesta->getData(true);

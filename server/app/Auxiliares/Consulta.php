@@ -2,60 +2,56 @@
 
 namespace App\Auxiliares;
 
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 
 class Consulta
 {
-    protected $eliminados;
-    protected $buscar;
-    protected $relaciones;
-    protected $campos;
-    protected $paginado;
-    protected $orden;
-    protected $ordenarPor;
-    protected $modelo;
-    protected $periodoDeBusqueda;
+    private $eliminados;
+    private $buscar;
+    private $relaciones;
+    private $campos;
+    private $paginado;
+    private $orden;
+    private $ordenarPor;
+    private $modelo;
+    private $periodoDeBusqueda;
 
     public function __construct()
     {
-        //consulta
+        // consulta
         $this->eliminados = false;
         $this->campos = null;
         $this->relaciones = null;
         $this->buscar = null;
         $this->periodoDeBusqueda = null;
-        //paginado
+
+        // paginación
         $this->paginado = 10;
         $this->ordenarPor = 'id';
         $this->orden = 'ASC';
         $this->modelo = null;
     }
 
-    //parametros
-    public function setParametros($array)
+    public function setParametros(array $parametros): void
     {
-        if (!is_array($array)) {
-            return false;
+        if (isset($parametros['modelo'])) {
+            $this->setModelo($parametros['modelo']);
         }
-        if (isset($array['modelo'])) {
-            $this->setModelo($array['modelo']);
+        if (isset($parametros['campos'])) {
+            $this->setCampos($parametros['campos']);
         }
-        if (isset($array['campos'])) {
-            $this->setCampos($array['campos']);
+        if (isset($parametros['relaciones'])) {
+            $this->setModelosRelacionados($parametros['relaciones']);
         }
-        if (isset($array['relaciones'])) {
-            $this->setModelosRelacionados($array['relaciones']);
+        if (isset($parametros['eliminados'])) {
+            $this->setEliminados($parametros['eliminados']);
         }
-        if (isset($array['eliminados'])) {
-            $this->setEliminados($array['eliminados']);
-        }
-        if (isset($array['buscar'])) {
-            $this->setBuscar($array['buscar']);
+        if (isset($parametros['buscar'])) {
+            $this->setBuscar($parametros['buscar']);
         }
 
-        if (isset($array['paginado'])) {
-            $paginado = $array['paginado'];
+        if (isset($parametros['paginado'])) {
+            $paginado = $parametros['paginado'];
 
             if (isset($paginado['porPagina'])) {
                 $this->setRegistrosPorPagina($paginado['porPagina']);
@@ -69,265 +65,142 @@ class Consulta
         }
     }
 
-    public function validarParametros($array)
+    public function ejecutarConsulta(): array
     {
-        $this->setParametros($array);
-        $parametros =  $this->getParametros();
+        $modelo = $this->modelo;
 
-        return $parametros;
-    }
-    public function getParametros()
-    {
-        return $parametros = [
-            'campos'     => $this->campos,
-            'relaciones' => $this->relaciones,
-            'buscar'     => $this->buscar,
-            'eliminados' => $this->eliminados,
-            'paginado'   => [
-                'porPagina'   => $this->paginado,
-                'ordenadoPor' => $this->ordenarPor,
-                'orden'       => $this->orden,
-            ]
-        ];
-    }
+        if ($this->relaciones) {
+            $consulta = $modelo::with($this->relaciones);
+        } else {
+            $consulta = $modelo;
+        }
 
-    public function ejecutarConsulta()
-    {
-        try {
-            $modelo = $this->modelo;
-            if ($modelo == null || $modelo == false) {
-                return false;
-            }
+        if ($this->eliminados) {
+            $consulta = $consulta->onlyTrashed();
+        }
 
-            if (!is_null($this->relaciones)) {
-                $lista = $modelo::with($this->relaciones);
-            } else {
-                $lista = $modelo;
-            }
+        if ($this->campos) {
+            $consulta = $consulta->select($this->campos);
+        }
 
-            if ($this->eliminados) {
-                $lista = $lista->onlyTrashed();
-            }
+        if ($this->campos && $this->buscar) {
+            $consulta = $this->buscar($consulta, $this->campos, $this->buscar);
+        }
 
-            if (!is_null($this->campos)) {
-                $lista = $lista->select($this->campos);
-            }
+        if ($this->ordenarPor) {
+            $consulta = $consulta->orderBy($this->ordenarPor, $this->orden);
+        }
 
-            if (!is_null($this->buscar)) {
-                $lista = $this->buscar($lista, $this->campos, $this->buscar);
-            }
+        $resultado = $consulta->paginate($this->paginado, ['*'], 'pagina');
 
-            if ($this->ordenarPor) {
-                $lista = $lista->orderBy($this->ordenarPor, $this->orden);
-            }
+        if ($resultado) {
+            $datos = $resultado->items();
 
-            $resultado = $lista->paginate($this->paginado);
+            $paginacion = [
+                "total" => $resultado->total(),
+                "porPagina" => $resultado->perPage(),
+                "paginaActual" => $resultado->currentPage(),
+                "ultimaPagina" => $resultado->lastPage(),
+                "desde" => $resultado->firstItem(),
+                "hasta" => $resultado->lastItem(),
+                "rutas" => [
+                    "primeraPagina" => $resultado->toArray()['first_page_url'],
+                    "ultimaPagina" => $resultado->toArray()['last_page_url'],
+                    "siguientePagina" => $resultado->nextPageUrl(),
+                    "paginaAnterior" => $resultado->previousPageUrl(),
+                    "base" => $resultado->resolveCurrentPath(),
+                ]
+            ];
 
-            if ($resultado) {
-                $items = $resultado->items();
-
-                $paginacion = [
-                    "total" => $resultado->total(),
-                    "per_page" => $resultado->perPage(),
-                    "current_page" => $resultado->currentPage(),
-                    "last_page" => $resultado->lastPage(),
-                    "first_page_url" => $resultado->toArray()['first_page_url'],
-                    "last_page_url" => $resultado->toArray()['last_page_url'],
-                    "next_page_url" => $resultado->nextPageUrl(),
-                    "prev_page_url" => $resultado->previousPageUrl(),
-                    "path" => $resultado->resolveCurrentPath(),
-                    "from" => $resultado->firstItem(),
-                    "to" => $resultado->lastItem()
-                ];
-
-                return [
-                    'datos' => $items,
-                    'paginacion' => $paginacion
-                ];
-            }
-        } catch (\Throwable $th) {
-            return false;
+            return [
+                'datos' => $datos,
+                'paginacion' => $paginacion
+            ];
         }
     }
 
-
-    private function buscar($consulta, $campos, $buscar)
+    private function buscar(Builder $consulta, array $campos, string $valorBuscado): Builder
     {
-        return $consulta->where(function ($query) use ($campos, $buscar) {
+        return $consulta->where(function ($query) use ($campos, $valorBuscado) {
             foreach ($campos as $campo) {
-                $query->orWhere($campo, 'like', "%{$buscar}%");
+                $query->orWhere($campo, 'like', "%{$valorBuscado}%");
             }
         });
     }
 
-    private function getBoolean($boolean)
+    private function validarArrayDeStrings(array $arreglo): void
     {
-        if (is_null($boolean)) {
-            return null;
-        }
-
-        if (
-            $boolean === true   ||
-            $boolean === "true" ||
-            $boolean === 1      ||
-            $boolean === '1'
-        ) {
-            return true;
-        } elseif (
-            $boolean === false   ||
-            $boolean === 'false' ||
-            $boolean === 0       ||
-            $boolean === '0'
-        ) {
-            return false;
-        }
-        return null;
-    }
-
-    private function validarStringArray($array)
-    {
-        if (!is_null($array) && is_array($array)) {
-            foreach ($array as $string) {
-                if (!is_string($string)) {
-                    return false;
-                }
-                return true;
-            }
-        } else {
-            return false;
-        }
-    }
-
-    public function getDateOfString($date)
-    {
-        $date = Carbon::parse($date);
-        $fecha = $date->isoFormat('YYYY-MM-DD');
-        if ($fecha) {
-            return  $date;
-        }
-        return false;
-    }
-
-    /**
-     * @param boolean $boolean
-     */
-    public function setEliminados($boolean)
-    {
-        $bool = $this->getBoolean($boolean);
-
-        $this->eliminados = $bool;
-    }
-
-    public function setModelo($string)
-    {
-        if (!is_null($string) && is_string($string)) {
-            $model_name = "\\App\\{$string}";
-            $this->modelo = new $model_name;
-        } else {
-            $this->modelo = null;
-        }
-    }
-
-    /**
-     * @param string $string
-     */
-    public function setBuscar($string)
-    {
-        if (!is_null($string) && is_string($string)) {
-            $this->buscar = $string;
-        } else {
-            $this->buscar = null;
-        }
-    }
-
-    /**
-     * @param array $dateArray [desde, hasta]
-     */
-    public function setPeriodoBusqueda($dateArray)
-    {
-        if (!is_null($dateArray) && is_Array($dateArray)) {
-            $inicio = $this->getDateOfString($dateArray['desde']);
-            $fin    = $this->getDateOfString($dateArray['hasta']);
-            if ($inicio && $fin) {
-                $this->periodoDeBusqueda = [$inicio, $fin];
-            } else {
-                return false;
-            }
-        } else {
-            $this->periodoDeBusqueda = null;
-        }
-    }
-
-    /**
-     * @param array $array
-     */
-    public function setModelosRelacionados($array)
-    {
-        if (!is_null($array)) {
-            $validado = $this->validarStringArray($array);
-            if ($validado) {
-                $this->relaciones = $array;
-            } else {
-                return false;
+        foreach ($arreglo as $elemento) {
+            if (!is_string($elemento)) {
+                throw new Exception("No es un array de strings");
             }
         }
     }
 
     /**
-     * @param array $array
+     * @param bool $soloEliminados
      */
-    public function setCampos($array)
+    private function setEliminados(bool $soloEliminados = false): void
     {
-        if (is_null($array)) {
-            return false;
-        }
-        $validado = $this->validarStringArray($array);
-        if ($validado) {
-            $this->campos = $array;
-        } else {
-            return false;
-        }
+        $this->eliminados = $soloEliminados;
     }
 
-    //ordenamiento
-    /**
-     * @param integer $int
-     */
-    public function setRegistrosPorPagina($int)
+    private function setModelo(string $modelo): void
     {
-        if (is_numeric($int)) {
-            $numero = $int + 0;
-            if (is_int($numero)) {
-                $this->paginado = $int;
-            } else {
-                $this->paginado = 10;
-            }
-        } else {
-            $this->paginado = 10;
-        }
+        $nombreModelo = "\\App\\{$modelo}";
+        $this->modelo = new $nombreModelo;
     }
 
     /**
-     * @param string $string
+     * @param string $valorBuscado
      */
-    public function setOrdenarPor($string)
+    private function setBuscar(string $valorBuscado): void
     {
-        if (!is_null($string) && is_string($string)) {
-            $this->ordenarPor = $string;
-        } else {
-            $this->ordenarPor = 'id';
-        }
+        $this->buscar = $valorBuscado;
+    }
+
+
+
+    /**
+     * @param array $relaciones
+     */
+    private function setModelosRelacionados(array $relaciones): void
+    {
+        $this->validarArrayDeStrings($relaciones);
+        $this->relaciones = $relaciones;
     }
 
     /**
-     * @param boolean $boolean
+     * @param array $campos
+     */
+    private function setCampos(array $campos): void
+    {
+        $this->validarArrayDeStrings($campos);
+        $this->campos = $campos;
+    }
+
+    /**
+     * @param int $limite
+     */
+    private function setRegistrosPorPagina(int $limite): void
+    {
+        $this->paginado = $limite;
+    }
+
+    /**
+     * @param string $campo
+     */
+    private function setOrdenarPor(string $campo): void
+    {
+        $this->ordenarPor = $campo;
+    }
+
+    /**
      * asigna orden ASC o DESC a la consulta
+     * @param bool $orden
      */
-    public function setOrden($boolean)
+    private function setOrden(bool $orden = true): void
     {
-        if (!is_null($boolean)) {
-            $bool = $this->getBoolean($boolean);
-            $this->orden = ($bool) ? 'ASC' : 'DESC';
-        }
+        $this->orden = $orden ? 'ASC' : 'DESC';
     }
 }
