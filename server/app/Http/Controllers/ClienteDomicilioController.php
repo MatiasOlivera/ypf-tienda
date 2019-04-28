@@ -13,7 +13,7 @@ class ClienteDomicilioController extends Controller
     protected $modeloSingular;
     protected $modeloPlural;
 
-    public function __Construct()
+    public function __construct()
     {
         $this->modeloPlural     = 'Domicilios';
         $this->modeloSingular   = 'Domicilio';

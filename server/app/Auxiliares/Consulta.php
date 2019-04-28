@@ -17,7 +17,7 @@ class Consulta
     protected $modelo;
     protected $periodoDeBusqueda;
 
-    public function __Construct()
+    public function __construct()
     {
         //consulta
         $this->eliminados = false;

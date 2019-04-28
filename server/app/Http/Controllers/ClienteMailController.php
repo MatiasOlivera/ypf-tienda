@@ -14,7 +14,7 @@ class ClienteMailController extends Controller
     protected $modeloSingular;
     protected $modeloPlural;
 
-    public function __Construct()
+    public function __construct()
     {
         $this->modeloPlural     = 'emails';
         $this->modeloSingular   = 'email';

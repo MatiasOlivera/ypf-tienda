@@ -14,7 +14,7 @@ class ClienteTelefonoController extends Controller
     protected $modeloSingular;
     protected $modeloPlural;
 
-    public function __Construct()
+    public function __construct()
     {
         $this->modeloPlural     = 'telefonos';
         $this->modeloSingular   = 'telefono';

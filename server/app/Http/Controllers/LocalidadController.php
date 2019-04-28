@@ -15,7 +15,7 @@ class LocalidadController extends Controller
     protected $modeloSingular;
     protected $modeloPlural;
 
-    public function __Construct()
+    public function __construct()
     {
         $this->modeloPlural     = 'localidades';
         $this->modeloSingular   = 'localidad';
