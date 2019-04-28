@@ -51,7 +51,7 @@ class ClientesController extends Controller
      */
     public function store(ClienteCreateRequest $request)
     {
-        $inputs = $request->only('documneto', 'nombre', 'observacion');
+        $inputs = $request->only('documento', 'nombre', 'observacion');
         $nombre   = $request->input('nombre');
         $parametros = [
             'inputs' => $inputs,
@@ -81,7 +81,7 @@ class ClientesController extends Controller
     public function update(ClienteUpdateRequest $request, Cliente $cliente)
     {
         $nombre  = $request->input('nombre');
-        $inputs = $request->only('documneto', 'nombre', 'observacion');
+        $inputs = $request->only('documento', 'nombre', 'observacion');
         $parametros = [
             'inputs' => $inputs,
             'modelo' => $cliente,
