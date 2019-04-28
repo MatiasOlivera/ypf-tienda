@@ -15,8 +15,8 @@ class ClienteRazonSocialRequest extends FormRequest
         'email'         => ['bail', 'email', 'max:150',],
         'area'          => ['bail', 'integer', 'digits_between:2,5'],
         'telefono'      => ['bail', 'integer', 'digits_between:6,10'],
-
     ];
+
     /**
      * Determine if the user is authorized to make this request.
      *

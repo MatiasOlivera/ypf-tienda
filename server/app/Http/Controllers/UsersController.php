@@ -26,7 +26,16 @@ class UsersController extends Controller
     {
         $parametros = [
             'modelo' => 'User',
-            'campos' => ['id', 'name', 'email', 'email_verified_at', 'id_cliente', 'created_at', 'updated_at', 'deleted_at', ],
+            'campos' => [
+                'id',
+                'name',
+                'email',
+                'email_verified_at',
+                'id_cliente',
+                'created_at',
+                'updated_at',
+                'deleted_at',
+            ],
             'relaciones' => null,
             'buscar' => $request->input("buscar", null),
             'eliminados' => $request->input("eliminados", false),

@@ -6,7 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ClienteMailRequest extends FormRequest
 {
-
     protected $reglas = [
         'mail'      => ['bail', 'required', 'email',],
     ];

@@ -73,6 +73,8 @@ class Cliente extends Model
 
     public function razonesSociales()
     {
-        return $this->belongsToMany('App\ClienteRazonSocial', 'cliente_razon', 'id_cliente', 'id_razon')->with(['localidad',])->withTimestamps();
+        return $this->belongsToMany('App\ClienteRazonSocial', 'cliente_razon', 'id_cliente', 'id_razon')
+            ->with(['localidad',])
+            ->withTimestamps();
     }
 }

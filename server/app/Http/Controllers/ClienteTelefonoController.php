@@ -41,7 +41,6 @@ class ClienteTelefonoController extends Controller
 
             return Respuesta::exito($respuesta, null, 200);
         } catch (\Throwable $th) {
-
             $mensajeError   = new MensajeError();
             $mensajeError->obtenerTodos($this->modeloPlural);
 
@@ -70,7 +69,6 @@ class ClienteTelefonoController extends Controller
 
             return Respuesta::exito($respuesta, $mensajeExito, 200);
         } catch (\Throwable $th) {
-
             $mensajeError   = new MensajeError();
             $mensajeError->guardar(lcfirst($telefonoMensaje));
 

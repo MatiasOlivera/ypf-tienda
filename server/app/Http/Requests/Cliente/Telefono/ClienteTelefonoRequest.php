@@ -11,6 +11,7 @@ class ClienteTelefonoRequest extends FormRequest
         'telefono'      => ['bail', 'required', 'integer', 'digits_between:6,10'],
         'nombre_contacto' => ['bail', 'string', 'max:60',],
     ];
+
     /**
      * Determine if the user is authorized to make this request.
      *

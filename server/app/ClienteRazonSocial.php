@@ -27,11 +27,31 @@ class ClienteRazonSocial extends Model
      *
      * @var array
      */
-    protected $fillable = ['id', 'denominacion', 'cuit', 'localidad_id', 'calle', 'numero', 'area', 'telefono', 'mail',];
+    protected $fillable = [
+        'id',
+        'denominacion',
+        'cuit',
+        'localidad_id',
+        'calle',
+        'numero',
+        'area',
+        'telefono',
+        'mail',
+    ];
 
     protected $appends  = ['id', 'denominacion', 'localidad_id', 'numero', 'area', 'telefono',];
 
-    protected $visibble = ['id', 'denominacion', 'cuit', 'localidad_id', 'calle', 'numero', 'area', 'telefono', 'mail',];
+    protected $visibble = [
+        'id',
+        'denominacion',
+        'cuit',
+        'localidad_id',
+        'calle',
+        'numero',
+        'area',
+        'telefono',
+        'mail',
+    ];
 
     protected $hidden   = ['id_razon', 'nombre', 'id_loc', 'altura', 'area_tel', 'tel', 'fecha_carga', 'estado',];
 
@@ -50,6 +70,8 @@ class ClienteRazonSocial extends Model
 
     public function clientes()
     {
-        return $this->belongsToMany('App\Cliente', 'cliente_razon', 'id_razon', 'id_cliente')->with(['localidad',])->withTimestamps();
+        return $this->belongsToMany('App\Cliente', 'cliente_razon', 'id_razon', 'id_cliente')
+            ->with(['localidad',])
+            ->withTimestamps();
     }
 }

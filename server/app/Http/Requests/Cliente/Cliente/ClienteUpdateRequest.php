@@ -8,8 +8,12 @@ class ClienteUpdateRequest extends ClienteCreateRequest
 {
     private function setReglaDni()
     {
-        array_push($this->reglas['documento'], Rule::unique('clientes', 'dni')->ignore('clientes', 'id_cliente', $this->cliente->id));
+        array_push(
+            $this->reglas['documento'],
+            Rule::unique('clientes', 'dni')->ignore('clientes', 'id_cliente', $this->cliente->id)
+        );
     }
+
     /**
      * Determine if the user is authorized to make this request.
      *

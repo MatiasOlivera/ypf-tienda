@@ -27,7 +27,7 @@ class ProvinciaController extends Controller
      */
     public function index(Request $request)
     {
-        try{
+        try {
             $provincia      = new Provincia;
             $provincias     = $provincia::all();
             $respuesta      = [$this->modeloPlural => $provincias];

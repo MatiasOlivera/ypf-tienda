@@ -12,6 +12,7 @@ class ClienteCreateRequest extends FormRequest
         'nombre'        => ['bail', 'required', 'string', 'min:3', 'max:60',],
         'observacion'   => ['bail', 'string', 'min:2', 'max:200'],
     ];
+
     /**
      * Determine if the user is authorized to make this request.
      *

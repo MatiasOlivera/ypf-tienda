@@ -50,7 +50,16 @@ class ClienteRazonSocialController extends Controller
     {
         $nombre  = $request->input('denominacion');
         try {
-            $inputs         = $request->only('denominacion', 'cuit', 'localidad_id', 'calle', 'numero', 'area', 'telefono', 'mail');
+            $inputs         = $request->only(
+                'denominacion',
+                'cuit',
+                'localidad_id',
+                'calle',
+                'numero',
+                'area',
+                'telefono',
+                'mail'
+            );
             $razon          = $cliente->razonesSociales()->create($inputs);
             $mensajeExito   = new MensajeExito();
             $mensajeExito->guardar($nombre);
@@ -85,7 +94,16 @@ class ClienteRazonSocialController extends Controller
     public function update(ClienteRazonSocialRequest $request, ClienteRazonSocial $razonSocial)
     {
         $denominacionNew  = $request->input('denominacion');
-        $inputs     = $request->only('denominacion', 'cuit', 'localidad_id', 'calle', 'numero', 'area', 'telefono', 'mail');
+        $inputs     = $request->only(
+            'denominacion',
+            'cuit',
+            'localidad_id',
+            'calle',
+            'numero',
+            'area',
+            'telefono',
+            'mail'
+        );
         $parametros = [
             'inputs' => $inputs,
             'modelo' => $razonSocial,

@@ -61,7 +61,6 @@ class ClienteMailController extends Controller
             $respuesta      = [$this->modeloSingular => $mail];
             return Respuesta::exito($respuesta, $mensajeExito, 200);
         } catch (\Throwable $th) {
-
             $mensajeError   = new MensajeError();
             $mensajeError->guardar($this->modeloSingular);
 

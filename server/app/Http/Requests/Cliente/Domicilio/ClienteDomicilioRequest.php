@@ -12,6 +12,7 @@ class ClienteDomicilioRequest extends FormRequest
         'numero'        => ['bail', 'required', 'integer', 'digits_between:1,4',],
         'aclaracion'    => ['bail', 'string', 'min:3', 'max:200',],
     ];
+
     /**
      * Determine if the user is authorized to make this request.
      *

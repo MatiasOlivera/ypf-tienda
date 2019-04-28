@@ -9,6 +9,7 @@ class LocalidadRequest extends FormRequest
     protected $reglas = [
         'localidad'          => ['bail', 'required', 'string', 'max:60'],
     ];
+
     /**
      * Determine if the user is authorized to make this request.
      *

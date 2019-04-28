@@ -9,6 +9,7 @@ class ProvinciaRequest extends FormRequest
     protected $reglas = [
         'provincia'          => ['bail', 'required', 'string', 'max:30'],
     ];
+
     /**
      * Determine if the user is authorized to make this request.
      *

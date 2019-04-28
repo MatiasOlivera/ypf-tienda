@@ -29,7 +29,15 @@ class ClientesController extends Controller
     {
         $parametros = [
             'modelo'            => 'Cliente',
-            'campos'            => ['id', 'nombre', 'documento', 'observacion', 'created_at', 'updated_at', 'deleted_at',],
+            'campos'            => [
+                'id',
+                'nombre',
+                'documento',
+                'observacion',
+                'created_at',
+                'updated_at',
+                'deleted_at',
+            ],
             'relaciones'        => null,
             'buscar'            => $request->input("buscar", null),
             'eliminados'        => $request->input("eliminados", false),
