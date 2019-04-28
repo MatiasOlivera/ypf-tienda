@@ -35,7 +35,7 @@ class ClienteTelefonoController extends Controller
     public function index(Request $request, Cliente $cliente)
     {
         try {
-            $porPagina      = (is_numeric($request->input('porPagina'))) ? $request->input('porPagina') : 5;
+            $porPagina      = $request->input('porPagina');
             $telefonos      = $cliente->telefonos()->paginate($porPagina);
             $respuesta      = [$this->modeloPlural => $telefonos];
 

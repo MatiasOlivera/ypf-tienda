@@ -35,7 +35,7 @@ class LocalidadController extends Controller
     public function index(Request $request, Provincia $provincia)
     {
         try {
-            $porPagina      = ($request->only('porPagina') > 0) ? $request->only('porPagina') : 5;
+            $porPagina      = $request->only('porPagina');
             $mails          = $provincia->localidades()->paginate($porPagina);
             $respuesta      = [$this->modeloPlural => $mails];
             return Respuesta::exito($respuesta, null, 200);

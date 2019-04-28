@@ -30,7 +30,7 @@ class ClienteMailController extends Controller
     public function index(Request $request, Cliente $cliente)
     {
         try {
-            $porPagina      = ($request->only('porPagina') > 0) ? $request->only('porPagina') : 5;
+            $porPagina      = $request->only('porPagina');
             $mails          = $cliente->mails()->paginate($porPagina);
             $respuesta      = [$this->modeloPlural => $mails];
             return Respuesta::exito($respuesta, null, 200);
