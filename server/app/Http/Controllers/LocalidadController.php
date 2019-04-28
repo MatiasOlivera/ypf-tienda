@@ -54,19 +54,19 @@ class LocalidadController extends Controller
     public function store(LocalidadRequest $request, Provincia $provincia)
     {
         $inputs['nombre'] = $request->input('localidad');
-        $Mensaje = $this->setTextoMensaje($inputs['nombre'], $provincia->nombre);
+        $mensaje = $this->setTextoMensaje($inputs['nombre'], $provincia->nombre);
         try {
             $localidad      = new Localidad($inputs);
             $provincia->localidades()->save($localidad);
             $respuesta      = [$this->modeloSingular  => $localidad,];
 
             $mensajeExito   = new MensajeExito();
-            $mensajeExito->guardar($Mensaje);
+            $mensajeExito->guardar($mensaje);
 
             return Respuesta::exito($respuesta, $mensajeExito, 200);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
-            $mensajeError->guardar(lcfirst($Mensaje));
+            $mensajeError->guardar(lcfirst($mensaje));
             return Respuesta::error($mensajeError, 500);
         }
     }
@@ -94,12 +94,12 @@ class LocalidadController extends Controller
     {
         $provincia = $localidad->provincia;
         $inputs['nombre'] = $request->input('localidad');
-        $Mensaje = $this->setTextoMensaje($localidad->nombre, $provincia->nombre);
+        $mensaje = $this->setTextoMensaje($localidad->nombre, $provincia->nombre);
         $parametros = [
             'inputs' => $inputs,
             'modelo' => $localidad,
         ];
-        return $this->baseController->update($parametros, lcfirst($Mensaje));
+        return $this->baseController->update($parametros, lcfirst($mensaje));
     }
 
     /**
@@ -111,8 +111,8 @@ class LocalidadController extends Controller
     public function destroy(Localidad $localidad)
     {
         $provincia = $localidad->provincia;
-        $Mensaje = $this->setTextoMensaje($localidad->nombre, $provincia->nombre);
-        return $this->baseController->destroy($localidad, lcfirst($Mensaje));
+        $mensaje = $this->setTextoMensaje($localidad->nombre, $provincia->nombre);
+        return $this->baseController->destroy($localidad, lcfirst($mensaje));
     }
 
     /**
@@ -124,7 +124,7 @@ class LocalidadController extends Controller
     public function restore(Localidad $localidad)
     {
         $provincia = $localidad->provincia;
-        $Mensaje = $this->setTextoMensaje($localidad->nombre, $provincia->nombre);
-        return $this->baseController->restore($localidad, lcfirst($Mensaje));
+        $mensaje = $this->setTextoMensaje($localidad->nombre, $provincia->nombre);
+        return $this->baseController->restore($localidad, lcfirst($mensaje));
     }
 }

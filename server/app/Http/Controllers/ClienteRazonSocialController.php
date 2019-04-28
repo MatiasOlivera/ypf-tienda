@@ -125,20 +125,20 @@ class ClienteRazonSocialController extends Controller
      */
     public function asociar(Cliente $cliente, ClienteRazonSocial $razonSocial)
     {
-        $Exito      = "Se asocio con exito la Razon Social {$razonSocial->denominacion} al Cliente {$cliente->nombre}";
-        $Error      = "No se pudo asociar la Razon Social {$razonSocial->denominacion} al Cliente {$cliente->nombre}";
+        $exito      = "Se asocio con exito la Razon Social {$razonSocial->denominacion} al Cliente {$cliente->nombre}";
+        $error      = "No se pudo asociar la Razon Social {$razonSocial->denominacion} al Cliente {$cliente->nombre}";
 
         try {
             $razonId = $razonSocial->id_razon;
             $cliente->razonesSociales()->attach($razonId);
             $razonSocial->localidad;
 
-            $mensajeExito   = new MensajeExito($Exito, 'ASOCIADOS');
+            $mensajeExito   = new MensajeExito($exito, 'ASOCIADOS');
             $respuesta      = [$this->modeloSingular => $razonSocial];
 
             return Respuesta::exito($respuesta, $mensajeExito, 200);
         } catch (\Throwable $th) {
-            $mensajeError = new MensajeError($Error, 'NO_ASOCIADOS');
+            $mensajeError = new MensajeError($error, 'NO_ASOCIADOS');
             return Respuesta::error($mensajeError, 500);
         }
     }
@@ -151,20 +151,20 @@ class ClienteRazonSocialController extends Controller
      */
     public function desasociar(Cliente $cliente, ClienteRazonSocial $razonSocial)
     {
-        $Exito = "Se ha desasociado la Razon Social {$razonSocial->denominacion} del Cliente {$cliente->nombre}";
-        $Error = "No se pudo desasociar la Razon Social {$razonSocial->denominacion} del Cliente {$cliente->nombre}";
+        $exito = "Se ha desasociado la Razon Social {$razonSocial->denominacion} del Cliente {$cliente->nombre}";
+        $error = "No se pudo desasociar la Razon Social {$razonSocial->denominacion} del Cliente {$cliente->nombre}";
 
         try {
             $razonId = $razonSocial->id_razon;
             $cliente->razonesSociales()->detach($razonId);
             $razonSocial->localidad;
 
-            $mensajeExito   = new MensajeExito($Exito, 'DESASOCIADOS');
+            $mensajeExito   = new MensajeExito($exito, 'DESASOCIADOS');
             $respuesta      = [$this->modeloSingular => $razonSocial];
 
             return Respuesta::exito($respuesta, $mensajeExito, 200);
         } catch (\Throwable $th) {
-            $mensajeError   = new MensajeError($Error, 'NO_DESASOCIADOS');
+            $mensajeError   = new MensajeError($error, 'NO_DESASOCIADOS');
             return Respuesta::error($mensajeError, 500);
         }
     }
