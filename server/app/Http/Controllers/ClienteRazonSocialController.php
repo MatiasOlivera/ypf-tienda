@@ -16,8 +16,8 @@ class ClienteRazonSocialController extends Controller
 
     public function __construct()
     {
-        $this->modeloPlural     = 'RazonesSociales';
-        $this->modeloSingular   = 'RazonSocial';
+        $this->modeloPlural     = 'razonesSociales';
+        $this->modeloSingular   = 'razonSocial';
         $this->baseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
     }
 

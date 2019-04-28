@@ -15,8 +15,8 @@ class ClienteDomicilioController extends Controller
 
     public function __construct()
     {
-        $this->modeloPlural     = 'Domicilios';
-        $this->modeloSingular   = 'Domicilio';
+        $this->modeloPlural     = 'domicilios';
+        $this->modeloSingular   = 'domicilio';
         $this->baseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
     }
 
