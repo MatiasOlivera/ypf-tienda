@@ -8,7 +8,7 @@ class ClienteRazonSocialRequest extends FormRequest
 {
     protected $reglas = [
         'denominacion'   => ['bail', 'required', 'string', 'min:3', 'max:100'],
-        'cuit'          => ['bail', 'required', 'string', 'unique:razones_sociales,cuit', 'min:13', 'max:13',],
+        'cuit'          => ['bail', 'required', 'string', 'unique:razones_sociales,cuit', 'size:13',],
         'localidad_id'  => ['bail', 'required', 'integer', 'exists:localidades,id_localidad'],
         'calle'         => ['bail', 'string', 'min:3', 'max:70',],
         'altura'        => ['bail', 'integer', 'digits_between:1,4'],
