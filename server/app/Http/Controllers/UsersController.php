@@ -1,12 +1,13 @@
 <?php
 namespace App\Http\Controllers;
 
+use Hash;
+use App\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\BaseController;
+use App\Http\Requests\UsersRequest\UsersRequest;
 use App\Http\Requests\UsersRequest\UserCreateRequest;
 use App\Http\Requests\UsersRequest\UserUpdateRequest;
-use App\User;
-use Hash;
-use App\Http\Controllers\BaseController;
 
 class UsersController extends Controller
 {
@@ -22,7 +23,7 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(UsersRequest $request)
     {
         $parametros = [
             'modelo' => 'User',
