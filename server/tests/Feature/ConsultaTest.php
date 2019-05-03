@@ -31,8 +31,7 @@ class ConsultaTest extends TestCase
     public function consultar(array $parametros)
     {
         $consulta = new Consulta();
-        $consulta->setParametros($parametros);
-        return $consulta->ejecutarConsulta();
+        return $consulta->ejecutarConsulta($parametros);
     }
 
     /**

@@ -30,8 +30,7 @@ class BaseController
     {
         try {
             $consulta = new Consulta;
-            $consulta->setParametros($parametros);
-            $resultado = $consulta->ejecutarconsulta();
+            $resultado = $consulta->ejecutarconsulta($parametros);
 
             $respuesta = [
                 $this->modeloPlural => $resultado['datos'],
