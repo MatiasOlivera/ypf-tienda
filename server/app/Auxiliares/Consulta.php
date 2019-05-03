@@ -56,8 +56,8 @@ class Consulta
             if (isset($paginado['porPagina'])) {
                 $this->setRegistrosPorPagina($paginado['porPagina']);
             }
-            if (isset($paginado['ordenadoPor'])) {
-                $this->setOrdenarPor($paginado['ordenadoPor']);
+            if (isset($paginado['ordenarPor'])) {
+                $this->setOrdenarPor($paginado['ordenarPor']);
             }
             if (isset($paginado['orden'])) {
                 $this->setOrden($paginado['orden']);

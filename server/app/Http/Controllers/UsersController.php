@@ -32,7 +32,7 @@ class UsersController extends Controller
             'eliminados' => $request->input("eliminados", false),
             'paginado' => [
                 'porPagina'   => $request->input("porPagina", 10),
-                'ordenadoPor' => $request->input("ordenadoPor", 'name'),
+                'ordenarPor' => $request->input("ordenarPor", 'name'),
                 'orden'       => $request->input("orden", 'ASC'),
             ]
         ];

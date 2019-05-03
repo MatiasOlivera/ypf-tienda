@@ -332,7 +332,7 @@ class ConsultaTest extends TestCase
 
         $parametros = array_replace(
             $this->parametrosPorDefecto,
-            ['paginado' => ['ordenadoPor' => 'name', 'orden' => 'DESC']]
+            ['paginado' => ['ordenarPor' => 'name', 'orden' => 'DESC']]
         );
         $respuesta = $this->consultar($parametros);
 
