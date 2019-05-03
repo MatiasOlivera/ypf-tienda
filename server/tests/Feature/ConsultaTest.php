@@ -332,11 +332,11 @@ class ConsultaTest extends TestCase
 
         $parametros = array_replace(
             $this->parametrosPorDefecto,
-            ['paginado' => ['ordenadoPor' => 'name', 'orden' => true]]
+            ['paginado' => ['ordenadoPor' => 'name', 'orden' => 'DESC']]
         );
         $respuesta = $this->consultar($parametros);
 
-        $usuarios = User::orderBy('name', 'ASC')->paginate(10)->items();
+        $usuarios = User::orderBy('name', 'DESC')->paginate(10)->items();
         $paginacion =  [
             "total" => 20,
             "porPagina" => 10,

@@ -197,10 +197,10 @@ class Consulta
 
     /**
      * asigna orden ASC o DESC a la consulta
-     * @param bool $orden
+     * @param string $orden
      */
-    private function setOrden(bool $orden = true): void
+    private function setOrden(string $orden = 'ASC'): void
     {
-        $this->orden = $orden ? 'ASC' : 'DESC';
+        $this->orden = $orden;
     }
 }
