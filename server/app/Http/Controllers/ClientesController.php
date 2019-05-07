@@ -42,8 +42,8 @@ class ClientesController extends Controller
             'eliminados'        => $request->input("eliminados", false),
             'paginado'  => [
                 'porPagina'     => $request->input("porPagina", 10),
-                'ordenadoPor'   => $request->input("ordenadoPor", 'cliente'),
-                'orden'         => $request->input("orden", true),
+                'ordenadoPor'   => $request->input("ordenarPor", 'nombre'),
+                'orden'         => $request->input("orden", 'ASC'),
             ]
         ];
 
