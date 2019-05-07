@@ -10,7 +10,6 @@ use Illuminate\Validation\Rule;
 
 class UserUpdateRequest extends UserCreateRequest
 {
-
     /**
      * Ignora el Unique Mail, para el Usuario que se esta actualizando.
      *
