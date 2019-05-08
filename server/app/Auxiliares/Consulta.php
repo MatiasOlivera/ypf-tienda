@@ -32,41 +32,10 @@ class Consulta
         $this->modelo = null;
     }
 
-    public function setParametros(array $parametros): void
+    public function ejecutarConsulta(array $parametros): array
     {
-        if (isset($parametros['modelo'])) {
-            $this->setModelo($parametros['modelo']);
-        }
-        if (isset($parametros['campos'])) {
-            $this->setCampos($parametros['campos']);
-        }
-        if (isset($parametros['relaciones'])) {
-            $this->setModelosRelacionados($parametros['relaciones']);
-        }
-        if (isset($parametros['eliminados'])) {
-            $this->setEliminados($parametros['eliminados']);
-        }
-        if (isset($parametros['buscar'])) {
-            $this->setBuscar($parametros['buscar']);
-        }
+        $this->setParametros($parametros);
 
-        if (isset($parametros['paginado'])) {
-            $paginado = $parametros['paginado'];
-
-            if (isset($paginado['porPagina'])) {
-                $this->setRegistrosPorPagina($paginado['porPagina']);
-            }
-            if (isset($paginado['ordenadoPor'])) {
-                $this->setOrdenarPor($paginado['ordenadoPor']);
-            }
-            if (isset($paginado['orden'])) {
-                $this->setOrden($paginado['orden']);
-            }
-        }
-    }
-
-    public function ejecutarConsulta(): array
-    {
         $modelo = $this->modelo;
 
         if ($this->relaciones) {
@@ -116,6 +85,39 @@ class Consulta
                 'datos' => $datos,
                 'paginacion' => $paginacion
             ];
+        }
+    }
+
+    private function setParametros(array $parametros): void
+    {
+        if (isset($parametros['modelo'])) {
+            $this->setModelo($parametros['modelo']);
+        }
+        if (isset($parametros['campos'])) {
+            $this->setCampos($parametros['campos']);
+        }
+        if (isset($parametros['relaciones'])) {
+            $this->setModelosRelacionados($parametros['relaciones']);
+        }
+        if (isset($parametros['eliminados'])) {
+            $this->setEliminados($parametros['eliminados']);
+        }
+        if (isset($parametros['buscar'])) {
+            $this->setBuscar($parametros['buscar']);
+        }
+
+        if (isset($parametros['paginado'])) {
+            $paginado = $parametros['paginado'];
+
+            if (isset($paginado['porPagina'])) {
+                $this->setRegistrosPorPagina($paginado['porPagina']);
+            }
+            if (isset($paginado['ordenarPor'])) {
+                $this->setOrdenarPor($paginado['ordenarPor']);
+            }
+            if (isset($paginado['orden'])) {
+                $this->setOrden($paginado['orden']);
+            }
         }
     }
 
@@ -197,10 +199,10 @@ class Consulta
 
     /**
      * asigna orden ASC o DESC a la consulta
-     * @param bool $orden
+     * @param string $orden
      */
-    private function setOrden(bool $orden = true): void
+    private function setOrden(string $orden = 'ASC'): void
     {
-        $this->orden = $orden ? 'ASC' : 'DESC';
+        $this->orden = $orden;
     }
 }

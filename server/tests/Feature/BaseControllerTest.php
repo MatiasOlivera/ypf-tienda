@@ -50,7 +50,7 @@ class BaseControllerTest extends TestCase
             'eliminados' => null,
             'paginado' => [
                 'porPagina' => 10,
-                'ordenadoPor' => null,
+                'ordenarPor' => null,
                 'orden' => null
             ]
         ];

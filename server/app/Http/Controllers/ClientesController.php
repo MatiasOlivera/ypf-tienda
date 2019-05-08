@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Cliente;
 use App\Http\Controllers\BaseController;
-use App\Http\Requests\Cliente\Cliente\{ ClienteCreateRequest, ClienteUpdateRequest};
+use App\Http\Requests\Cliente\Cliente\{ClientesRequest, ClienteCreateRequest, ClienteUpdateRequest};
 
 class ClientesController extends Controller
 {
@@ -22,10 +21,10 @@ class ClientesController extends Controller
 
     /**
      * Display a listing of the resource.
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\ClientesRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(ClientesRequest $request)
     {
         $parametros = [
             'modelo'            => 'Cliente',
@@ -43,8 +42,8 @@ class ClientesController extends Controller
             'eliminados'        => $request->input("eliminados", false),
             'paginado'  => [
                 'porPagina'     => $request->input("porPagina", 10),
-                'ordenadoPor'   => $request->input("ordenadoPor", 'cliente'),
-                'orden'         => $request->input("orden", true),
+                'ordenadoPor'   => $request->input("ordenarPor", 'nombre'),
+                'orden'         => $request->input("orden", 'ASC'),
             ]
         ];
 
