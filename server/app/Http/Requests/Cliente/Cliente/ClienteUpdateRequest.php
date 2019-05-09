@@ -8,10 +8,8 @@ class ClienteUpdateRequest extends ClienteCreateRequest
 {
     private function setReglaDni()
     {
-        array_push(
-            $this->reglas['documento'],
-            Rule::unique('clientes', 'dni')->ignore('clientes', 'id_cliente', $this->cliente->id)
-        );
+        $cliente =  $this->cliente;
+        $this->reglas['documento'][3] .= ',' . $cliente->id . ',id_cliente';
     }
 
     /**
