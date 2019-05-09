@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Provincia;
 use Illuminate\Http\Request;
 use App\Http\controllers\BaseController;
-use App\Auxiliares\{Respuesta, MensajeExito, MensajeError};
+use App\Auxiliares\{Respuesta, MensajeError};
 
 class ProvinciaController extends Controller
 {
