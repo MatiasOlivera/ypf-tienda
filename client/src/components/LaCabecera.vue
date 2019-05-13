@@ -30,7 +30,7 @@
             Iniciar sesión
           </b-button>
 
-          <b-button size="sm" variant="link">
+          <b-button size="sm" variant="link" :to="{ name: rutaRegistro }">
             Registrarse
           </b-button>
         </b-navbar-nav>
@@ -41,13 +41,14 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { rutaInicio } from '../router/rutas';
+import { rutaInicio, rutaRegistro } from '../router/rutas';
 
 export default Vue.extend({
   name: 'LaCabecera',
   data: () => {
     return {
-      rutaInicio
+      rutaInicio,
+      rutaRegistro
     };
   }
 });
