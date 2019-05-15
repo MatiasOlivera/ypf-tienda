@@ -3,8 +3,12 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+export interface EstadoBase {}
+
+const store = new Vuex.Store<EstadoBase>({
   state: {},
   mutations: {},
   actions: {}
 });
+
+export default store;
