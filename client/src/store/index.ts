@@ -1,14 +1,14 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
+import modulos from './modules';
+
 Vue.use(Vuex);
 
 export interface EstadoBase {}
 
 const store = new Vuex.Store<EstadoBase>({
-  state: {},
-  mutations: {},
-  actions: {}
+  modules: modulos
 });
 
 export default store;
