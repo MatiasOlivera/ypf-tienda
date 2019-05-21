@@ -101,7 +101,11 @@ async function renovarToken(): Promise<string | null> {
     });
 
     if (respuesta.ok) {
-      const { token: _token, tipoToken, fechaExpiracion } = respuesta.datos;
+      const {
+        token: _token,
+        tipoToken,
+        fechaExpiracion
+      } = respuesta.datos.autenticacion;
 
       const servicioToken = new ServicioToken();
       servicioToken.setToken(tipoToken, _token);

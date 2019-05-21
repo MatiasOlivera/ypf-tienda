@@ -74,9 +74,11 @@ describe('Cliente API', () => {
     servicioToken.setFechaExpiracion(fechaExpiracion);
 
     const respuestaToken: TokenDatos = {
-      token: 'nuevo.token',
-      tipoToken: 'bearer',
-      fechaExpiracion: dayjs().toISOString()
+      autenticacion: {
+        token: 'nuevo.token',
+        tipoToken: 'bearer',
+        fechaExpiracion: dayjs().toISOString()
+      }
     };
 
     window.fetch = jest
@@ -176,9 +178,11 @@ describe('Cliente API sin token', () => {
 
   test('debería hacer una petición sin token', async () => {
     const login: TokenDatos = {
-      token: 'primer.token',
-      tipoToken: 'bearer',
-      fechaExpiracion: dayjs().toISOString()
+      autenticacion: {
+        token: 'primer.token',
+        tipoToken: 'bearer',
+        fechaExpiracion: dayjs().toISOString()
+      }
     };
 
     window.fetch = jest.fn(() => respuestaFetchMock(login));
