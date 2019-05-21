@@ -2,8 +2,8 @@ import { CREAR_NOTIFICACION } from '@/store/types/acciones';
 import { MODULO_NOTIFICACIONES } from '@/store/types/modulos';
 import { AGREGAR_NOTIFICACION, ELIMINAR_ULTIMA_NOTIFICACION } from '@/store/types/mutaciones';
 import { Notificacion } from '@/types/tipos-notificacion';
-import Vue from 'Vue';
-import Vuex from 'Vuex';
+import Vue from 'vue';
+import Vuex from 'vuex';
 
 import { notificacion, notificaciones } from '../__mocks__/notificaciones.mock';
 import moduloNotificaciones from '../modulo-notificaciones';
