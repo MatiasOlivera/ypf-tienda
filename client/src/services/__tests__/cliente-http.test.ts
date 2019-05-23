@@ -31,26 +31,20 @@ describe('Cliente HTTP', () => {
       textoEstado: 'OK'
     });
     expect(window.fetch).toHaveBeenCalledTimes(1);
-    expect(window.fetch).toHaveBeenCalledWith(
+
+    const peticion = new Request(
       'https://servidor.com/api/productos?paginacion=10&ordenar_por=nombre&direccion=ASC',
       {
-        _bodyInit: undefined,
-        _bodyText: '',
         credentials: 'include',
         headers: {
-          map: {
-            accept: 'application/json',
-            'content-type': 'application/json'
-          }
+          accept: 'application/json',
+          'content-type': 'application/json'
         },
         method: 'GET',
-        mode: 'cors',
-        referrer: null,
-        signal: undefined,
-        url:
-          'https://servidor.com/api/productos?paginacion=10&ordenar_por=nombre&direccion=ASC'
+        mode: 'cors'
       }
     );
+    expect(window.fetch).toHaveBeenCalledWith(peticion);
   });
 
   test('debería obtener un elemento usando el método GET', async () => {
@@ -69,25 +63,17 @@ describe('Cliente HTTP', () => {
       textoEstado: 'OK'
     });
     expect(window.fetch).toHaveBeenCalledTimes(1);
-    expect(window.fetch).toHaveBeenCalledWith(
-      'https://servidor.com/api/productos/1',
-      {
-        _bodyInit: undefined,
-        _bodyText: '',
-        credentials: 'include',
-        headers: {
-          map: {
-            accept: 'application/json',
-            'content-type': 'application/json'
-          }
-        },
-        method: 'GET',
-        mode: 'cors',
-        referrer: null,
-        signal: undefined,
-        url: 'https://servidor.com/api/productos/1'
-      }
-    );
+
+    const peticion = new Request('https://servidor.com/api/productos/1', {
+      credentials: 'include',
+      headers: {
+        accept: 'application/json',
+        'content-type': 'application/json'
+      },
+      method: 'GET',
+      mode: 'cors'
+    });
+    expect(window.fetch).toHaveBeenCalledWith(peticion);
   });
 
   test('debería crear un nuevo elemento usando el método POST', async () => {
@@ -108,26 +94,18 @@ describe('Cliente HTTP', () => {
       textoEstado: 'OK'
     });
     expect(window.fetch).toHaveBeenCalledTimes(1);
-    expect(window.fetch).toHaveBeenCalledWith(
-      'https://servidor.com/api/productos',
-      {
-        _bodyInit: undefined,
-        _bodyText: '',
-        body: '{"id":1,"nombre":"Notebook"}',
-        credentials: 'include',
-        headers: {
-          map: {
-            accept: 'application/json',
-            'content-type': 'application/json'
-          }
-        },
-        method: 'POST',
-        mode: 'cors',
-        referrer: null,
-        signal: undefined,
-        url: 'https://servidor.com/api/productos'
-      }
-    );
+
+    const peticion = new Request('https://servidor.com/api/productos', {
+      body: '{"id":1,"nombre":"Notebook"}',
+      credentials: 'include',
+      headers: {
+        accept: 'application/json',
+        'content-type': 'application/json'
+      },
+      method: 'POST',
+      mode: 'cors'
+    });
+    expect(window.fetch).toHaveBeenCalledWith(peticion);
   });
 
   test('debería actualizar un elemento usando el método PUT', async () => {
@@ -149,26 +127,18 @@ describe('Cliente HTTP', () => {
       textoEstado: 'OK'
     });
     expect(window.fetch).toHaveBeenCalledTimes(1);
-    expect(window.fetch).toHaveBeenCalledWith(
-      'https://servidor.com/api/productos/1',
-      {
-        _bodyInit: undefined,
-        _bodyText: '',
-        body: '{"id":1,"nombre":"Ultrabook"}',
-        credentials: 'include',
-        headers: {
-          map: {
-            accept: 'application/json',
-            'content-type': 'application/json'
-          }
-        },
-        method: 'PUT',
-        mode: 'cors',
-        referrer: null,
-        signal: undefined,
-        url: 'https://servidor.com/api/productos/1'
-      }
-    );
+
+    const peticion = new Request('https://servidor.com/api/productos/1', {
+      body: '{"id":1,"nombre":"Ultrabook"}',
+      credentials: 'include',
+      headers: {
+        accept: 'application/json',
+        'content-type': 'application/json'
+      },
+      method: 'PUT',
+      mode: 'cors'
+    });
+    expect(window.fetch).toHaveBeenCalledWith(peticion);
   });
 
   test('debería eliminar un elemento usando el método DELETE', async () => {
@@ -188,25 +158,17 @@ describe('Cliente HTTP', () => {
       textoEstado: 'OK'
     });
     expect(window.fetch).toHaveBeenCalledTimes(1);
-    expect(window.fetch).toHaveBeenCalledWith(
-      'https://servidor.com/api/productos/1',
-      {
-        _bodyInit: undefined,
-        _bodyText: '',
-        credentials: 'include',
-        headers: {
-          map: {
-            accept: 'application/json',
-            'content-type': 'application/json'
-          }
-        },
-        method: 'DELETE',
-        mode: 'cors',
-        referrer: null,
-        signal: undefined,
-        url: 'https://servidor.com/api/productos/1'
-      }
-    );
+
+    const peticion = new Request('https://servidor.com/api/productos/1', {
+      credentials: 'include',
+      headers: {
+        accept: 'application/json',
+        'content-type': 'application/json'
+      },
+      method: 'DELETE',
+      mode: 'cors'
+    });
+    expect(window.fetch).toHaveBeenCalledWith(peticion);
   });
 
   test('debería hacer una petición cuando se le pase la URL completa', async () => {
@@ -225,25 +187,17 @@ describe('Cliente HTTP', () => {
       textoEstado: 'OK'
     });
     expect(window.fetch).toHaveBeenCalledTimes(1);
-    expect(window.fetch).toHaveBeenCalledWith(
-      'https://otro-servidor.com/api/v1/productos',
-      {
-        _bodyInit: undefined,
-        _bodyText: '',
-        credentials: 'include',
-        headers: {
-          map: {
-            accept: 'application/json',
-            'content-type': 'application/json'
-          }
-        },
-        method: 'GET',
-        mode: 'cors',
-        referrer: null,
-        signal: undefined,
-        url: 'https://otro-servidor.com/api/v1/productos'
-      }
-    );
+
+    const peticion = new Request('https://otro-servidor.com/api/v1/productos', {
+      credentials: 'include',
+      headers: {
+        accept: 'application/json',
+        'content-type': 'application/json'
+      },
+      method: 'GET',
+      mode: 'cors'
+    });
+    expect(window.fetch).toHaveBeenCalledWith(peticion);
   });
 
   test('debería hacer una petición a un URL con caracteres especiales', async () => {
@@ -256,25 +210,20 @@ describe('Cliente HTTP', () => {
     });
 
     expect(window.fetch).toHaveBeenCalledTimes(1);
-    expect(window.fetch).toHaveBeenCalledWith(
+
+    const peticion = new Request(
       'https://servidor.com/api/cigu%C3%AB%C3%B1as',
       {
-        _bodyInit: undefined,
-        _bodyText: '',
         credentials: 'include',
         headers: {
-          map: {
-            accept: 'application/json',
-            'content-type': 'application/json'
-          }
+          accept: 'application/json',
+          'content-type': 'application/json'
         },
         method: 'GET',
-        mode: 'cors',
-        referrer: null,
-        signal: undefined,
-        url: 'https://servidor.com/api/cigu%C3%AB%C3%B1as'
+        mode: 'cors'
       }
     );
+    expect(window.fetch).toHaveBeenCalledWith(peticion);
   });
 
   test('debería hacer una petición a un URL que no existe', async () => {
@@ -311,20 +260,14 @@ describe('Cliente HTTP', () => {
       textoEstado: 'OK'
     });
     expect(window.fetch).toHaveBeenCalledTimes(1);
-    expect(window.fetch).toHaveBeenCalledWith(
-      'https://otro-servidor.com/api/v1/test',
-      {
-        _bodyInit: undefined,
-        _bodyText: '',
-        credentials: 'include',
-        headers: { map: {} },
-        method: 'POST',
-        mode: 'cors',
-        referrer: null,
-        signal: undefined,
-        url: 'https://otro-servidor.com/api/v1/test'
-      }
-    );
+
+    const peticion = new Request('https://otro-servidor.com/api/v1/test', {
+      credentials: 'include',
+      headers: {},
+      method: 'POST',
+      mode: 'cors'
+    });
+    expect(window.fetch).toHaveBeenCalledWith(peticion);
   });
 
   test('debería envíar texto en la petición y recibir texto en la respuesta', async () => {
@@ -347,21 +290,15 @@ describe('Cliente HTTP', () => {
       textoEstado: 'OK'
     });
     expect(window.fetch).toHaveBeenCalledTimes(1);
-    expect(window.fetch).toHaveBeenCalledWith(
-      'https://otro-servidor.com/api/v1/test',
-      {
-        _bodyInit: undefined,
-        _bodyText: '',
-        body: 'Test',
-        credentials: 'include',
-        headers: { map: { 'content-type': 'text/plain' } },
-        method: 'POST',
-        mode: 'cors',
-        referrer: null,
-        signal: undefined,
-        url: 'https://otro-servidor.com/api/v1/test'
-      }
-    );
+
+    const peticion = new Request('https://otro-servidor.com/api/v1/test', {
+      body: 'Test',
+      credentials: 'include',
+      headers: { 'content-type': 'text/plain' },
+      method: 'POST',
+      mode: 'cors'
+    });
+    expect(window.fetch).toHaveBeenCalledWith(peticion);
   });
 
   test('debería manejar un error en la petición', async () => {

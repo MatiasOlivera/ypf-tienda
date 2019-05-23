@@ -10,12 +10,12 @@ export class ClienteHttp {
   ): Promise<RespuestaApi> {
     const metodo: Metodo = config.metodo || 'GET';
     const urlInterna: string = this.getUrl(config.url, metodo, config.datos);
-    const opciones = this.getOpciones(urlInterna, {
+    const request = this.getOpciones(urlInterna, {
       ...config,
       metodo
     });
 
-    return fetch(urlInterna, opciones)
+    return fetch(request)
       .then((respuesta: Response) => {
         // La promesa será resuelta si se ha podido realizar la petición,
         // sin importar cuál es el código de estado de la respuesta
