@@ -1,6 +1,7 @@
 import 'whatwg-fetch';
 
 import { Notificacion } from '@/types/tipos-notificacion';
+import { Diccionario } from '@/types/utilidades';
 import dayjs from 'dayjs';
 
 import router from '../../router';
@@ -11,8 +12,17 @@ import { clienteApi, clienteApiSinToken } from '../cliente-api';
 import { ServicioToken } from '../token-servicio';
 
 describe('Cliente API', () => {
+  /**
+   * Evita el error de Jest: "Compared values have no visual difference."
+   */
+  function convertirAObjeto(instancia: any): Diccionario<any> {
+    return JSON.parse(JSON.stringify(instancia));
+  }
+
   beforeAll(() => {
-    process.env = { VUE_APP_API_ENDPOINT: 'https://servidor.com/api/' };
+    process.env = {
+      VUE_APP_API_ENDPOINT: 'https://servidor.com/api/'
+    };
   });
 
   beforeEach(() => {
@@ -32,7 +42,11 @@ describe('Cliente API', () => {
 
     const respuesta = await clienteApi({
       url: 'productos',
-      datos: { paginacion: 10, ordenar_por: 'nombre', direccion: 'ASC' }
+      datos: {
+        paginacion: 10,
+        ordenar_por: 'nombre',
+        direccion: 'ASC'
+      }
     });
 
     expect(respuesta).toEqual({
@@ -42,27 +56,21 @@ describe('Cliente API', () => {
       textoEstado: 'OK'
     });
     expect(window.fetch).toHaveBeenCalledTimes(1);
-    expect(window.fetch).toBeCalledWith(
+
+    const peticion = new Request(
       'https://servidor.com/api/productos?paginacion=10&ordenar_por=nombre&direccion=ASC',
       {
-        _bodyInit: undefined,
-        _bodyText: '',
         credentials: 'include',
         headers: {
-          map: {
-            accept: 'application/json',
-            authorization: 'bearer token',
-            'content-type': 'application/json'
-          }
+          accept: 'application/json',
+          authorization: 'bearer token',
+          'content-type': 'application/json'
         },
         method: 'GET',
-        mode: 'cors',
-        referrer: null,
-        signal: undefined,
-        url:
-          'https://servidor.com/api/productos?paginacion=10&ordenar_por=nombre&direccion=ASC'
+        mode: 'cors'
       }
     );
+    expect(window.fetch).toBeCalledWith(convertirAObjeto(peticion));
   });
 
   test('debería hacer una petición después de renovar el token', async () => {
@@ -87,52 +95,47 @@ describe('Cliente API', () => {
 
     const respuesta = await clienteApi({
       url: 'productos',
-      datos: { paginacion: 10, ordenar_por: 'nombre', direccion: 'ASC' }
+      datos: {
+        paginacion: 10,
+        ordenar_por: 'nombre',
+        direccion: 'ASC'
+      }
     });
 
-    expect(window.fetch).toHaveBeenNthCalledWith(
-      1,
+    const peticionRenovarToken = new Request(
       'https://servidor.com/api/auth/renovar',
       {
-        _bodyInit: undefined,
-        _bodyText: '',
         credentials: 'include',
         headers: {
-          map: {
-            accept: 'application/json',
-            authorization: 'bearer token',
-            'content-type': 'application/json'
-          }
+          accept: 'application/json',
+          authorization: 'bearer token',
+          'content-type': 'application/json'
         },
         method: 'POST',
-        mode: 'cors',
-        referrer: null,
-        signal: undefined,
-        url: 'https://servidor.com/api/auth/renovar'
+        mode: 'cors'
       }
     );
-
     expect(window.fetch).toHaveBeenNthCalledWith(
-      2,
+      1,
+      convertirAObjeto(peticionRenovarToken)
+    );
+
+    const peticionProductos = new Request(
       'https://servidor.com/api/productos?paginacion=10&ordenar_por=nombre&direccion=ASC',
       {
-        _bodyInit: undefined,
-        _bodyText: '',
         credentials: 'include',
         headers: {
-          map: {
-            accept: 'application/json',
-            authorization: 'bearer nuevo.token',
-            'content-type': 'application/json'
-          }
+          accept: 'application/json',
+          authorization: 'bearer nuevo.token',
+          'content-type': 'application/json'
         },
         method: 'GET',
-        mode: 'cors',
-        referrer: null,
-        signal: undefined,
-        url:
-          'https://servidor.com/api/productos?paginacion=10&ordenar_por=nombre&direccion=ASC'
+        mode: 'cors'
       }
+    );
+    expect(window.fetch).toHaveBeenNthCalledWith(
+      2,
+      convertirAObjeto(peticionProductos)
     );
     expect(window.fetch).toHaveBeenCalledTimes(2);
 
@@ -156,7 +159,11 @@ describe('Cliente API', () => {
 
     const respuesta = await clienteApi({
       url: 'productos',
-      datos: { paginacion: 10, ordenar_por: 'nombre', direccion: 'ASC' }
+      datos: {
+        paginacion: 10,
+        ordenar_por: 'nombre',
+        direccion: 'ASC'
+      }
     });
 
     expect(respuesta).toEqual({
@@ -261,20 +268,18 @@ describe('Cliente API sin token', () => {
       textoEstado: 'OK'
     });
     expect(window.fetch).toHaveBeenCalledTimes(1);
-    expect(window.fetch).toBeCalledWith('https://servidor.com/api/login', {
-      _bodyInit: undefined,
-      _bodyText: '',
+
+    const peticion = new Request('https://servidor.com/api/login', {
       body: '{"usuario":"Dev","password":"1234"}',
       credentials: 'include',
       headers: {
-        map: { accept: 'application/json', 'content-type': 'application/json' }
+        accept: 'application/json',
+        'content-type': 'application/json'
       },
       method: 'POST',
-      mode: 'cors',
-      referrer: null,
-      signal: undefined,
-      url: 'https://servidor.com/api/login'
+      mode: 'cors'
     });
+    expect(window.fetch).toBeCalledWith(peticion);
   });
 
   test('debería crear una notificación cuando exista un mensaje', async () => {
