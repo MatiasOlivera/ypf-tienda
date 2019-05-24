@@ -4,6 +4,7 @@ import { MODULO_NOTIFICACIONES } from '@/store/types/modulos';
 import { Notificacion } from '@/types/tipos-notificacion';
 import { Store } from 'vuex';
 
+// eslint-disable-next-line import/prefer-default-export
 export async function crearNotificacion(
   notificacion: Notificacion,
   _store: Store<EstadoBase>
