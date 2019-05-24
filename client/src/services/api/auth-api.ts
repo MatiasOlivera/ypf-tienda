@@ -1,19 +1,16 @@
+import { CredencialesUsuario } from '../../types/tipos-auth';
 import { clienteApi, clienteApiSinToken } from '../cliente-api';
 import { Respuesta } from '../cliente-http';
 import { ServicioToken } from '../token-servicio';
 import { MensajeError } from './types/mensaje-tipos';
-import { RespuestaMensajeError, RespuestaMensajeExito } from './types/respuesta-tipos';
+import { RespuestaMensajeError, RespuestaMensajeExito, RespuestaValidacion } from './types/respuesta-tipos';
 import { RespuestaToken } from './types/token-tipos';
 import { Usuario } from './types/usuario-tipos';
-
-interface CredencialesUsuario {
-  email: string;
-  password: string;
-}
 
 export async function login(credenciales: CredencialesUsuario) {
   type CredencialesInvalidas = Respuesta<false, 401, MensajeError>;
   type RespuestaLogin =
+    | RespuestaValidacion<CredencialesUsuario>
     | RespuestaToken
     | CredencialesInvalidas
     | RespuestaMensajeError;
