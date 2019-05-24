@@ -1,4 +1,5 @@
 import { rutaInicio } from '@/router/rutas';
+import { crearNotificacion } from '@/store/modules/notificaciones/crear-notificacion';
 
 import router from '../router';
 import { RespuestaToken } from './api/types/token-tipos';
@@ -44,7 +45,8 @@ type RespuestaNoAutorizado = Respuesta<false, 401, null>;
 
 export async function clienteApi<RespuestaApi extends Respuesta>(
   opciones: Opciones,
-  _renovarToken: any = renovarToken
+  _renovarToken: any = renovarToken,
+  _crearNotificacion: any = crearNotificacion
 ): Promise<RespuestaApi | RespuestaNoAutorizado> {
   const { url, datos, metodo, cabeceras } = getOpciones(opciones);
 
@@ -82,7 +84,20 @@ export async function clienteApi<RespuestaApi extends Respuesta>(
 
   // Peticion
   const config = { url, metodo, cabeceras, datos };
-  return clienteHttp.peticion<RespuestaApi>(config);
+  const respuesta = clienteHttp.peticion<RespuestaApi>(config);
+
+  // Notificación
+  const { datos: cuerpo } = await respuesta;
+
+  if (
+    cuerpo !== null &&
+    cuerpo.hasOwnProperty('mensaje') &&
+    cuerpo.mensaje !== null
+  ) {
+    await _crearNotificacion(cuerpo.mensaje);
+  }
+
+  return respuesta;
 }
 
 async function renovarToken(): Promise<string | null> {
@@ -121,15 +136,35 @@ async function renovarToken(): Promise<string | null> {
 }
 
 export async function clienteApiSinToken<RespuestaApi extends Respuesta>(
-  opciones: Opciones
+  opciones: Opciones,
+  _crearNotificacion: any = crearNotificacion
 ): Promise<RespuestaApi> {
   const { url, datos, metodo, cabeceras } = getOpciones(opciones);
 
   const urlBase: string = process.env.VUE_APP_API_ENDPOINT;
   const clienteHttp = new ClienteHttp(urlBase);
 
-  const config = { url, metodo, cabeceras, datos };
-  return clienteHttp.peticion<RespuestaApi>(config);
+  const config = {
+    url,
+    metodo,
+    cabeceras,
+    datos
+  };
+
+  const respuesta = clienteHttp.peticion<RespuestaApi>(config);
+
+  // Notificación
+  const { datos: cuerpo } = await respuesta;
+
+  if (
+    cuerpo !== null &&
+    cuerpo.hasOwnProperty('mensaje') &&
+    cuerpo.mensaje !== null
+  ) {
+    await _crearNotificacion(cuerpo.mensaje);
+  }
+
+  return respuesta;
 }
 
 export default clienteApi;
