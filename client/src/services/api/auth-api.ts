@@ -1,11 +1,11 @@
+import { MensajeError } from '../../types/mensaje-tipos';
+import { RespuestaMensajeError, RespuestaMensajeExito, RespuestaValidacion } from '../../types/respuesta-tipos';
 import { CredencialesUsuario } from '../../types/tipos-auth';
+import { RespuestaToken } from '../../types/token-tipos';
+import { Usuario } from '../../types/usuario-tipos';
 import { clienteApi, clienteApiSinToken } from '../cliente-api';
 import { Respuesta } from '../cliente-http';
 import { ServicioToken } from '../token-servicio';
-import { MensajeError } from './types/mensaje-tipos';
-import { RespuestaMensajeError, RespuestaMensajeExito, RespuestaValidacion } from './types/respuesta-tipos';
-import { RespuestaToken } from './types/token-tipos';
-import { Usuario } from './types/usuario-tipos';
 
 export async function login(credenciales: CredencialesUsuario) {
   type CredencialesInvalidas = Respuesta<false, 401, MensajeError>;

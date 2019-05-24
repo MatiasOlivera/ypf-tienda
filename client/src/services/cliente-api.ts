@@ -2,7 +2,7 @@ import { rutaInicio } from '@/router/rutas';
 import { crearNotificacion } from '@/store/modules/notificaciones/crear-notificacion';
 
 import router from '../router';
-import { RespuestaToken } from './api/types/token-tipos';
+import { RespuestaToken } from '../types/token-tipos';
 import { Cabeceras, ClienteHttp, Metodo, Respuesta } from './cliente-http';
 import { ServicioToken } from './token-servicio';
 

@@ -5,9 +5,9 @@ import { Diccionario } from '@/types/utilidades';
 import dayjs from 'dayjs';
 
 import router from '../../router';
+import { TokenDatos } from '../../types/token-tipos';
 import { respuestaFetchMock } from '../__mocks__/fetch.mock';
 import { producto, productos } from '../__mocks__/productos.mock';
-import { TokenDatos } from '../api/types/token-tipos';
 import { clienteApi, clienteApiSinToken } from '../cliente-api';
 import { ServicioToken } from '../token-servicio';
 
