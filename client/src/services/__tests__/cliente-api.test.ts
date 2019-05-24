@@ -288,9 +288,11 @@ describe('Cliente API sin token', () => {
 
   test('debería crear una notificación cuando exista un mensaje', async () => {
     const login: TokenDatos = {
-      token: 'primer.token',
-      tipoToken: 'bearer',
-      fechaExpiracion: dayjs().toISOString()
+      autenticacion: {
+        token: 'primer.token',
+        tipoToken: 'bearer',
+        fechaExpiracion: dayjs().toISOString()
+      }
     };
 
     const mensaje: Notificacion = {
