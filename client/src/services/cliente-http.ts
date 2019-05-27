@@ -10,12 +10,12 @@ export class ClienteHttp {
   ): Promise<RespuestaApi> {
     const metodo: Metodo = config.metodo || 'GET';
     const urlInterna: string = this.getUrl(config.url, metodo, config.datos);
-    const opciones = this.getOpciones(urlInterna, {
+    const request = this.getOpciones(urlInterna, {
       ...config,
       metodo
     });
 
-    return fetch(urlInterna, opciones)
+    return fetch(request)
       .then((respuesta: Response) => {
         // La promesa será resuelta si se ha podido realizar la petición,
         // sin importar cuál es el código de estado de la respuesta
@@ -45,27 +45,26 @@ export class ClienteHttp {
   ): Request {
     const cabeceras = new Headers(config.cabeceras);
 
-    const request = new Request(urlInterna, {
+    let requestInit: RequestInit = {
       method: config.metodo,
       headers: cabeceras,
       mode: 'cors',
       // Por defecto fetch solo envia y recibe cookies del servidor
       // del mismo origen
       credentials: 'include'
-    });
+    };
 
     if ((config.metodo === 'POST' || config.metodo === 'PUT') && config.datos) {
-      const datos = this.getCuerpo(request, config.datos);
-      return { ...request, body: datos };
+      requestInit.body = this.getCuerpo(cabeceras, config.datos);
     }
 
-    return request;
+    return new Request(urlInterna, requestInit);
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private getCuerpo(peticion: Request, datos: any): any {
-    if (peticion.headers.has('content-type')) {
-      const tipoContenido = peticion.headers.get('content-type');
+  private getCuerpo(cabeceras: Headers, datos: any): any {
+    if (cabeceras.has('content-type')) {
+      const tipoContenido = cabeceras.get('content-type');
 
       if (tipoContenido) {
         if (tipoContenido.includes('application/json')) {

@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Http\Requests\Cliente\Cliente;
+namespace App\Http\Requests\Cliente\RazonSocial;
 
 use Illuminate\Validation\Rule;
 
-class ClienteUpdateRequest extends ClienteCreateRequest
+class ClienteRazonSocialUpdateRequest extends ClienteRazonSocialRequest
 {
-    private function setReglaDni()
+    private function setReglaCuit()
     {
-        $cliente =  $this->cliente;
-        $this->reglas['documento'][3] .= ',' . $cliente->id . ',id_cliente';
+        $razonSocial =  $this->razonSocial;
+        $this->reglas['cuit'][3] .= ',' . $razonSocial->id . ',id_razon';
     }
-
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -29,7 +28,7 @@ class ClienteUpdateRequest extends ClienteCreateRequest
      */
     public function rules()
     {
-        $this->setReglaDni();
+        $this->setReglaCuit();
         return $this->reglas;
     }
 }
