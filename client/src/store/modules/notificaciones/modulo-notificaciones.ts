@@ -1,9 +1,12 @@
-import { EstadoBase } from '@/store';
+import { EstadoBase } from '@/store/tipos-store';
 import { Notificacion } from '@/types/tipos-notificacion';
 import { Module } from 'vuex';
 
 import { CREAR_NOTIFICACION } from '../../types/acciones';
-import { AGREGAR_NOTIFICACION, ELIMINAR_ULTIMA_NOTIFICACION } from '../../types/mutaciones';
+import {
+  AGREGAR_NOTIFICACION,
+  ELIMINAR_ULTIMA_NOTIFICACION
+} from '../../types/mutaciones';
 
 interface EstadoNotificaciones {
   notificaciones: Notificacion[];

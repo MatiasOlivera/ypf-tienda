@@ -1,4 +1,4 @@
-import { EstadoBase } from '@/store';
+import { EstadoBase } from '@/store/tipos-store';
 import { CREAR_NOTIFICACION } from '@/store/types/acciones';
 import { MODULO_NOTIFICACIONES } from '@/store/types/modulos';
 import { Notificacion } from '@/types/tipos-notificacion';

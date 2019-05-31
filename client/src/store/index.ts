@@ -2,10 +2,9 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import modulos from './modules';
+import { EstadoBase } from './tipos-store';
 
 Vue.use(Vuex);
-
-export interface EstadoBase {}
 
 const store = new Vuex.Store<EstadoBase>({
   modules: modulos
