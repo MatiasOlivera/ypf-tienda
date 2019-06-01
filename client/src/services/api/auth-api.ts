@@ -1,5 +1,9 @@
 import { MensajeError } from '../../types/mensaje-tipos';
-import { RespuestaMensajeError, RespuestaMensajeExito, RespuestaValidacion } from '../../types/respuesta-tipos';
+import {
+  RespuestaMensajeError,
+  RespuestaMensajeExito,
+  RespuestaValidacion
+} from '../../types/respuesta-tipos';
 import { CredencialesUsuario } from '../../types/tipos-auth';
 import { RespuestaToken } from '../../types/token-tipos';
 import { Usuario } from '../../types/usuario-tipos';
@@ -25,7 +29,7 @@ export async function login(credenciales: CredencialesUsuario) {
     const { token, tipoToken, fechaExpiracion } = respuesta.datos.autenticacion;
 
     const servicioToken = new ServicioToken();
-    servicioToken.setToken(token, tipoToken);
+    servicioToken.setToken(tipoToken, token);
     servicioToken.setFechaExpiracion(fechaExpiracion);
   }
 
