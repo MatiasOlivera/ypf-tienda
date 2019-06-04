@@ -12,5 +12,5 @@ export type ErroresValidacion<Modelo> = {
 export type RespuestaValidacion<Modelo> = Respuesta<
   false,
   422,
-  ErroresValidacion<Modelo>
+  { errores: ErroresValidacion<Modelo> }
 >;
