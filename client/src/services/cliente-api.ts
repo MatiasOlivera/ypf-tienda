@@ -1,5 +1,4 @@
 import { rutaInicio } from '@/router/rutas';
-import { crearNotificacion } from '@/store/modules/notificaciones/crear-notificacion';
 
 import router from '../router';
 import { RespuestaToken } from '../types/token-tipos';
@@ -45,8 +44,7 @@ type RespuestaNoAutorizado = Respuesta<false, 401, null>;
 
 export async function clienteApi<RespuestaApi extends Respuesta>(
   opciones: Opciones,
-  _renovarToken: any = renovarToken,
-  _crearNotificacion: any = crearNotificacion
+  _renovarToken: any = renovarToken
 ): Promise<RespuestaApi | RespuestaNoAutorizado> {
   const { url, datos, metodo, cabeceras } = getOpciones(opciones);
 
@@ -84,20 +82,7 @@ export async function clienteApi<RespuestaApi extends Respuesta>(
 
   // Peticion
   const config = { url, metodo, cabeceras, datos };
-  const respuesta = clienteHttp.peticion<RespuestaApi>(config);
-
-  // Notificación
-  const { datos: cuerpo } = await respuesta;
-
-  if (
-    cuerpo !== null &&
-    cuerpo.hasOwnProperty('mensaje') &&
-    cuerpo.mensaje !== null
-  ) {
-    await _crearNotificacion(cuerpo.mensaje);
-  }
-
-  return respuesta;
+  return clienteHttp.peticion<RespuestaApi>(config);
 }
 
 async function renovarToken(): Promise<string | null> {
@@ -136,8 +121,7 @@ async function renovarToken(): Promise<string | null> {
 }
 
 export async function clienteApiSinToken<RespuestaApi extends Respuesta>(
-  opciones: Opciones,
-  _crearNotificacion: any = crearNotificacion
+  opciones: Opciones
 ): Promise<RespuestaApi> {
   const { url, datos, metodo, cabeceras } = getOpciones(opciones);
 
@@ -151,20 +135,7 @@ export async function clienteApiSinToken<RespuestaApi extends Respuesta>(
     datos
   };
 
-  const respuesta = clienteHttp.peticion<RespuestaApi>(config);
-
-  // Notificación
-  const { datos: cuerpo } = await respuesta;
-
-  if (
-    cuerpo !== null &&
-    cuerpo.hasOwnProperty('mensaje') &&
-    cuerpo.mensaje !== null
-  ) {
-    await _crearNotificacion(cuerpo.mensaje);
-  }
-
-  return respuesta;
+  return clienteHttp.peticion<RespuestaApi>(config);
 }
 
 export default clienteApi;

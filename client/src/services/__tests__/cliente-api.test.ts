@@ -1,13 +1,12 @@
 import 'whatwg-fetch';
 
-import { Notificacion } from '@/types/tipos-notificacion';
 import { Diccionario } from '@/types/utilidades';
 import dayjs from 'dayjs';
 
 import router from '../../router';
 import { TokenDatos } from '../../types/token-tipos';
 import { respuestaFetchMock } from '../__mocks__/fetch.mock';
-import { producto, productos } from '../__mocks__/productos.mock';
+import { productos } from '../__mocks__/productos.mock';
 import { clienteApi, clienteApiSinToken } from '../cliente-api';
 import { ServicioToken } from '../token-servicio';
 
@@ -177,70 +176,6 @@ describe('Cliente API', () => {
     expect(window.fetch).toHaveBeenCalledTimes(0);
     expect(router.currentRoute.name).toBe('inicio');
   });
-
-  test('debería crear una notificación cuando exista un mensaje', async () => {
-    const mensaje: Notificacion = {
-      tipo: 'exito',
-      descripcion: 'La notebook se ha creado'
-    };
-
-    const datos = { producto, mensaje };
-
-    window.fetch = jest.fn(() => respuestaFetchMock(datos));
-    const crearNotificacionMock = jest.fn(async () => {});
-
-    const fechaExpiracion = dayjs()
-      .add(31, 'minute')
-      .toISOString();
-
-    const servicioToken = new ServicioToken();
-    servicioToken.setToken('bearer', 'token');
-    servicioToken.setFechaExpiracion(fechaExpiracion);
-
-    const respuesta = await clienteApi(
-      { url: 'productos' },
-      null,
-      crearNotificacionMock
-    );
-
-    expect(respuesta).toEqual({
-      datos: datos,
-      estado: 200,
-      ok: true,
-      textoEstado: 'OK'
-    });
-    expect(crearNotificacionMock).toHaveBeenCalledTimes(1);
-    expect(crearNotificacionMock).toHaveBeenCalledWith(mensaje);
-  });
-
-  test('no debería crear una notificación cuando no exista un mensaje', async () => {
-    const datos = { producto, mensaje: null };
-
-    window.fetch = jest.fn(() => respuestaFetchMock(datos));
-    const crearNotificacionMock = jest.fn(async () => {});
-
-    const fechaExpiracion = dayjs()
-      .add(31, 'minute')
-      .toISOString();
-
-    const servicioToken = new ServicioToken();
-    servicioToken.setToken('bearer', 'token');
-    servicioToken.setFechaExpiracion(fechaExpiracion);
-
-    const respuesta = await clienteApi(
-      { url: 'productos' },
-      null,
-      crearNotificacionMock
-    );
-
-    expect(respuesta).toEqual({
-      datos: datos,
-      estado: 200,
-      ok: true,
-      textoEstado: 'OK'
-    });
-    expect(crearNotificacionMock).toHaveBeenCalledTimes(0);
-  });
 });
 
 describe('Cliente API sin token', () => {
@@ -284,43 +219,5 @@ describe('Cliente API sin token', () => {
       mode: 'cors'
     });
     expect(window.fetch).toBeCalledWith(peticion);
-  });
-
-  test('debería crear una notificación cuando exista un mensaje', async () => {
-    const login: TokenDatos = {
-      autenticacion: {
-        token: 'primer.token',
-        tipoToken: 'bearer',
-        fechaExpiracion: dayjs().toISOString()
-      }
-    };
-
-    const mensaje: Notificacion = {
-      tipo: 'exito',
-      descripcion: 'Bienvenido'
-    };
-
-    const datos = { login, mensaje };
-
-    window.fetch = jest.fn(() => respuestaFetchMock(datos));
-    const crearNotificacionMock = jest.fn(async () => {});
-
-    const respuesta = await clienteApiSinToken(
-      {
-        url: 'login',
-        metodo: 'POST',
-        datos: { usuario: 'Dev', password: '1234' }
-      },
-      crearNotificacionMock
-    );
-
-    expect(respuesta).toEqual({
-      datos,
-      estado: 200,
-      ok: true,
-      textoEstado: 'OK'
-    });
-    expect(crearNotificacionMock).toHaveBeenCalledTimes(1);
-    expect(crearNotificacionMock).toHaveBeenCalledWith(mensaje);
   });
 });
