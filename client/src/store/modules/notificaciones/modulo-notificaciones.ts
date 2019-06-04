@@ -12,14 +12,12 @@ interface EstadoNotificaciones {
   notificaciones: Notificacion[];
 }
 
-export const state: EstadoNotificaciones = {
-  notificaciones: []
-};
-
 const moduloNotificaciones: Module<EstadoNotificaciones, EstadoBase> = {
   namespaced: true,
 
-  state,
+  state: {
+    notificaciones: []
+  },
 
   getters: {
     cantidad: (estado): number => estado.notificaciones.length,
