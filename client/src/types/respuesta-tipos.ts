@@ -14,3 +14,10 @@ export type RespuestaValidacion<Modelo> = Respuesta<
   422,
   { errores: ErroresValidacion<Modelo> }
 >;
+
+export type RespuestaNoAutorizado = Respuesta<false, 401, null>;
+export type RespuestaErrorInterno = Respuesta<false, 500, null>;
+export type RespuestasComunesApi =
+  | RespuestaNoAutorizado
+  | RespuestaErrorInterno;
+export type RespuestasComunesApiSinToken = RespuestaErrorInterno;

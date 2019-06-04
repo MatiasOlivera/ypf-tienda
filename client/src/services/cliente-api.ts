@@ -4,6 +4,11 @@ import router from '../router';
 import { RespuestaToken } from '../types/token-tipos';
 import { Cabeceras, ClienteHttp, Metodo, Respuesta } from './cliente-http';
 import { ServicioToken } from './token-servicio';
+import {
+  RespuestaNoAutorizado,
+  RespuestasComunesApi,
+  RespuestasComunesApiSinToken
+} from '@/types/respuesta-tipos';
 
 const cabecerasPorDefecto: Cabeceras = {
   accept: 'application/json',
@@ -40,12 +45,10 @@ function getOpciones(opciones: Opciones): OpcionesInternas {
   };
 }
 
-type RespuestaNoAutorizado = Respuesta<false, 401, null>;
-
 export async function clienteApi<RespuestaApi extends Respuesta>(
   opciones: Opciones,
   _renovarToken: any = renovarToken
-): Promise<RespuestaApi | RespuestaNoAutorizado> {
+): Promise<RespuestaApi | RespuestasComunesApi> {
   const { url, datos, metodo, cabeceras } = getOpciones(opciones);
 
   const urlBase: string = process.env.VUE_APP_API_ENDPOINT;
@@ -122,7 +125,7 @@ async function renovarToken(): Promise<string | null> {
 
 export async function clienteApiSinToken<RespuestaApi extends Respuesta>(
   opciones: Opciones
-): Promise<RespuestaApi> {
+): Promise<RespuestaApi | RespuestasComunesApiSinToken> {
   const { url, datos, metodo, cabeceras } = getOpciones(opciones);
 
   const urlBase: string = process.env.VUE_APP_API_ENDPOINT;

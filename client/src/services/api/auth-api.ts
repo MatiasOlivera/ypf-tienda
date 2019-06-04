@@ -2,7 +2,9 @@ import { MensajeError } from '../../types/mensaje-tipos';
 import {
   RespuestaMensajeError,
   RespuestaMensajeExito,
-  RespuestaValidacion
+  RespuestaValidacion,
+  RespuestasComunesApi,
+  RespuestasComunesApiSinToken
 } from '../../types/respuesta-tipos';
 import { CredencialesUsuario } from '../../types/tipos-auth';
 import { RespuestaToken } from '../../types/token-tipos';
@@ -11,14 +13,17 @@ import { clienteApi, clienteApiSinToken } from '../cliente-api';
 import { Respuesta } from '../cliente-http';
 import { ServicioToken } from '../token-servicio';
 
-export async function login(credenciales: CredencialesUsuario) {
-  type CredencialesInvalidas = Respuesta<false, 401, MensajeError>;
-  type RespuestaLogin =
-    | RespuestaValidacion<CredencialesUsuario>
-    | RespuestaToken
-    | CredencialesInvalidas
-    | RespuestaMensajeError;
+type CredencialesInvalidas = Respuesta<false, 401, MensajeError>;
+export type RespuestaLogin =
+  | RespuestaValidacion<CredencialesUsuario>
+  | RespuestaToken
+  | CredencialesInvalidas
+  | RespuestaMensajeError
+  | RespuestasComunesApiSinToken;
 
+export async function login(
+  credenciales: CredencialesUsuario
+): Promise<RespuestaLogin> {
   const respuesta = await clienteApiSinToken<RespuestaLogin>({
     url: 'auth/login',
     metodo: 'POST',
@@ -36,18 +41,23 @@ export async function login(credenciales: CredencialesUsuario) {
   return respuesta;
 }
 
-export function getUsuario() {
-  type RespuestaUsuario = Respuesta<true, 200, { usuario: Usuario }>;
+export type RespuestaUsuario =
+  | Respuesta<true, 200, { usuario: Usuario }>
+  | RespuestasComunesApi;
 
+export function getUsuario(): Promise<RespuestaUsuario> {
   return clienteApi<RespuestaUsuario>({
     url: 'auth/usuario',
     metodo: 'GET'
   });
 }
 
-export async function logout() {
-  type RespuestaLogout = RespuestaMensajeExito | RespuestaMensajeError;
+export type RespuestaLogout =
+  | RespuestaMensajeExito
+  | RespuestaMensajeError
+  | RespuestasComunesApi;
 
+export async function logout(): Promise<RespuestaLogout> {
   const respuesta = await clienteApi<RespuestaLogout>({
     url: 'auth/logout',
     metodo: 'POST'
