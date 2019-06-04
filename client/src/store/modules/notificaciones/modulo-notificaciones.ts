@@ -12,6 +12,8 @@ interface EstadoNotificaciones {
   notificaciones: Notificacion[];
 }
 
+export type UltimaNotificacion = Notificacion | null;
+
 const moduloNotificaciones: Module<EstadoNotificaciones, EstadoBase> = {
   namespaced: true,
 
@@ -22,7 +24,7 @@ const moduloNotificaciones: Module<EstadoNotificaciones, EstadoBase> = {
   getters: {
     cantidad: (estado): number => estado.notificaciones.length,
 
-    ultimaNotificacion: (estado, { cantidad }): Notificacion | null => {
+    ultimaNotificacion: (estado, { cantidad }): UltimaNotificacion => {
       return cantidad !== 0 ? estado.notificaciones[cantidad - 1] : null;
     }
   },

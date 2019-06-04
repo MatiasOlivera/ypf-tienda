@@ -3,4 +3,9 @@ export interface Notificacion {
   descripcion: string;
 }
 
-export type TipoNotificacion = 'exito' | 'error';
+export type TipoNotificacion =
+  | 'exito'
+  | 'error'
+  | 'info'
+  | 'advertencia'
+  | 'pregunta';
