@@ -3,8 +3,7 @@
     variant="white"
     type="light"
     :sticky="true"
-    toggleable
-    toggle-breakpoint="md"
+    toggleable="md"
     class="shadow"
   >
     <b-container>
