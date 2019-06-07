@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -13,6 +14,18 @@ class CopiarMailsAClienteMails extends Migration
      */
     public function up()
     {
+        /**
+         * Se asegura de eliminar el procedimiento almacenado. Sin esta línea
+         * no funcionan las migraciones (`php artisan migrate:refresh`) ni los
+         * tests con PHPUnit
+         *
+         * Evita el error:
+         *
+         * SQLSTATE[42000]: Syntax error or access violation: 1304
+         * PROCEDURE mover_mails already exists
+         */
+        DB::unprepared("DROP PROCEDURE IF EXISTS mover_mails;");
+
         DB::unprepared("CREATE DEFINER=`root`@`localhost` PROCEDURE `mover_mails`()
                 SQL SECURITY INVOKER
             BEGIN
@@ -40,9 +53,8 @@ class CopiarMailsAClienteMails extends Migration
                     END LOOP copiar_mails;
                 CLOSE mails;
             END;
-
-            call `mover_mails`();
         ");
+        DB::statement('call `mover_mails`();');
     }
 
     /**
@@ -52,7 +64,7 @@ class CopiarMailsAClienteMails extends Migration
      */
     public function down()
     {
-        DB::unprepared("TRUNCATE TABLE cliente_mails;
-                        DROP PROCEDURE IF EXISTS mover_mails;");
+        DB::statement("TRUNCATE TABLE cliente_mails;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS mover_mails;");
     }
 }
