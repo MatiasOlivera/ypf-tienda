@@ -25,8 +25,8 @@ class BaseControllerTest extends TestCase
         ];
 
         $nombres = [
-            'exito' => 'John',
-            'error' => 'a John'
+            'exito' => 'El usuario John',
+            'error' => 'al usuario John'
         ];
 
         $controller = new BaseController('usuario', 'usuarios');
@@ -144,7 +144,7 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'exito',
             'codigo' => 'GUARDADO',
-            'descripcion' => 'John se ha creado'
+            'descripcion' => 'El usuario John ha sido creado'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
@@ -169,7 +169,7 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'error',
             'codigo' => 'NO_GUARDADO',
-            'descripcion' => 'Hubo un error al intentar guardar a John'
+            'descripcion' => 'Hubo un error al intentar guardar al usuario John'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
@@ -264,7 +264,7 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'exito',
             'codigo' => 'ACTUALIZADO',
-            'descripcion' => 'John se ha modificado'
+            'descripcion' => 'John ha sido modificado'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
@@ -330,7 +330,7 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'exito',
             'codigo' => 'ELIMINADO',
-            'descripcion' => 'John se ha eliminado'
+            'descripcion' => 'John ha sido eliminado'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
@@ -396,7 +396,7 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'exito',
             'codigo' => 'RESTAURADO',
-            'descripcion' => 'John se ha dado de alta'
+            'descripcion' => 'John ha sido dado de alta'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
@@ -450,7 +450,7 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'exito',
             'codigo' => 'GUARDADO',
-            'descripcion' => 'El usuario Juan se ha creado'
+            'descripcion' => 'El usuario Juan ha sido creado'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
@@ -480,7 +480,7 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'exito',
             'codigo' => 'GUARDADO',
-            'descripcion' => 'El usuario Juan se ha creado'
+            'descripcion' => 'El usuario Juan ha sido creado'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
