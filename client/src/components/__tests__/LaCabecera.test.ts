@@ -4,6 +4,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 import LaCabecera from '../LaCabecera.vue';
+import { rutas } from '@/router';
 
 describe('LaCabecera.vue', () => {
   let wrapper: Wrapper<Vue>;
@@ -13,16 +14,7 @@ describe('LaCabecera.vue', () => {
     vue.use(VueRouter);
     vue.use(BootstrapVue.plugin);
 
-    const router = new VueRouter({
-      routes: [
-        {
-          path: '/',
-          name: 'inicio',
-          component: new Vue({ template: '<p>Vista inicio!</p>' })
-        }
-      ]
-    });
-
+    const router = new VueRouter({ routes: rutas });
     wrapper = mount(LaCabecera, { localVue: vue, router });
   });
 
