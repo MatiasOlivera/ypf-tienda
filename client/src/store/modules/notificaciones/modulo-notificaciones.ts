@@ -1,27 +1,30 @@
-import { EstadoBase } from '@/store';
+import { EstadoBase } from '@/store/tipos-store';
 import { Notificacion } from '@/types/tipos-notificacion';
 import { Module } from 'vuex';
 
 import { CREAR_NOTIFICACION } from '../../types/acciones';
-import { AGREGAR_NOTIFICACION, ELIMINAR_ULTIMA_NOTIFICACION } from '../../types/mutaciones';
+import {
+  AGREGAR_NOTIFICACION,
+  ELIMINAR_ULTIMA_NOTIFICACION
+} from '../../types/mutaciones';
 
 interface EstadoNotificaciones {
   notificaciones: Notificacion[];
 }
 
-export const state: EstadoNotificaciones = {
-  notificaciones: []
-};
+export type UltimaNotificacion = Notificacion | null;
 
 const moduloNotificaciones: Module<EstadoNotificaciones, EstadoBase> = {
   namespaced: true,
 
-  state,
+  state: {
+    notificaciones: []
+  },
 
   getters: {
     cantidad: (estado): number => estado.notificaciones.length,
 
-    ultimaNotificacion: (estado, { cantidad }): Notificacion | null => {
+    ultimaNotificacion: (estado, { cantidad }): UltimaNotificacion => {
       return cantidad !== 0 ? estado.notificaciones[cantidad - 1] : null;
     }
   },

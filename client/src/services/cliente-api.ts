@@ -1,10 +1,14 @@
 import { rutaInicio } from '@/router/rutas';
-import { crearNotificacion } from '@/store/modules/notificaciones/crear-notificacion';
 
 import router from '../router';
-import { RespuestaToken } from './api/types/token-tipos';
+import { RespuestaToken } from '../types/token-tipos';
 import { Cabeceras, ClienteHttp, Metodo, Respuesta } from './cliente-http';
 import { ServicioToken } from './token-servicio';
+import {
+  RespuestaNoAutorizado,
+  RespuestasComunesApi,
+  RespuestasComunesApiSinToken
+} from '@/types/respuesta-tipos';
 
 const cabecerasPorDefecto: Cabeceras = {
   accept: 'application/json',
@@ -41,13 +45,10 @@ function getOpciones(opciones: Opciones): OpcionesInternas {
   };
 }
 
-type RespuestaNoAutorizado = Respuesta<false, 401, null>;
-
 export async function clienteApi<RespuestaApi extends Respuesta>(
   opciones: Opciones,
-  _renovarToken: any = renovarToken,
-  _crearNotificacion: any = crearNotificacion
-): Promise<RespuestaApi | RespuestaNoAutorizado> {
+  _renovarToken: any = renovarToken
+): Promise<RespuestaApi | RespuestasComunesApi> {
   const { url, datos, metodo, cabeceras } = getOpciones(opciones);
 
   const urlBase: string = process.env.VUE_APP_API_ENDPOINT;
@@ -84,20 +85,7 @@ export async function clienteApi<RespuestaApi extends Respuesta>(
 
   // Peticion
   const config = { url, metodo, cabeceras, datos };
-  const respuesta = clienteHttp.peticion<RespuestaApi>(config);
-
-  // Notificación
-  const { datos: cuerpo } = await respuesta;
-
-  if (
-    cuerpo !== null &&
-    cuerpo.hasOwnProperty('mensaje') &&
-    cuerpo.mensaje !== null
-  ) {
-    await _crearNotificacion(cuerpo.mensaje);
-  }
-
-  return respuesta;
+  return clienteHttp.peticion<RespuestaApi>(config);
 }
 
 async function renovarToken(): Promise<string | null> {
@@ -116,9 +104,12 @@ async function renovarToken(): Promise<string | null> {
     });
 
     if (respuesta.ok) {
-      const { token: _token, tipoToken, fechaExpiracion } = respuesta.datos;
+      const {
+        token: _token,
+        tipoToken,
+        fechaExpiracion
+      } = respuesta.datos.autenticacion;
 
-      const servicioToken = new ServicioToken();
       servicioToken.setToken(tipoToken, _token);
       servicioToken.setFechaExpiracion(fechaExpiracion);
 
@@ -132,9 +123,8 @@ async function renovarToken(): Promise<string | null> {
 }
 
 export async function clienteApiSinToken<RespuestaApi extends Respuesta>(
-  opciones: Opciones,
-  _crearNotificacion: any = crearNotificacion
-): Promise<RespuestaApi> {
+  opciones: Opciones
+): Promise<RespuestaApi | RespuestasComunesApiSinToken> {
   const { url, datos, metodo, cabeceras } = getOpciones(opciones);
 
   const urlBase: string = process.env.VUE_APP_API_ENDPOINT;
@@ -147,20 +137,7 @@ export async function clienteApiSinToken<RespuestaApi extends Respuesta>(
     datos
   };
 
-  const respuesta = clienteHttp.peticion<RespuestaApi>(config);
-
-  // Notificación
-  const { datos: cuerpo } = await respuesta;
-
-  if (
-    cuerpo !== null &&
-    cuerpo.hasOwnProperty('mensaje') &&
-    cuerpo.mensaje !== null
-  ) {
-    await _crearNotificacion(cuerpo.mensaje);
-  }
-
-  return respuesta;
+  return clienteHttp.peticion<RespuestaApi>(config);
 }
 
 export default clienteApi;

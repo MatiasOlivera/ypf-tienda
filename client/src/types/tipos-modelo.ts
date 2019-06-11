@@ -4,6 +4,6 @@ export type ID = number;
 
 export interface Timestamps {
   created_at: string;
-  updated_at: string;
-  deleted_at: string;
+  updated_at: string | null;
+  deleted_at: string | null;
 }

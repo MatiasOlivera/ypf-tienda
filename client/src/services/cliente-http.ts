@@ -45,7 +45,7 @@ export class ClienteHttp {
   ): Request {
     const cabeceras = new Headers(config.cabeceras);
 
-    let requestInit: RequestInit = {
+    const requestInit: RequestInit = {
       method: config.metodo,
       headers: cabeceras,
       mode: 'cors',

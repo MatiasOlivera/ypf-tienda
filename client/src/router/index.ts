@@ -1,9 +1,23 @@
 import Vue from 'vue';
-import Router from 'vue-router';
+import Router, { RouteConfig } from 'vue-router';
 
-import { rutas } from './rutas';
+import InicioView from '../views/InicioView.vue';
+import { rutaInicio, rutaLogin } from './rutas';
 
 Vue.use(Router);
+
+export const rutas: RouteConfig[] = [
+  {
+    path: '/',
+    name: rutaInicio,
+    component: InicioView
+  },
+  {
+    path: '/iniciar-sesion',
+    name: rutaLogin,
+    component: () => import('@/views/LoginView.vue')
+  }
+];
 
 export default new Router({
   mode: 'history',
