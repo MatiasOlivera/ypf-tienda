@@ -25,21 +25,36 @@
         </b-navbar-nav>
 
         <b-navbar-nav class="ml-auto">
-          <b-nav-item-dropdown v-if="estaLogueado" :text="nombreUsuario" right>
-            <b-dropdown-item @click="clickPerfil">
+          <b-nav-item-dropdown
+            v-if="estaLogueado"
+            id="nombre-usuario"
+            :text="nombreUsuario"
+            right
+          >
+            <b-dropdown-item id="link-perfil" @click="clickPerfil">
               Perfil
             </b-dropdown-item>
-            <b-dropdown-item @click="clickCerrarSesion">
+            <b-dropdown-item id="link-cerrar-sesion" @click="clickCerrarSesion">
               Cerrar sesión
             </b-dropdown-item>
           </b-nav-item-dropdown>
 
           <template v-else>
-            <b-button size="sm" variant="link" @click="clickLogin">
+            <b-button
+              id="boton-iniciar-sesion"
+              size="sm"
+              variant="link"
+              @click="clickLogin"
+            >
               Iniciar sesión
             </b-button>
 
-            <b-button size="sm" variant="link" @click="clickRegistro">
+            <b-button
+              id="boton-registro"
+              size="sm"
+              variant="link"
+              @click="clickRegistro"
+            >
               Registrarse
             </b-button>
           </template>
@@ -75,23 +90,23 @@ export default Vue.extend({
 
   methods: {
     clickLogotipo(): void {
-      this.$emit('click-logotipo');
+      this.$emit('clickLogotipo');
     },
 
     clickLogin(): void {
-      this.$emit('click-login');
+      this.$emit('clickLogin');
     },
 
     clickRegistro(): void {
-      this.$emit('click-registro');
+      this.$emit('clickRegistro');
     },
 
     clickPerfil(): void {
-      this.$emit('click-perfil');
+      this.$emit('clickPerfil');
     },
 
     clickCerrarSesion(): void {
-      this.$emit('click-cerrar-sesion');
+      this.$emit('clickCerrarSesion');
     }
   }
 });

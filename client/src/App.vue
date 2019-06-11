@@ -3,9 +3,9 @@
     <LaCabecera
       :esta-logueado="estaLogueado"
       :nombre-usuario="nombreUsuario"
-      @click-logotipo="irAInicio"
-      @click-login="irAIniciarSesion"
-      @click-cerrar-sesion="cerrarSesion"
+      @clickLogotipo="irAInicio"
+      @clickLogin="irAIniciarSesion"
+      @clickCerrarSesion="cerrarSesion"
     />
 
     <RouterView id="contenido" />
