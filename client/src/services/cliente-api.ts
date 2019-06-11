@@ -110,7 +110,6 @@ async function renovarToken(): Promise<string | null> {
         fechaExpiracion
       } = respuesta.datos.autenticacion;
 
-      const servicioToken = new ServicioToken();
       servicioToken.setToken(tipoToken, _token);
       servicioToken.setFechaExpiracion(fechaExpiracion);
 
