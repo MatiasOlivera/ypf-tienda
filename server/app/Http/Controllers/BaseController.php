@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -52,11 +53,13 @@ class BaseController
      * Guarda una instancia en la BD.
      *
      * @param array $parametros
-     * @param array $nombres
+     * @param string|array $nombre
      * @return JsonResponse
      */
-    public function store(array $parametros, array $nombres): JsonResponse
+    public function store(array $parametros, $nombre): JsonResponse
     {
+        $nombres = $this->getNombres($nombre);
+
         try {
             $nombreModelo = "App\\{$parametros['modelo']}";
             $instancia = new $nombreModelo;
@@ -91,11 +94,13 @@ class BaseController
      * Actualizar la instancia específica en la BD.
      *
      * @param array $parametros
-     * @param array $nombres
+     * @param array $nombre
      * @return JsonResponse
      */
-    public function update(array $parametros, array $nombres): JsonResponse
+    public function update(array $parametros, array $nombre): JsonResponse
     {
+        $nombres = $this->getNombres($nombre);
+
         try {
             $instancia = $parametros['instancia'];
             $instancia->fill($parametros['inputs']);
@@ -117,11 +122,13 @@ class BaseController
      * Elimina la instancia específica de la BD
      *
      * @param Model $instancia
-     * @param array $nombres
+     * @param string|array $nombre
      * @return JsonResponse
      */
-    public function destroy($instancia, array $nombres): JsonResponse
+    public function destroy($instancia, $nombre): JsonResponse
     {
+        $nombres = $this->getNombres($nombre);
+
         try {
             $eliminado = $instancia->delete();
 
@@ -143,11 +150,13 @@ class BaseController
      *  Restaurar la instancia que ha sido eliminada
      *
      * @param Model $instancia
-     * @param array $nombres
+     * @param string|array $nombre
      * @return JsonResponse
      */
-    public function restore($instancia, array $nombres): JsonResponse
+    public function restore($instancia, $nombre): JsonResponse
     {
+        $nombres = $this->getNombres($nombre);
+
         try {
             $restaurada = $instancia->restore();
 
@@ -163,5 +172,34 @@ class BaseController
 
             return Respuesta::error($mensajeError, 500);
         }
+    }
+
+    /**
+     * Genera un objeto nombres o devuelve el objeto original
+     *
+     * @param string|array $nombre El nombre del modelo o los nombres utilizados en los mensajes éxito y error
+     * @return array Un objeto con los nombres
+     */
+    private function getNombres($nombre): array
+    {
+        if (is_string($nombre)) {
+            $nombres['exito'] = $nombre;
+            $nombres['error'] = $nombre;
+            return $nombres;
+        }
+
+        if (is_array($nombre)) {
+            if (!array_key_exists('exito', $nombre)) {
+                throw new Exception("El argumento nombre debe tener la clave exito");
+            }
+
+            if (!array_key_exists('error', $nombre)) {
+                throw new Exception("El argumento nombre debe tener la clave error");
+            }
+
+            return $nombre;
+        }
+
+        throw new Exception("El argumento nombre debe ser string o array");
     }
 }

@@ -2,11 +2,12 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Http\Controllers\BaseController;
-use Illuminate\Support\Facades\Hash;
 use App\User;
+use Exception;
+use Tests\TestCase;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\BaseController;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class BaseControllerTest extends TestCase
 {
@@ -184,7 +185,7 @@ class BaseControllerTest extends TestCase
     {
         $controller = new BaseController('usuario', 'usuarios');
         $parametros = ['modelo' => 'NoExiste'];
-        $nombres = ['error' => 'al usuario'];
+        $nombres = ['exito' => 'El usuario', 'error' => 'al usuario'];
         $respuesta = $controller->store($parametros, $nombres);
 
         $status = $respuesta->status();
@@ -279,7 +280,7 @@ class BaseControllerTest extends TestCase
     {
         $controller = new BaseController('usuario', 'usuarios');
         $parametros = ['instancia' => 'NoExiste'];
-        $nombres = ['error' => 'al usuario'];
+        $nombres = ['exito' => 'El usuario', 'error' => 'al usuario'];
         $respuesta = $controller->update($parametros, $nombres);
 
         $status = $respuesta->status();
@@ -345,7 +346,7 @@ class BaseControllerTest extends TestCase
     {
         $controller = new BaseController('usuario', 'usuarios');
         $parametros = ['instancia' => 'NoExiste'];
-        $nombres = ['error' => 'al usuario'];
+        $nombres = ['exito' => 'El usuario', 'error' => 'al usuario'];
         $respuesta = $controller->destroy($parametros, $nombres);
 
         $status = $respuesta->status();
@@ -411,7 +412,7 @@ class BaseControllerTest extends TestCase
     {
         $controller = new BaseController('usuario', 'usuarios');
         $parametros = ['instancia' => 'NoExiste'];
-        $nombres = ['error' => 'al usuario'];
+        $nombres = ['exito' => 'El usuario', 'error' => 'al usuario'];
         $respuesta = $controller->restore($parametros, $nombres);
 
         $status = $respuesta->status();
@@ -427,5 +428,98 @@ class BaseControllerTest extends TestCase
 
         $this->assertArrayHasKey('mensaje', $datos);
         $this->assertEquals($mensaje, $datos['mensaje']);
+    }
+
+    public function testDeberiaUtilizarElMismoNombreEnAmbosMensajes()
+    {
+        $parametros = [
+            'modelo' => 'User',
+            'inputs' => [
+                'name' => 'John',
+                'email' => 'John@email.com',
+                'password' => Hash::make(12345678)
+            ]
+        ];
+
+        $nombre = 'El usuario Juan';
+
+        $controller = new BaseController('usuario', 'usuarios');
+        $respuesta = $controller->store($parametros, $nombre);
+        $datos = $respuesta->getData(true);
+
+        $mensaje = [
+            'tipo' => 'exito',
+            'codigo' => 'GUARDADO',
+            'descripcion' => 'El usuario Juan se ha creado'
+        ];
+
+        $this->assertArrayHasKey('mensaje', $datos);
+        $this->assertEquals($mensaje, $datos['mensaje']);
+    }
+
+    public function testDeberiaUtilizarNombresDistintosEnCadaMensaje()
+    {
+        $parametros = [
+            'modelo' => 'User',
+            'inputs' => [
+                'name' => 'John',
+                'email' => 'John@email.com',
+                'password' => Hash::make(12345678)
+            ]
+        ];
+
+        $nombres = [
+            'exito' => 'El usuario Juan',
+            'error' => 'al usuario Juan'
+        ];
+
+        $controller = new BaseController('usuario', 'usuarios');
+        $respuesta = $controller->store($parametros, $nombres);
+        $datos = $respuesta->getData(true);
+
+        $mensaje = [
+            'tipo' => 'exito',
+            'codigo' => 'GUARDADO',
+            'descripcion' => 'El usuario Juan se ha creado'
+        ];
+
+        $this->assertArrayHasKey('mensaje', $datos);
+        $this->assertEquals($mensaje, $datos['mensaje']);
+    }
+
+    public function testDeberiaLanzarUnaExcepcionCuandoNoExistaLaClaveExito()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("El argumento nombre debe tener la clave exito");
+
+        $parametros = [];
+        $nombres = ['error' => 'al usuario Juan'];
+
+        $controller = new BaseController('usuario', 'usuarios');
+        $controller->store($parametros, $nombres);
+    }
+
+    public function testDeberiaLanzarUnaExcepcionCuandoNoExistaLaClaveError()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("El argumento nombre debe tener la clave error");
+
+        $parametros = [];
+        $nombres = ['exito' => 'El usuario Juan'];
+
+        $controller = new BaseController('usuario', 'usuarios');
+        $controller->store($parametros, $nombres);
+    }
+
+    public function testDeberiaLanzarUnaExcepcionCuandoNombreNoEsUnTipoValido()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("El argumento nombre debe ser string o array");
+
+        $parametros = [];
+        $nombre = 123;
+
+        $controller = new BaseController('usuario', 'usuarios');
+        $controller->store($parametros, $nombre);
     }
 }
