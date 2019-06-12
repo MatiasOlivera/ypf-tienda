@@ -58,9 +58,9 @@ export async function clienteApi<RespuestaApi extends Respuesta>(
   const servicioToken = new ServicioToken();
   let token = servicioToken.getToken();
 
-  const renovacion = servicioToken.esPosibleRenovarToken();
+  const estado = servicioToken.getEstadoToken();
 
-  if (renovacion === 'RENOVAR') {
+  if (estado === 'POSIBLE_RENOVAR') {
     try {
       token = await _renovarToken();
     } catch (error) {
@@ -68,7 +68,7 @@ export async function clienteApi<RespuestaApi extends Respuesta>(
     }
   }
 
-  if (renovacion === 'LOGIN' || !token) {
+  if (estado === 'EXPIRO' || !token) {
     router.push({ name: rutaLogin });
 
     const respuesta: RespuestaNoAutorizado = {

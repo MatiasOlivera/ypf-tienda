@@ -20,9 +20,9 @@ export class ServicioToken {
     return this.almacen.setItem('fecha-expiracion', fecha);
   }
 
-  public esPosibleRenovarToken(): Renovacion {
+  public getEstadoToken(): EstadoToken {
     const fecha = this.getFechaExpiracion();
-    if (fecha === null) return 'LOGIN';
+    if (fecha === null) return 'NO_TOKEN';
 
     dayjs.extend(utc);
 
@@ -31,17 +31,17 @@ export class ServicioToken {
     const renovarAPartirDe = fechaExpiracion.clone().subtract(30, 'minute');
 
     if (fechaActual.isBefore(renovarAPartirDe)) {
-      return 'NO_RENOVAR';
+      return 'VALIDO';
     }
 
     if (
       fechaActual.isAfter(renovarAPartirDe) &&
       fechaActual.isBefore(fechaExpiracion)
     ) {
-      return 'RENOVAR';
+      return 'POSIBLE_RENOVAR';
     }
 
-    return 'LOGIN';
+    return 'EXPIRO';
   }
 
   public limpiar(): void {
@@ -54,6 +54,6 @@ export class ServicioToken {
   }
 }
 
-export type Renovacion = 'NO_RENOVAR' | 'RENOVAR' | 'LOGIN';
+export type EstadoToken = 'NO_TOKEN' | 'VALIDO' | 'POSIBLE_RENOVAR' | 'EXPIRO';
 
 export default ServicioToken;
