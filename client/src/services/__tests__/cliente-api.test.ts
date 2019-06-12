@@ -174,7 +174,7 @@ describe('Cliente API', () => {
       datos: null
     });
     expect(window.fetch).toHaveBeenCalledTimes(0);
-    expect(router.currentRoute.name).toBe('inicio');
+    expect(router.currentRoute.name).toBe('login');
   });
 });
 

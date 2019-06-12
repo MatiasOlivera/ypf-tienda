@@ -1,4 +1,4 @@
-import { rutaInicio } from '@/router/rutas';
+import { rutaLogin } from '@/router/rutas';
 
 import router from '../router';
 import { RespuestaToken } from '../types/token-tipos';
@@ -69,7 +69,7 @@ export async function clienteApi<RespuestaApi extends Respuesta>(
   }
 
   if (renovacion === 'LOGIN' || !token) {
-    router.push({ name: rutaInicio });
+    router.push({ name: rutaLogin });
 
     const respuesta: RespuestaNoAutorizado = {
       ok: false,
