@@ -23,14 +23,10 @@ class BaseControllerTest extends TestCase
                 'password' => Hash::make(12345678)
             ]
         ];
-
-        $nombres = [
-            'exito' => 'El usuario John',
-            'error' => 'al usuario John'
-        ];
+        $nombre = 'El usuario John';
 
         $controller = new BaseController('usuario', 'usuarios');
-        return $controller->store($parametros, $nombres);
+        return $controller->store($parametros, $nombre);
     }
 
     /**
@@ -169,7 +165,7 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'error',
             'codigo' => 'NO_GUARDADO',
-            'descripcion' => 'Hubo un error al intentar guardar al usuario John'
+            'descripcion' => 'El usuario John no ha sido creado debido a un error interno'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
@@ -185,8 +181,8 @@ class BaseControllerTest extends TestCase
     {
         $controller = new BaseController('usuario', 'usuarios');
         $parametros = ['modelo' => 'NoExiste'];
-        $nombres = ['exito' => 'El usuario', 'error' => 'al usuario'];
-        $respuesta = $controller->store($parametros, $nombres);
+        $nombre = 'El usuario John';
+        $respuesta = $controller->store($parametros, $nombre);
 
         $status = $respuesta->status();
         $datos = $respuesta->getData(true);
@@ -196,7 +192,7 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'error',
             'codigo' => 'NO_GUARDADO',
-            'descripcion' => 'Hubo un error al intentar guardar al usuario'
+            'descripcion' => 'El usuario John no ha sido creado debido a un error interno'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
@@ -244,11 +240,7 @@ class BaseControllerTest extends TestCase
                 'email' => 'JohnDoe@email.com'
             ]
         ];
-
-        $nombres =  [
-            'exito' => 'John',
-            'error' => 'a John'
-        ];
+        $nombres = ['exito' => 'El usuario Johny', 'error' => 'El usuario John'];
 
         $controller = new BaseController('usuario', 'usuarios');
         $respuestaActualizado = $controller->update($parametros, $nombres);
@@ -264,7 +256,7 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'exito',
             'codigo' => 'ACTUALIZADO',
-            'descripcion' => 'John ha sido modificado'
+            'descripcion' => 'El usuario Johny ha sido modificado'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
@@ -280,7 +272,7 @@ class BaseControllerTest extends TestCase
     {
         $controller = new BaseController('usuario', 'usuarios');
         $parametros = ['instancia' => 'NoExiste'];
-        $nombres = ['exito' => 'El usuario', 'error' => 'al usuario'];
+        $nombres = ['exito' => 'El usuario Johny', 'error' => 'El usuario John'];
         $respuesta = $controller->update($parametros, $nombres);
 
         $status = $respuesta->status();
@@ -291,7 +283,7 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'error',
             'codigo' => 'NO_ACTUALIZADO',
-            'descripcion' => 'Hubo un error al intentar modificar al usuario'
+            'descripcion' => 'El usuario John no ha sido actualizado debido a un error interno'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
@@ -310,14 +302,10 @@ class BaseControllerTest extends TestCase
         $id = $respuestaCreado->getData(true)['usuario']['id'];
 
         $instancia = User::find($id);
-
-        $nombres = [
-            'exito' => 'John',
-            'error' => 'a John'
-        ];
+        $nombre = 'El usuario John';
 
         $controller = new BaseController('usuario', 'usuarios');
-        $respuestaMostrar = $controller->destroy($instancia, $nombres);
+        $respuestaMostrar = $controller->destroy($instancia, $nombre);
 
         $status = $respuestaMostrar->status();
         $datos = $respuestaMostrar->getData(true);
@@ -330,7 +318,7 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'exito',
             'codigo' => 'ELIMINADO',
-            'descripcion' => 'John ha sido eliminado'
+            'descripcion' => 'El usuario John ha sido eliminado'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
@@ -346,8 +334,8 @@ class BaseControllerTest extends TestCase
     {
         $controller = new BaseController('usuario', 'usuarios');
         $parametros = ['instancia' => 'NoExiste'];
-        $nombres = ['exito' => 'El usuario', 'error' => 'al usuario'];
-        $respuesta = $controller->destroy($parametros, $nombres);
+        $nombre = 'El usuario John';
+        $respuesta = $controller->destroy($parametros, $nombre);
 
         $status = $respuesta->status();
         $datos = $respuesta->getData(true);
@@ -357,7 +345,7 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'error',
             'codigo' => 'NO_ELIMINADO',
-            'descripcion' => 'Hubo un error al intentar eliminar al usuario'
+            'descripcion' => 'El usuario John no ha sido eliminado debido a un error interno'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
@@ -376,14 +364,10 @@ class BaseControllerTest extends TestCase
         $id = $respuestaCreado->getData(true)['usuario']['id'];
 
         $instancia = User::find($id);
-
-        $nombres = [
-            'exito' => 'John',
-            'error' => 'a John'
-        ];
+        $nombre = 'El usuario John';
 
         $controller = new BaseController('usuario', 'usuarios');
-        $respuestaMostrar = $controller->restore($instancia, $nombres);
+        $respuestaMostrar = $controller->restore($instancia, $nombre);
 
         $status = $respuestaMostrar->status();
         $datos = $respuestaMostrar->getData(true);
@@ -396,7 +380,7 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'exito',
             'codigo' => 'RESTAURADO',
-            'descripcion' => 'John ha sido dado de alta'
+            'descripcion' =>  'El usuario John ha sido dado de alta'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
@@ -412,8 +396,8 @@ class BaseControllerTest extends TestCase
     {
         $controller = new BaseController('usuario', 'usuarios');
         $parametros = ['instancia' => 'NoExiste'];
-        $nombres = ['exito' => 'El usuario', 'error' => 'al usuario'];
-        $respuesta = $controller->restore($parametros, $nombres);
+        $nombre = 'El usuario John';
+        $respuesta = $controller->restore($parametros, $nombre);
 
         $status = $respuesta->status();
         $datos = $respuesta->getData(true);
@@ -423,7 +407,7 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'error',
             'codigo' => 'NO_RESTAURADO',
-            'descripcion' => 'Hubo un error al intentar dar de alta al usuario'
+            'descripcion' => 'El usuario John no ha sido dado de alta debido a un error interno'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
@@ -440,7 +424,6 @@ class BaseControllerTest extends TestCase
                 'password' => Hash::make(12345678)
             ]
         ];
-
         $nombre = 'El usuario Juan';
 
         $controller = new BaseController('usuario', 'usuarios');
@@ -470,7 +453,7 @@ class BaseControllerTest extends TestCase
 
         $nombres = [
             'exito' => 'El usuario Juan',
-            'error' => 'al usuario Juan'
+            'error' => 'El usuario Juan'
         ];
 
         $controller = new BaseController('usuario', 'usuarios');
@@ -493,7 +476,7 @@ class BaseControllerTest extends TestCase
         $this->expectExceptionMessage("El argumento nombre debe tener la clave exito");
 
         $parametros = [];
-        $nombres = ['error' => 'al usuario Juan'];
+        $nombres = ['error' => 'El usuario Juan'];
 
         $controller = new BaseController('usuario', 'usuarios');
         $controller->store($parametros, $nombres);
