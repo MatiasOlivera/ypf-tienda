@@ -109,13 +109,14 @@ Route::middleware('jwt.auth')->group(function () {
 
         Route::post('/{cliente}/emails', 'ClienteMailController@store')->name('ClienteMails.store');
 
-        Route::get('/emails/{mail}', 'ClienteMailController@show')->name('ClienteMails.show');
+        Route::get('/{cliente}/emails/{mail}', 'ClienteMailController@show')->name('ClienteMails.show');
 
-        Route::put('/emails/{mail}', 'ClienteMailController@update')->name('ClienteMails.update');
+        Route::put('/{cliente}/emails/{mail}', 'ClienteMailController@update')->name('ClienteMails.update');
 
-        Route::delete('/emails/{mail}', 'ClienteMailController@destroy')->name('ClienteMails.destroy');
+        Route::delete('/{cliente}/emails/{mail}', 'ClienteMailController@destroy')->name('ClienteMails.destroy');
 
-        Route::post('/emails/{mail}/restaurar/', 'ClienteMailController@restore')->name('ClienteMails.restore');
+        Route::post('/{cliente}/emails/{mail}/restaurar/', 'ClienteMailController@restore')
+            ->name('ClienteMails.restore');
 
         /*
          *  Razón social

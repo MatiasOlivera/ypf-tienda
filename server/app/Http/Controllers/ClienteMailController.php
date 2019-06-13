@@ -73,10 +73,11 @@ class ClienteMailController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param App\Cliente $cliente
      * @param  \App\ClienteMail  $mail
      * @return \Illuminate\Http\Response
      */
-    public function show(ClienteMail $mail)
+    public function show(Cliente $cliente, ClienteMail $mail)
     {
         return $this->baseController->show($mail);
     }
@@ -85,10 +86,11 @@ class ClienteMailController extends Controller
      * Update the specified resource in storage.
      *
      * @param  App\Http\Requests\Cliente\Mail\ClienteMailRequest  $request
+     * @param App\Cliente $cliente
      * @param  \App\ClienteMail  $mail
      * @return \Illuminate\Http\Response
      */
-    public function update(ClienteMailRequest $request, ClienteMail $mail)
+    public function update(ClienteMailRequest $request, Cliente $cliente, ClienteMail $mail)
     {
         $email = $request->input('mail');
         $nombres = [
@@ -105,10 +107,11 @@ class ClienteMailController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param App\Cliente $cliente
      * @param  \App\ClienteMail  $mail
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ClienteMail $mail)
+    public function destroy(Cliente $cliente, ClienteMail $mail)
     {
         $email = $mail->mail;
         $nombre = "El email {$email}";
@@ -118,10 +121,11 @@ class ClienteMailController extends Controller
     /**
      * Restaurar el Mail que ha sido eliminado
      *
+     * @param App\Cliente $cliente
      * @param  \App\ClienteMail  $mail
      * @return \Illuminate\Http\Response
      */
-    public function restore(ClienteMail $mail)
+    public function restore(Cliente $cliente, ClienteMail $mail)
     {
         $email  = $mail->mail;
         $nombre = "El email {$email}";
