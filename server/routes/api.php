@@ -74,14 +74,16 @@ Route::middleware('jwt.auth')->group(function () {
 
         Route::post('/{cliente}/domicilios', 'ClienteDomicilioController@store')->name('ClienteDomicilio.store');
 
-        Route::get('/domicilios/{domicilio}', 'ClienteDomicilioController@show')->name('ClienteDomicilio.show');
+        Route::get('/{cliente}/domicilios/{domicilio}', 'ClienteDomicilioController@show')
+            ->name('ClienteDomicilio.show');
 
-        Route::put('/domicilios/{domicilio}', 'ClienteDomicilioController@update')->name('ClienteDomicilio.update');
+        Route::put('/{cliente}/domicilios/{domicilio}', 'ClienteDomicilioController@update')
+            ->name('ClienteDomicilio.update');
 
-        Route::delete('/domicilios/{domicilio}', 'ClienteDomicilioController@destroy')
+        Route::delete('/{cliente}/domicilios/{domicilio}', 'ClienteDomicilioController@destroy')
             ->name('ClienteDomicilio.destroy');
 
-        Route::post('/domicilios/{domicilio}/restaurar/', 'ClienteDomicilioController@restore')
+        Route::post('/{cliente}/domicilios/{domicilio}/restaurar/', 'ClienteDomicilioController@restore')
             ->name('ClienteDomicilio.restore');
 
         /*

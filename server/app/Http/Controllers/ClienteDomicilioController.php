@@ -22,8 +22,8 @@ class ClienteDomicilioController extends Controller
 
     /**
      * Display a listing of the resource.
-     * @param App\Cliente $cliente
      * @param  \Illuminate\Http\Request  $request
+     * @param App\Cliente $cliente
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request, Cliente $cliente)
@@ -41,8 +41,8 @@ class ClienteDomicilioController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     * @param App\Cliente $cliente
      * @param  App\Http\Requests\Cliente\Domicilio\ClienteDomicilioRequest $request
+     * @param App\Cliente $cliente
      * @return \Illuminate\Http\Response
      */
     public function store(ClienteDomicilioRequest $request, Cliente $cliente)
@@ -71,7 +71,7 @@ class ClienteDomicilioController extends Controller
      * @param  App\ClienteDomicilio  $domicilio
      * @return \Illuminate\Http\Response
      */
-    public function show(ClienteDomicilio $domicilio)
+    public function show(Cliente $cliente, ClienteDomicilio $domicilio)
     {
         $domicilio->localidad;
         return $this->baseController->show($domicilio);
@@ -81,10 +81,11 @@ class ClienteDomicilioController extends Controller
      * Update the specified resource in storage.
      *
      * @param  App\Http\Requests\Cliente\Domicilio\ClienteDomicilioRequest $request
+     * @param  App\Cliente $cliente
      * @param  App\ClienteDomicilio  $domicilio
      * @return \Illuminate\Http\Response
      */
-    public function update(ClienteDomicilioRequest $request, ClienteDomicilio $domicilio)
+    public function update(ClienteDomicilioRequest $request, Cliente $cliente, ClienteDomicilio $domicilio)
     {
         $inputs = $request->only('localidad_id', 'calle', 'numero', 'aclaracion');
         $nombres = [
@@ -101,10 +102,11 @@ class ClienteDomicilioController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param  App\Cliente $cliente
      * @param  App\ClienteDomicilio  $domicilio
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ClienteDomicilio $domicilio)
+    public function destroy(Cliente $cliente, ClienteDomicilio $domicilio)
     {
         $nombre  = "El domicilio {$domicilio->calle} {$domicilio->numero}";
         return $this->baseController->destroy($domicilio, $nombre);
@@ -113,10 +115,11 @@ class ClienteDomicilioController extends Controller
     /**
      * Restaurar el domicilio que ha sido eliminado
      *
+     * @param  App\Cliente $cliente
      * @param  App\ClienteDomicilio  $domicilio
      * @return \Illuminate\Http\Response
      */
-    public function restore(ClienteDomicilio $domicilio)
+    public function restore(Cliente $cliente, ClienteDomicilio $domicilio)
     {
         $nombre  = "El domicilio {$domicilio->calle} {$domicilio->numero}";
         return $this->baseController->restore($domicilio, $nombre);
