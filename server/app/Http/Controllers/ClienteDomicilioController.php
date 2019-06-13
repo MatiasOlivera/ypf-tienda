@@ -48,7 +48,7 @@ class ClienteDomicilioController extends Controller
     public function store(ClienteDomicilioRequest $request, Cliente $cliente)
     {
         $inputs = $request->only('localidad_id', 'calle', 'numero', 'aclaracion');
-        $nombre = "{$request->input('calle')}-{$request->input('numero')}";
+        $nombre = "El domicilio {$request->input('calle')} {$request->input('numero')}";
 
         try {
             $domicilio = new ClienteDomicilio($inputs);
@@ -87,12 +87,15 @@ class ClienteDomicilioController extends Controller
     public function update(ClienteDomicilioRequest $request, ClienteDomicilio $domicilio)
     {
         $inputs = $request->only('localidad_id', 'calle', 'numero', 'aclaracion');
-        $nombre = "{$request->input('calle')}-{$request->input('numero')}";
+        $nombres = [
+            "exito" => "El domicilio {$request->input('calle')} {$request->input('numero')}",
+            "error" => "El domicilio {$domicilio->calle} {$domicilio->numero}"
+        ];
         $parametros = [
             'inputs' => $inputs,
             'modelo' => $domicilio,
         ];
-        return $this->baseController->update($parametros, $nombre);
+        return $this->baseController->update($parametros, $nombres);
     }
 
     /**
@@ -103,7 +106,7 @@ class ClienteDomicilioController extends Controller
      */
     public function destroy(ClienteDomicilio $domicilio)
     {
-        $nombre  = "{$domicilio->calle}-{$domicilio->numero}";
+        $nombre  = "El domicilio {$domicilio->calle} {$domicilio->numero}";
         return $this->baseController->destroy($domicilio, $nombre);
     }
 
@@ -115,7 +118,7 @@ class ClienteDomicilioController extends Controller
      */
     public function restore(ClienteDomicilio $domicilio)
     {
-        $nombre  = "{$domicilio->calle}-{$domicilio->numero}";
+        $nombre  = "El domicilio {$domicilio->calle} {$domicilio->numero}";
         return $this->baseController->restore($domicilio, $nombre);
     }
 }
