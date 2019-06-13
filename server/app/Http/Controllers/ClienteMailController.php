@@ -36,7 +36,7 @@ class ClienteMailController extends Controller
             return Respuesta::exito($respuesta, null, 200);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
-            $mensajeError->obtenerTodos("E-Mail's");
+            $mensajeError->obtenerTodos($this->modeloPlural);
             return Respuesta::error($mensajeError, 500);
         }
     }
@@ -50,19 +50,21 @@ class ClienteMailController extends Controller
     public function store(ClienteMailRequest $request, Cliente $cliente)
     {
         $email  = $request->input('mail');
+        $nombre = "El email {$email}";
+
         try {
             $inputs = ['mail' => $email];
             $mail   = new ClienteMail($inputs);
             $mail   = $cliente->mails()->save($mail);
 
             $mensajeExito = new MensajeExito();
-            $mensajeExito->guardar($email);
+            $mensajeExito->guardar($nombre);
 
             $respuesta      = [$this->modeloSingular => $mail];
             return Respuesta::exito($respuesta, $mensajeExito, 200);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
-            $mensajeError->guardar($this->modeloSingular);
+            $mensajeError->guardar($nombre);
 
             return Respuesta::error($mensajeError, 500);
         }
@@ -88,12 +90,16 @@ class ClienteMailController extends Controller
      */
     public function update(ClienteMailRequest $request, ClienteMail $mail)
     {
-        $email      = $request->input('mail');
+        $email = $request->input('mail');
+        $nombres = [
+            "exito" => "El email {$email}",
+            "error" => "El email {$mail->mail}"
+        ];
         $parametros = [
             'inputs' => $email,
             'modelo' => $mail,
         ];
-        return $this->baseController->update($parametros, $email);
+        return $this->baseController->update($parametros, $nombres);
     }
 
     /**
@@ -105,7 +111,8 @@ class ClienteMailController extends Controller
     public function destroy(ClienteMail $mail)
     {
         $email = $mail->mail;
-        return $this->baseController->destroy($mail, $email);
+        $nombre = "El email {$email}";
+        return $this->baseController->destroy($mail, $nombre);
     }
 
     /**
@@ -117,6 +124,7 @@ class ClienteMailController extends Controller
     public function restore(ClienteMail $mail)
     {
         $email  = $mail->mail;
-        return $this->baseController->restore($mail, $email);
+        $nombre = "El email {$email}";
+        return $this->baseController->restore($mail, $nombre);
     }
 }
