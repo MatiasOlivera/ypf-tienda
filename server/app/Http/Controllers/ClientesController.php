@@ -94,7 +94,7 @@ class ClientesController extends Controller
         $inputs = $request->only('documento', 'nombre', 'observacion');
         $parametros = [
             'inputs' => $inputs,
-            'modelo' => $cliente,
+            'instancia' => $cliente,
         ];
         return $this->baseController->update($parametros, $nombres);
     }
