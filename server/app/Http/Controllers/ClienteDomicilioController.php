@@ -94,7 +94,7 @@ class ClienteDomicilioController extends Controller
         ];
         $parametros = [
             'inputs' => $inputs,
-            'modelo' => $domicilio,
+            'instancia' => $domicilio,
         ];
         return $this->baseController->update($parametros, $nombres);
     }
