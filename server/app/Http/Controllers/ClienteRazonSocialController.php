@@ -35,7 +35,7 @@ class ClienteRazonSocialController extends Controller
             return Respuesta::exito($respuesta, null, 200);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
-            $mensajeError->obtenerTodos('Razones Sociales');
+            $mensajeError->obtenerTodos('razones sociales');
             return Respuesta::error($mensajeError, 500);
         }
     }
@@ -48,7 +48,7 @@ class ClienteRazonSocialController extends Controller
      */
     public function store(ClienteRazonSocialRequest $request, Cliente $cliente)
     {
-        $nombre  = $request->input('denominacion');
+        $nombre = "La razón social {$request->input('denominacion')}";
         try {
             $inputs         = $request->only(
                 'denominacion',
@@ -93,7 +93,10 @@ class ClienteRazonSocialController extends Controller
      */
     public function update(ClienteRazonSocialRequest $request, ClienteRazonSocial $razonSocial)
     {
-        $denominacionNew  = $request->input('denominacion');
+        $nombres = [
+            'exito' => "La razón social {$request->input('denominacion')}",
+            'error' => "La razón social {$razonSocial->denominacion}"
+        ];
         $inputs     = $request->only(
             'denominacion',
             'cuit',
@@ -108,7 +111,7 @@ class ClienteRazonSocialController extends Controller
             'inputs' => $inputs,
             'modelo' => $razonSocial,
         ];
-        return $this->baseController->update($parametros, $denominacionNew);
+        return $this->baseController->update($parametros, $nombres);
     }
 
     /**
@@ -119,7 +122,7 @@ class ClienteRazonSocialController extends Controller
      */
     public function destroy(ClienteRazonSocial $razonSocial)
     {
-        $nombre  = $razonSocial->denominacion;
+        $nombre = "La razón social $razonSocial->denominacion";
         return $this->baseController->destroy($razonSocial, $nombre);
     }
 
@@ -131,7 +134,7 @@ class ClienteRazonSocialController extends Controller
      */
     public function restore(ClienteRazonSocial $razonSocial)
     {
-        $nombre  = $razonSocial->denominacion;
+        $nombre = "La razón social $razonSocial->denominacion";
         return $this->baseController->restore($razonSocial, $nombre);
     }
 
@@ -143,8 +146,8 @@ class ClienteRazonSocialController extends Controller
      */
     public function asociar(Cliente $cliente, ClienteRazonSocial $razonSocial)
     {
-        $exito      = "Se asocio con exito la Razon Social {$razonSocial->denominacion} al Cliente {$cliente->nombre}";
-        $error      = "No se pudo asociar la Razon Social {$razonSocial->denominacion} al Cliente {$cliente->nombre}";
+        $exito = "Se asocio con éxito la razón social {$razonSocial->denominacion} al cliente {$cliente->nombre}";
+        $error = "No se pudo asociar la razón social {$razonSocial->denominacion} al cliente {$cliente->nombre}";
 
         try {
             $razonId = $razonSocial->id_razon;
@@ -169,8 +172,8 @@ class ClienteRazonSocialController extends Controller
      */
     public function desasociar(Cliente $cliente, ClienteRazonSocial $razonSocial)
     {
-        $exito = "Se ha desasociado la Razon Social {$razonSocial->denominacion} del Cliente {$cliente->nombre}";
-        $error = "No se pudo desasociar la Razon Social {$razonSocial->denominacion} del Cliente {$cliente->nombre}";
+        $exito = "Se ha desasociado la razón social {$razonSocial->denominacion} del cliente {$cliente->nombre}";
+        $error = "No se pudo desasociar la razón social {$razonSocial->denominacion} del cliente {$cliente->nombre}";
 
         try {
             $razonId = $razonSocial->id_razon;
