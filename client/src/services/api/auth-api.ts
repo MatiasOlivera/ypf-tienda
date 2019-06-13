@@ -11,7 +11,7 @@ import { RespuestaToken } from '../../types/token-tipos';
 import { Usuario } from '../../types/usuario-tipos';
 import { clienteApi, clienteApiSinToken } from '../cliente-api';
 import { Respuesta } from '../cliente-http';
-import { ServicioToken } from '../token-servicio';
+import { ServicioAutenticacion } from '../servicio-autenticacion';
 
 type CredencialesInvalidas = Respuesta<false, 401, MensajeError>;
 export type RespuestaLogin =
@@ -33,9 +33,9 @@ export async function login(
   if (respuesta.ok) {
     const { token, tipoToken, fechaExpiracion } = respuesta.datos.autenticacion;
 
-    const servicioToken = new ServicioToken();
-    servicioToken.setToken(tipoToken, token);
-    servicioToken.setFechaExpiracion(fechaExpiracion);
+    const autenticacion = new ServicioAutenticacion();
+    autenticacion.setToken(tipoToken, token);
+    autenticacion.setFechaExpiracion(fechaExpiracion);
   }
 
   return respuesta;
@@ -63,8 +63,8 @@ export async function logout(): Promise<RespuestaLogout> {
     metodo: 'POST'
   });
 
-  const servicioToken = new ServicioToken();
-  servicioToken.limpiar();
+  const autenticacion = new ServicioAutenticacion();
+  autenticacion.limpiar();
 
   return respuesta;
 }

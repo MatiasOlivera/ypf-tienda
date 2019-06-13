@@ -3,7 +3,7 @@ import utc from 'dayjs/plugin/utc';
 
 import { Almacen, ServicioAlmacenamiento } from './almacen-servicio';
 
-export class ServicioToken {
+export class ServicioAutenticacion {
   constructor(private almacen: ServicioAlmacenamiento = new Almacen()) {
     this.almacen = almacen;
   }
@@ -59,4 +59,4 @@ type FechaExpiracion = string;
 
 export type EstadoToken = 'NO_TOKEN' | 'VALIDO' | 'POSIBLE_RENOVAR' | 'EXPIRO';
 
-export default ServicioToken;
+export default ServicioAutenticacion;

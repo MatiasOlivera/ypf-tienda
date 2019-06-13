@@ -8,7 +8,7 @@ import { TokenDatos } from '../../types/token-tipos';
 import { respuestaFetchMock } from '../__mocks__/fetch.mock';
 import { productos } from '../__mocks__/productos.mock';
 import { clienteApi, clienteApiSinToken } from '../cliente-api';
-import { ServicioToken } from '../token-servicio';
+import { ServicioAutenticacion } from '../servicio-autenticacion';
 
 describe('Cliente API', () => {
   /**
@@ -25,8 +25,8 @@ describe('Cliente API', () => {
   });
 
   beforeEach(() => {
-    const servicioToken = new ServicioToken();
-    servicioToken.limpiar();
+    const autenticacion = new ServicioAutenticacion();
+    autenticacion.limpiar();
   });
 
   test('debería hacer una petición sin renovar el token', async () => {
@@ -35,9 +35,9 @@ describe('Cliente API', () => {
       .add(31, 'minute')
       .toISOString();
 
-    const servicioToken = new ServicioToken();
-    servicioToken.setToken('bearer', 'token');
-    servicioToken.setFechaExpiracion(fechaExpiracion);
+    const autenticacion = new ServicioAutenticacion();
+    autenticacion.setToken('bearer', 'token');
+    autenticacion.setFechaExpiracion(fechaExpiracion);
 
     const respuesta = await clienteApi({
       url: 'productos',
@@ -77,9 +77,9 @@ describe('Cliente API', () => {
       .add(20, 'minute')
       .toISOString();
 
-    const servicioToken = new ServicioToken();
-    servicioToken.setToken('bearer', 'token');
-    servicioToken.setFechaExpiracion(fechaExpiracion);
+    const autenticacion = new ServicioAutenticacion();
+    autenticacion.setToken('bearer', 'token');
+    autenticacion.setFechaExpiracion(fechaExpiracion);
 
     const respuestaToken: TokenDatos = {
       autenticacion: {
@@ -154,9 +154,9 @@ describe('Cliente API', () => {
       .subtract(31, 'minute')
       .toISOString();
 
-    const servicioToken = new ServicioToken();
-    servicioToken.setToken('bearer', 'token');
-    servicioToken.setFechaExpiracion(fechaExpiracion);
+    const autenticacion = new ServicioAutenticacion();
+    autenticacion.setToken('bearer', 'token');
+    autenticacion.setFechaExpiracion(fechaExpiracion);
 
     const respuesta = await clienteApi({
       url: 'productos',
