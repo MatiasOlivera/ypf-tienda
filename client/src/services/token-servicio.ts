@@ -8,12 +8,12 @@ export class ServicioToken {
     this.almacen = almacen;
   }
 
-  public setToken(tipo: string, token: string): boolean {
+  public setToken(tipo: string, token: Token): boolean {
     return this.almacen.setItem('token', `${tipo} ${token}`);
   }
 
-  public getToken(): string | null {
-    return this.almacen.getItem('token');
+  public getToken(): Token | null {
+    return this.almacen.getItem<Token>('token');
   }
 
   public setFechaExpiracion(fecha: string): boolean {
@@ -49,10 +49,13 @@ export class ServicioToken {
     this.almacen.eliminarItem('fecha-expiracion');
   }
 
-  private getFechaExpiracion(): string | null {
-    return this.almacen.getItem('fecha-expiracion');
+  private getFechaExpiracion(): FechaExpiracion | null {
+    return this.almacen.getItem<FechaExpiracion>('fecha-expiracion');
   }
 }
+
+type Token = string;
+type FechaExpiracion = string;
 
 export type EstadoToken = 'NO_TOKEN' | 'VALIDO' | 'POSIBLE_RENOVAR' | 'EXPIRO';
 
