@@ -47,7 +47,7 @@ class AuthController extends Controller
             return Respuesta::exito([], $mensaje, 200);
         } catch (\Throwable $th) {
             $mensaje = new MensajeError('Hubo un problema al intentar cerrar la sesión', 'NO_LOGOUT');
-            return Respuesta::error($mensaje, 200);
+            return Respuesta::error($mensaje, 500);
         }
     }
 

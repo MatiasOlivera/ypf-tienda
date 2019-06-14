@@ -1,4 +1,4 @@
-import { ID, Modelo } from './comun-tipos';
+import { ID, Modelo } from './tipos-modelo';
 
 interface ModeloUsuario {
   name: string;

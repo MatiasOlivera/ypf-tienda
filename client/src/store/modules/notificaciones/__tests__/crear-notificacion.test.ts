@@ -1,3 +1,4 @@
+import { Respuesta } from '@/services/cliente-http';
 import { MODULO_NOTIFICACIONES } from '@/store/types/modulos';
 import Vue from 'vue';
 import Vuex from 'vuex';
@@ -15,8 +16,14 @@ describe('crearNotificacion', () => {
     });
 
     const vue = new Vue({ store });
+    const respuesta: Respuesta = {
+      ok: true,
+      estado: 200,
+      textoEstado: 'OK',
+      datos: { mensaje: notificacion }
+    };
 
-    crearNotificacion(notificacion, store);
+    crearNotificacion(store.dispatch, respuesta);
 
     const actual = vue.$store.state.notificaciones.notificaciones;
     const esperado = [notificacion];

@@ -20,8 +20,16 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-use-before-define': 'off',
+
+    // Vue.js
     'vue/max-attributes-per-line': 'off',
-    'vue/html-self-closing': 'off'
+    'vue/html-self-closing': 'off',
+
+    // Import
+    'import/named': 'off',
+    'import/no-unresolved': 'off',
+    'import/extensions': 'off'
   },
   parserOptions: {
     parser: '@typescript-eslint/parser'
