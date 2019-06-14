@@ -121,17 +121,18 @@ Route::middleware('jwt.auth')->group(function () {
         /*
          *  Razón social
          */
-        Route::get('/{cliente}/razones', 'ClienteRazonSocialController@index')->name('RazonesCliente');
+        Route::group(['prefix' => '/{cliente}/razones',], function () {
+            Route::get('/', 'ClienteRazonSocialController@index')->name('RazonesCliente');
 
-        Route::post('/{cliente}/razones', 'ClienteRazonSocialController@store')->name('CrearRazonCliente');
+            Route::post('/', 'ClienteRazonSocialController@store')->name('CrearRazonCliente');
 
-        Route::post('/{cliente}/razones/{razonSocial}/asociar', 'ClienteRazonSocialController@asociar')
-            ->name('AsociarRazonesCliente');
+            Route::post('/{razonSocial}/asociar', 'ClienteRazonSocialController@asociar')
+                ->name('AsociarRazonesCliente');
 
-        Route::delete('/{cliente}/razones/{razonSocial}/desasociar', 'ClienteRazonSocialController@desasociar')
-            ->name('DesasociarRazonesCliente');
+            Route::delete('/{razonSocial}/desasociar', 'ClienteRazonSocialController@desasociar')
+                ->name('DesasociarRazonesCliente');
 
-        Route::group(['prefix' => '/razones',], function () {
+
             Route::get('/{razonSocial}', 'ClienteRazonSocialController@show')->name('ClienteRazones.show');
 
             Route::put('/{razonSocial}', 'ClienteRazonSocialController@update')->name('ClienteRazones.update');

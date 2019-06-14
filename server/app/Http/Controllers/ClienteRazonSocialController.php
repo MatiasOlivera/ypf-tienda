@@ -75,10 +75,11 @@ class ClienteRazonSocialController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  App\Cliente $cliente
      * @param  \App\ClienteRazonSocial  $razonSocial
      * @return \Illuminate\Http\Response
      */
-    public function show(ClienteRazonSocial $razonSocial)
+    public function show(Cliente $cliente, ClienteRazonSocial $razonSocial)
     {
         $razonSocial->localidad;
         return $this->baseController->show($razonSocial);
@@ -88,10 +89,11 @@ class ClienteRazonSocialController extends Controller
      * Update the specified resource in storage.
      *
      * @param  App\Http\Requests\Cliente\RazonSocial\ClienteRazonSocialRequest  $request
+     * @param  App\Cliente $cliente
      * @param  \App\ClienteRazonSocial  $razonSocial
      * @return \Illuminate\Http\Response
      */
-    public function update(ClienteRazonSocialRequest $request, ClienteRazonSocial $razonSocial)
+    public function update(ClienteRazonSocialRequest $request, Cliente $cliente, ClienteRazonSocial $razonSocial)
     {
         $nombres = [
             'exito' => "La razón social {$request->input('denominacion')}",
@@ -117,10 +119,11 @@ class ClienteRazonSocialController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param  App\Cliente $cliente
      * @param  App\ClienteRazonSocial  $razonSocial
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ClienteRazonSocial $razonSocial)
+    public function destroy(Cliente $cliente, ClienteRazonSocial $razonSocial)
     {
         $nombre = "La razón social $razonSocial->denominacion";
         return $this->baseController->destroy($razonSocial, $nombre);
@@ -129,10 +132,11 @@ class ClienteRazonSocialController extends Controller
     /**
      * Restaurar la razonSocial que ha sido eliminada
      *
+     * @param  App\Cliente $cliente
      * @param  \App\ClienteRazonSocial  $razonSocial
      * @return \Illuminate\Http\Response
      */
-    public function restore(ClienteRazonSocial $razonSocial)
+    public function restore(Cliente $cliente, ClienteRazonSocial $razonSocial)
     {
         $nombre = "La razón social $razonSocial->denominacion";
         return $this->baseController->restore($razonSocial, $nombre);
