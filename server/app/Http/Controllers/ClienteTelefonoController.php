@@ -23,7 +23,7 @@ class ClienteTelefonoController extends Controller
 
     protected function setTextoMensaje(int $area, int $telefono, string $nombreContacto = null): string
     {
-        return (is_null($nombreContacto)) ? "El telefono {$area} - {$telefono}" : "El telefono de {$nombreContacto}";
+        return (is_null($nombreContacto)) ? "El teléfono {$area}-{$telefono}" : "El teléfono de {$nombreContacto}";
     }
 
     /**
@@ -42,7 +42,7 @@ class ClienteTelefonoController extends Controller
             return Respuesta::exito($respuesta, null, 200);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
-            $mensajeError->obtenerTodos($this->modeloPlural);
+            $mensajeError->obtenerTodos("teléfonos del cliente");
 
             return Respuesta::error($mensajeError, 500);
         }
@@ -71,7 +71,7 @@ class ClienteTelefonoController extends Controller
             return Respuesta::exito($respuesta, $mensajeExito, 200);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
-            $mensajeError->guardar(lcfirst($telefonoMensaje));
+            $mensajeError->guardar($telefonoMensaje);
 
             return Respuesta::error($mensajeError, 500);
         }
@@ -100,12 +100,16 @@ class ClienteTelefonoController extends Controller
         $inputs = $request->only('area', 'telefono');
         $nombreContacto = $request->input('nombreContacto', null);
 
-        $telefonoMensaje = $this->setTextoMensaje($inputs['area'], $inputs['telefono'], $nombreContacto);
+        $telefonoMensajes = [
+            'exito' => $this->setTextoMensaje($inputs['area'], $inputs['telefono'], $nombreContacto),
+            'error' => $this->setTextoMensaje($telefono->area, $telefono->telefono, $telefono->nombreContacto)
+        ];
+
         $parametros = [
             'inputs' => $inputs,
             'modelo' => $telefono,
         ];
-        return $this->baseController->update($parametros, $telefonoMensaje);
+        return $this->baseController->update($parametros, $telefonoMensajes);
     }
 
     /**
