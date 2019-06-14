@@ -24,7 +24,7 @@ class LocalidadController extends Controller
 
     protected function getNombre(string $nombreLocalidad, string $nombreProvincia): string
     {
-        return "La localidad {$nombreLocalidad}, {$nombreProvincia}";
+        return "La localidad {$nombreLocalidad} - {$nombreProvincia}";
     }
 
     /**
