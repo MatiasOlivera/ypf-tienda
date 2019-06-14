@@ -125,10 +125,10 @@ Route::middleware('jwt.auth')->group(function () {
 
         Route::post('/{cliente}/razones', 'ClienteRazonSocialController@store')->name('CrearRazonCliente');
 
-        Route::post('/{cliente}/razones/{razonSocial}', 'ClienteRazonSocialController@asociar')
+        Route::post('/{cliente}/razones/{razonSocial}/asociar', 'ClienteRazonSocialController@asociar')
             ->name('AsociarRazonesCliente');
 
-        Route::delete('/{cliente}/razones/{razonSocial}', 'ClienteRazonSocialController@desasociar')
+        Route::delete('/{cliente}/razones/{razonSocial}/desasociar', 'ClienteRazonSocialController@desasociar')
             ->name('DesasociarRazonesCliente');
 
         Route::group(['prefix' => '/razones',], function () {
