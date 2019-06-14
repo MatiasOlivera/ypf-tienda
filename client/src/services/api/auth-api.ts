@@ -45,11 +45,19 @@ export type RespuestaUsuario =
   | Respuesta<true, 200, { usuario: Usuario }>
   | RespuestasComunesApi;
 
-export function getUsuario(): Promise<RespuestaUsuario> {
-  return clienteApi<RespuestaUsuario>({
+export async function getUsuario(): Promise<RespuestaUsuario> {
+  const respuesta = await clienteApi<RespuestaUsuario>({
     url: 'auth/usuario',
     metodo: 'GET'
   });
+
+  if (respuesta.ok) {
+    const { usuario } = respuesta.datos;
+    const autenticacion = new ServicioAutenticacion();
+    autenticacion.setUsuario(usuario);
+  }
+
+  return respuesta;
 }
 
 export type RespuestaLogout =

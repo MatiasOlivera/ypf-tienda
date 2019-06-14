@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 
 import { Almacen, ServicioAlmacenamiento } from './almacen-servicio';
+import { Usuario } from '@/types/usuario-tipos';
 
 export class ServicioAutenticacion {
   constructor(private almacen: ServicioAlmacenamiento = new Almacen()) {
@@ -42,6 +43,14 @@ export class ServicioAutenticacion {
     }
 
     return 'EXPIRO';
+  }
+
+  public setUsuario(usuario: Usuario): boolean {
+    return this.almacen.setItem('usuario', usuario);
+  }
+
+  public getUsuario(): Usuario | null {
+    return this.almacen.getItem<Usuario>('usuario');
   }
 
   public limpiar(): void {
