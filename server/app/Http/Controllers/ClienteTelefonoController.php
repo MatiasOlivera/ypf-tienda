@@ -109,7 +109,7 @@ class ClienteTelefonoController extends Controller
 
         $parametros = [
             'inputs' => $inputs,
-            'modelo' => $telefono,
+            'instancia' => $telefono,
         ];
         return $this->baseController->update($parametros, $telefonoMensajes);
     }
