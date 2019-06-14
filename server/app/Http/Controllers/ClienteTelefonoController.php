@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\{Cliente, ClienteTelefono};
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
-use App\Http\Requscopeests\Cliente\Telefono\ClienteTelefonoRequest;
+use App\Http\Requests\Cliente\Telefono\ClienteTelefonoRequest;
 use App\Auxiliares\{Respuesta, MensajeExito, MensajeError};
 
 class ClienteTelefonoController extends Controller
@@ -54,7 +54,7 @@ class ClienteTelefonoController extends Controller
      * @param  App\Http\Requests\Cliente\Telefono\ClienteTelefonoRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Cliente $cliente)
+    public function store(ClienteTelefonoRequest $request, Cliente $cliente)
     {
         $inputs = $request->only('area', 'telefono', 'nombreContacto');
 
