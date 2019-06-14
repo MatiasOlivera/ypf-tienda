@@ -30,6 +30,7 @@ import {
 } from './store/types/modulos';
 import {
   LOGIN_CLIENTE,
+  LOGOUT_CLIENTE,
   LOGOUT,
   CREAR_NOTIFICACION
 } from './store/types/acciones';
@@ -79,10 +80,26 @@ export default Vue.extend({
       }
       return;
     }
+
+    if (estado === 'NO_TOKEN' || estado === 'EXPIRO') {
+      this.logoutCliente();
+
+      const notificacion: Notificacion = {
+        tipo: 'info',
+        descripcion: 'La sesión ha expirado, por favor vuelva a iniciar sesión'
+      };
+      this.crearNotificacion(notificacion);
+
+      this.irAIniciarSesion();
+    }
   },
 
   methods: {
-    ...mapActions(MODULO_AUTENTICACION, [LOGIN_CLIENTE, LOGOUT]),
+    ...mapActions(MODULO_AUTENTICACION, [
+      LOGIN_CLIENTE,
+      LOGOUT_CLIENTE,
+      LOGOUT
+    ]),
     ...mapActions(MODULO_NOTIFICACIONES, [CREAR_NOTIFICACION]),
 
     irAInicio(): void {
