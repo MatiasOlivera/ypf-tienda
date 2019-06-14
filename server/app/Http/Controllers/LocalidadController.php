@@ -22,7 +22,7 @@ class LocalidadController extends Controller
         $this->baseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
     }
 
-    protected function setTextoMensaje(string $nombreLocalidad, string $nombreProvincia): string
+    protected function getNombre(string $nombreLocalidad, string $nombreProvincia): string
     {
         return "La localidad {$nombreLocalidad}, {$nombreProvincia}";
     }
@@ -54,7 +54,7 @@ class LocalidadController extends Controller
     public function store(LocalidadRequest $request, Provincia $provincia)
     {
         $inputs['nombre'] = $request->input('localidad');
-        $nombre = $this->setTextoMensaje($inputs['nombre'], $provincia->nombre);
+        $nombre = $this->getNombre($inputs['nombre'], $provincia->nombre);
         try {
             $localidad      = new Localidad($inputs);
             $provincia->localidades()->save($localidad);
@@ -94,7 +94,7 @@ class LocalidadController extends Controller
     {
         $provincia = $localidad->provincia;
         $inputs['nombre'] = $request->input('localidad');
-        $nombre = $this->setTextoMensaje($localidad->nombre, $provincia->nombre);
+        $nombre = $this->getNombre($localidad->nombre, $provincia->nombre);
         $parametros = [
             'inputs' => $inputs,
             'modelo' => $localidad,
@@ -111,7 +111,7 @@ class LocalidadController extends Controller
     public function destroy(Localidad $localidad)
     {
         $provincia = $localidad->provincia;
-        $nombre = $this->setTextoMensaje($localidad->nombre, $provincia->nombre);
+        $nombre = $this->getNombre($localidad->nombre, $provincia->nombre);
         return $this->baseController->destroy($localidad, $nombre);
     }
 
@@ -124,7 +124,7 @@ class LocalidadController extends Controller
     public function restore(Localidad $localidad)
     {
         $provincia = $localidad->provincia;
-        $nombre = $this->setTextoMensaje($localidad->nombre, $provincia->nombre);
+        $nombre = $this->getNombre($localidad->nombre, $provincia->nombre);
         return $this->baseController->restore($localidad, $nombre);
     }
 }
