@@ -108,7 +108,7 @@ class ClienteTelefonoController extends Controller
         ];
 
         $parametros = [
-            'inputs' => $inputs,
+            'inputs' => array_merge($inputs, ['nombreContacto' => $nombreContacto]),
             'instancia' => $telefono,
         ];
         return $this->baseController->update($parametros, $telefonoMensajes);
