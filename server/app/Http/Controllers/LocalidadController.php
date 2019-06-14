@@ -97,7 +97,7 @@ class LocalidadController extends Controller
         $nombre = $this->getNombre($localidad->nombre, $provincia->nombre);
         $parametros = [
             'inputs' => $inputs,
-            'modelo' => $localidad,
+            'instancia' => $localidad,
         ];
         return $this->baseController->update($parametros, $nombre);
     }
