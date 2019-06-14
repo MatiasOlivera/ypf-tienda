@@ -35,9 +35,9 @@ class LocalidadController extends Controller
     public function index(Request $request, Provincia $provincia)
     {
         try {
-            $porPagina      = $request->only('porPagina');
-            $mails          = $provincia->localidades()->paginate($porPagina);
-            $respuesta      = [$this->modeloPlural => $mails];
+            $porPagina  = $request->only('porPagina');
+            $provincias = $provincia->localidades()->paginate($porPagina);
+            $respuesta  = [$this->modeloPlural => $provincias];
             return Respuesta::exito($respuesta, null, 200);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
