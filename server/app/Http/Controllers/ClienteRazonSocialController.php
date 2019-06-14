@@ -6,6 +6,7 @@ use App\{ Cliente, ClienteRazonSocial };
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Cliente\RazonSocial\ClienteRazonSocialRequest;
+use App\Http\Requests\Cliente\RazonSocial\ClienteRazonSocialUpdateRequest;
 use App\Auxiliares\{ Respuesta, MensajeExito, MensajeError };
 
 class ClienteRazonSocialController extends Controller
@@ -88,12 +89,12 @@ class ClienteRazonSocialController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  App\Http\Requests\Cliente\RazonSocial\ClienteRazonSocialRequest  $request
+     * @param  App\Http\Requests\Cliente\RazonSocial\ClienteRazonSocialUpdateRequest  $request
      * @param  App\Cliente $cliente
      * @param  \App\ClienteRazonSocial  $razonSocial
      * @return \Illuminate\Http\Response
      */
-    public function update(ClienteRazonSocialRequest $request, Cliente $cliente, ClienteRazonSocial $razonSocial)
+    public function update(ClienteRazonSocialUpdateRequest $request, Cliente $cliente, ClienteRazonSocial $razonSocial)
     {
         $nombres = [
             'exito' => "La razón social {$request->input('denominacion')}",
