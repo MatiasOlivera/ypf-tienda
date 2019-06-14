@@ -93,13 +93,15 @@ Route::middleware('jwt.auth')->group(function () {
 
         Route::post('/{cliente}/telefonos', 'ClienteTelefonoController@store')->name('ClienteTelefono.store');
 
-        Route::get('/telefonos/{telefono}', 'ClienteTelefonoController@show')->name('ClienteTelefono.show');
+        Route::get('/{cliente}/telefonos/{telefono}', 'ClienteTelefonoController@show')->name('ClienteTelefono.show');
 
-        Route::put('/telefonos/{telefono}', 'ClienteTelefonoController@update')->name('ClienteTelefono.update');
+        Route::put('/{cliente}/telefonos/{telefono}', 'ClienteTelefonoController@update')
+            ->name('ClienteTelefono.update');
 
-        Route::delete('/telefonos/{telefono}', 'ClienteTelefonoController@destroy')->name('ClienteTelefono.destroy');
+        Route::delete('/{cliente}/telefonos/{telefono}', 'ClienteTelefonoController@destroy')
+            ->name('ClienteTelefono.destroy');
 
-        Route::post('/telefonos/{telefono}/restaurar/', 'ClienteTelefonoController@restore')
+        Route::post('/{cliente}/telefonos/{telefono}/restaurar/', 'ClienteTelefonoController@restore')
             ->name('ClienteTelefonos.restore');
 
         /*

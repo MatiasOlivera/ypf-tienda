@@ -50,8 +50,8 @@ class ClienteTelefonoController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     * @param  App\Cliente $cliente
      * @param  App\Http\Requests\Cliente\Telefono\ClienteTelefonoRequest  $request
+     * @param  App\Cliente $cliente
      * @return \Illuminate\Http\Response
      */
     public function store(ClienteTelefonoRequest $request, Cliente $cliente)
@@ -80,10 +80,11 @@ class ClienteTelefonoController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  App\Cliente $cliente
      * @param  \App\ClienteTelefono  $telefono
      * @return \Illuminate\Http\Response
      */
-    public function show(ClienteTelefono $telefono)
+    public function show(Cliente $cliente, ClienteTelefono $telefono)
     {
         return $this->baseController->show($telefono);
     }
@@ -92,10 +93,11 @@ class ClienteTelefonoController extends Controller
      * Update the specified resource in storage.
      *
      * @param  App\Http\Requests\Cliente\Telefono\ClienteTelefonoRequest  $request
+     * @param  App\Cliente $cliente
      * @param  \App\ClienteTelefono  $telefono
      * @return \Illuminate\Http\Response
      */
-    public function update(ClienteTelefonoRequest $request, ClienteTelefono $telefono)
+    public function update(ClienteTelefonoRequest $request, Cliente $cliente, ClienteTelefono $telefono)
     {
         $inputs = $request->only('area', 'telefono');
         $nombreContacto = $request->input('nombreContacto', null);
@@ -115,10 +117,11 @@ class ClienteTelefonoController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param  App\Cliente $cliente
      * @param  \App\ClienteTelefono  $telefono
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ClienteTelefono $telefono)
+    public function destroy(Cliente $cliente, ClienteTelefono $telefono)
     {
         $telefonoMensaje = $this->setTextoMensaje($telefono->area, $telefono->telefono, $telefono->nombreContacto);
         return $this->baseController->destroy($telefono, $telefonoMensaje);
@@ -127,10 +130,11 @@ class ClienteTelefonoController extends Controller
     /**
      * Restaurar el Telefono que ha sido eliminado
      *
+     * @param  App\Cliente $cliente
      * @param  \App\ClienteTelefono  $telefono
      * @return \Illuminate\Http\Response
      */
-    public function restore(ClienteTelefono $telefono)
+    public function restore(Cliente $cliente, ClienteTelefono $telefono)
     {
         $telefonoMensaje = $this->setTextoMensaje($telefono->area, $telefono->telefono, $telefono->nombreContacto);
         return $this->baseController->restore($telefono, $telefonoMensaje);
