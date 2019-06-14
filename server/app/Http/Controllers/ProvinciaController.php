@@ -78,12 +78,16 @@ class ProvinciaController extends Controller
     public function update(Request $request, Provincia $provincia)
     {
         $inputs = $request->only('nombre');
-        $nombre = "La provincia {$request->input('nombre')}";
         $parametros = [
             'inputs' => $inputs,
             'modelo' => $provincia,
         ];
-        return $this->baseController->update($parametros, $nombre);
+
+        $nombres = [
+            "exito" => "La provincia {$request->input('nombre')}",
+            "error" => "La provincia {$provincia->nombre}"
+        ];
+        return $this->baseController->update($parametros, $nombres);
     }
 
     /**
@@ -94,9 +98,8 @@ class ProvinciaController extends Controller
      */
     public function destroy(Provincia $provincia)
     {
-        //mensajes
-        $mensaje = "la provincia {$provincia->nombre}";
-        return $this->baseController->destroy($provincia, lcfirst($mensaje));
+        $nombre = "La provincia {$provincia->nombre}";
+        return $this->baseController->destroy($provincia, $nombre);
     }
 
     /**
@@ -107,7 +110,7 @@ class ProvinciaController extends Controller
      */
     public function restore(Provincia $provincia)
     {
-        $mensaje = "la provincia {$provincia->nombre}";
-        return $this->baseController->restore($provincia, lcfirst($mensaje));
+        $nombre = "La provincia {$provincia->nombre}";
+        return $this->baseController->restore($provincia, $nombre);
     }
 }
