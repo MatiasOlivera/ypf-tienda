@@ -112,7 +112,7 @@ class ClienteRazonSocialController extends Controller
         );
         $parametros = [
             'inputs' => $inputs,
-            'modelo' => $razonSocial,
+            'instancia' => $razonSocial,
         ];
         return $this->baseController->update($parametros, $nombres);
     }
