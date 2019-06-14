@@ -48,13 +48,13 @@ class ProvinciaController extends Controller
      */
     public function store(Request $request)
     {
-        $inputs   = $request->input('nombre');
-        $mensaje = "la provincia {$inputs['nombre']}";
+        $inputs = $request->only('nombre');
+        $nombre = "La provincia {$request->input('nombre')}";
         $parametros = [
             'inputs' => $inputs,
             'modelo' => 'Provincia',
         ];
-        return $this->baseController->store($parametros, $mensaje);
+        return $this->baseController->store($parametros, $nombre);
     }
 
     /**
@@ -77,13 +77,13 @@ class ProvinciaController extends Controller
      */
     public function update(Request $request, Provincia $provincia)
     {
-        $inputs['nombre'] = $request->input('provincia');
-        $mensaje = "la provincia {$inputs['nombre']}";
+        $inputs = $request->only('nombre');
+        $nombre = "La provincia {$request->input('nombre')}";
         $parametros = [
             'inputs' => $inputs,
             'modelo' => $provincia,
         ];
-        return $this->baseController->update($parametros, lcfirst($mensaje));
+        return $this->baseController->update($parametros, $nombre);
     }
 
     /**
