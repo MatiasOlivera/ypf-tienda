@@ -56,9 +56,10 @@ class ClienteTelefonoController extends Controller
      */
     public function store(ClienteTelefonoRequest $request, Cliente $cliente)
     {
-        $inputs = $request->only('area', 'telefono', 'nombreContacto');
+        $inputs = $request->only('area', 'telefono');
+        $nombreContacto = $request->input('nombreContacto', null);
 
-        $telefonoMensaje = $this->setTextoMensaje($inputs['area'], $inputs['telefono'], $inputs['nombreContacto']);
+        $telefonoMensaje = $this->setTextoMensaje($inputs['area'], $inputs['telefono'], $nombreContacto);
         try {
             $telefono = new ClienteTelefono($inputs);
             $cliente->telefonos()->save($telefono);
@@ -96,8 +97,10 @@ class ClienteTelefonoController extends Controller
      */
     public function update(ClienteTelefonoRequest $request, ClienteTelefono $telefono)
     {
-        $inputs = $request->only('area', 'telefono', 'nombreContacto');
-        $telefonoMensaje = $this->setTextoMensaje($inputs['area'], $inputs['telefono'], $inputs['nombreContacto']);
+        $inputs = $request->only('area', 'telefono');
+        $nombreContacto = $request->input('nombreContacto', null);
+
+        $telefonoMensaje = $this->setTextoMensaje($inputs['area'], $inputs['telefono'], $nombreContacto);
         $parametros = [
             'inputs' => $inputs,
             'modelo' => $telefono,
