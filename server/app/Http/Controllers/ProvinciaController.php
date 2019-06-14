@@ -80,7 +80,7 @@ class ProvinciaController extends Controller
         $inputs = $request->only('nombre');
         $parametros = [
             'inputs' => $inputs,
-            'modelo' => $provincia,
+            'instancia' => $provincia,
         ];
 
         $nombres = [
