@@ -13,25 +13,25 @@ final class MensajeError extends Mensaje
 
     public function guardar(string $nombre): void
     {
-        $this->setDescripcion("Hubo un error al intentar guardar $nombre");
+        $this->setDescripcion("$nombre no ha sido creado debido a un error interno");
         $this->setCodigo('NO_GUARDADO');
     }
 
     public function actualizar(string $nombre): void
     {
-        $this->setDescripcion("Hubo un error al intentar modificar $nombre");
+        $this->setDescripcion("$nombre no ha sido actualizado debido a un error interno");
         $this->setCodigo('NO_ACTUALIZADO');
     }
 
     public function eliminar(string $nombre): void
     {
-        $this->setDescripcion("Hubo un error al intentar eliminar $nombre");
+        $this->setDescripcion("$nombre no ha sido eliminado debido a un error interno");
         $this->setCodigo('NO_ELIMINADO');
     }
 
     public function restaurar(string $nombre): void
     {
-        $this->setDescripcion("Hubo un error al intentar dar de alta $nombre");
+        $this->setDescripcion("$nombre no ha sido dado de alta debido a un error interno");
         $this->setCodigo('NO_RESTAURADO');
     }
 

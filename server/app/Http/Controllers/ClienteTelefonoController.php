@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\{Cliente, ClienteTelefono};
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
-use App\Http\Requscopeests\Cliente\Telefono\ClienteTelefonoRequest;
+use App\Http\Requests\Cliente\Telefono\ClienteTelefonoRequest;
 use App\Auxiliares\{Respuesta, MensajeExito, MensajeError};
 
 class ClienteTelefonoController extends Controller
@@ -23,7 +23,7 @@ class ClienteTelefonoController extends Controller
 
     protected function setTextoMensaje(int $area, int $telefono, string $nombreContacto = null): string
     {
-        return (is_null($nombreContacto)) ? "El telefono {$area} - {$telefono}" : "El telefono de {$nombreContacto}";
+        return (is_null($nombreContacto)) ? "El teléfono {$area}-{$telefono}" : "El teléfono de {$nombreContacto}";
     }
 
     /**
@@ -42,7 +42,7 @@ class ClienteTelefonoController extends Controller
             return Respuesta::exito($respuesta, null, 200);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
-            $mensajeError->obtenerTodos($this->modeloPlural);
+            $mensajeError->obtenerTodos("teléfonos del cliente");
 
             return Respuesta::error($mensajeError, 500);
         }
@@ -50,15 +50,16 @@ class ClienteTelefonoController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     * @param  App\Cliente $cliente
      * @param  App\Http\Requests\Cliente\Telefono\ClienteTelefonoRequest  $request
+     * @param  App\Cliente $cliente
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Cliente $cliente)
+    public function store(ClienteTelefonoRequest $request, Cliente $cliente)
     {
-        $inputs = $request->only('area', 'telefono', 'nombreContacto');
+        $inputs = $request->only('area', 'telefono');
+        $nombreContacto = $request->input('nombreContacto', null);
 
-        $telefonoMensaje = $this->setTextoMensaje($inputs['area'], $inputs['telefono'], $inputs['nombreContacto']);
+        $telefonoMensaje = $this->setTextoMensaje($inputs['area'], $inputs['telefono'], $nombreContacto);
         try {
             $telefono = new ClienteTelefono($inputs);
             $cliente->telefonos()->save($telefono);
@@ -70,7 +71,7 @@ class ClienteTelefonoController extends Controller
             return Respuesta::exito($respuesta, $mensajeExito, 200);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
-            $mensajeError->guardar(lcfirst($telefonoMensaje));
+            $mensajeError->guardar($telefonoMensaje);
 
             return Respuesta::error($mensajeError, 500);
         }
@@ -79,10 +80,11 @@ class ClienteTelefonoController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  App\Cliente $cliente
      * @param  \App\ClienteTelefono  $telefono
      * @return \Illuminate\Http\Response
      */
-    public function show(ClienteTelefono $telefono)
+    public function show(Cliente $cliente, ClienteTelefono $telefono)
     {
         return $this->baseController->show($telefono);
     }
@@ -91,27 +93,35 @@ class ClienteTelefonoController extends Controller
      * Update the specified resource in storage.
      *
      * @param  App\Http\Requests\Cliente\Telefono\ClienteTelefonoRequest  $request
+     * @param  App\Cliente $cliente
      * @param  \App\ClienteTelefono  $telefono
      * @return \Illuminate\Http\Response
      */
-    public function update(ClienteTelefonoRequest $request, ClienteTelefono $telefono)
+    public function update(ClienteTelefonoRequest $request, Cliente $cliente, ClienteTelefono $telefono)
     {
-        $inputs = $request->only('area', 'telefono', 'nombreContacto');
-        $telefonoMensaje = $this->setTextoMensaje($inputs['area'], $inputs['telefono'], $inputs['nombreContacto']);
-        $parametros = [
-            'inputs' => $inputs,
-            'modelo' => $telefono,
+        $inputs = $request->only('area', 'telefono');
+        $nombreContacto = $request->input('nombreContacto', null);
+
+        $telefonoMensajes = [
+            'exito' => $this->setTextoMensaje($inputs['area'], $inputs['telefono'], $nombreContacto),
+            'error' => $this->setTextoMensaje($telefono->area, $telefono->telefono, $telefono->nombreContacto)
         ];
-        return $this->baseController->update($parametros, $telefonoMensaje);
+
+        $parametros = [
+            'inputs' => array_merge($inputs, ['nombreContacto' => $nombreContacto]),
+            'instancia' => $telefono,
+        ];
+        return $this->baseController->update($parametros, $telefonoMensajes);
     }
 
     /**
      * Remove the specified resource from storage.
      *
+     * @param  App\Cliente $cliente
      * @param  \App\ClienteTelefono  $telefono
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ClienteTelefono $telefono)
+    public function destroy(Cliente $cliente, ClienteTelefono $telefono)
     {
         $telefonoMensaje = $this->setTextoMensaje($telefono->area, $telefono->telefono, $telefono->nombreContacto);
         return $this->baseController->destroy($telefono, $telefonoMensaje);
@@ -120,10 +130,11 @@ class ClienteTelefonoController extends Controller
     /**
      * Restaurar el Telefono que ha sido eliminado
      *
+     * @param  App\Cliente $cliente
      * @param  \App\ClienteTelefono  $telefono
      * @return \Illuminate\Http\Response
      */
-    public function restore(ClienteTelefono $telefono)
+    public function restore(Cliente $cliente, ClienteTelefono $telefono)
     {
         $telefonoMensaje = $this->setTextoMensaje($telefono->area, $telefono->telefono, $telefono->nombreContacto);
         return $this->baseController->restore($telefono, $telefonoMensaje);

@@ -59,7 +59,7 @@ class ClientesController extends Controller
     public function store(ClienteCreateRequest $request)
     {
         $inputs = $request->only('documento', 'nombre', 'observacion');
-        $nombre   = $request->input('nombre');
+        $nombre   = "El cliente {$request->input('nombre')}";
         $parametros = [
             'inputs' => $inputs,
             'modelo' =>  $this->modeloSingular,
@@ -87,13 +87,16 @@ class ClientesController extends Controller
      */
     public function update(ClienteUpdateRequest $request, Cliente $cliente)
     {
-        $nombre  = $request->input('nombre');
+        $nombres = [
+            "exito" => "El cliente {$request->input('nombre')}",
+            "error" => "El cliente {$cliente->nombre}"
+        ];
         $inputs = $request->only('documento', 'nombre', 'observacion');
         $parametros = [
             'inputs' => $inputs,
-            'modelo' => $cliente,
+            'instancia' => $cliente,
         ];
-        return $this->baseController->update($parametros, $nombre);
+        return $this->baseController->update($parametros, $nombres);
     }
 
     /**
@@ -104,7 +107,7 @@ class ClientesController extends Controller
      */
     public function destroy(Cliente $cliente)
     {
-        $nombre  = $cliente->nombre;
+        $nombre = "El cliente $cliente->nombre";
         return $this->baseController->destroy($cliente, $nombre);
     }
 
@@ -116,7 +119,7 @@ class ClientesController extends Controller
      */
     public function restore(Cliente $cliente)
     {
-        $nombre  = $cliente->nombre;
+        $nombre = "El cliente $cliente->nombre";
         return $this->baseController->restore($cliente, $nombre);
     }
 }

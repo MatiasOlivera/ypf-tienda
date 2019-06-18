@@ -24,13 +24,13 @@ class MensajeErrorTest extends TestCase
     public function testDeberiaCrearMensajeGuardar()
     {
         $mensaje = new MensajeError();
-        $mensaje->guardar('el producto Elaion F50');
+        $mensaje->guardar('El producto Elaion F50');
         $actual = $mensaje->getObjeto();
 
         $esperado = [
             'tipo' => 'error',
             'codigo' => 'NO_GUARDADO',
-            'descripcion' => 'Hubo un error al intentar guardar el producto Elaion F50'
+            'descripcion' => 'El producto Elaion F50 no ha sido creado debido a un error interno'
         ];
 
         $this->assertEquals($esperado, $actual);
@@ -39,13 +39,13 @@ class MensajeErrorTest extends TestCase
     public function testDeberiaCrearMensajeActualizar()
     {
         $mensaje = new MensajeError();
-        $mensaje->actualizar('el producto Elaion F50');
+        $mensaje->actualizar('El producto Elaion F50');
         $actual = $mensaje->getObjeto();
 
         $esperado = [
             'tipo' => 'error',
             'codigo' => 'NO_ACTUALIZADO',
-            'descripcion' => 'Hubo un error al intentar modificar el producto Elaion F50'
+            'descripcion' => 'El producto Elaion F50 no ha sido actualizado debido a un error interno'
         ];
 
         $this->assertEquals($esperado, $actual);
@@ -54,13 +54,13 @@ class MensajeErrorTest extends TestCase
     public function testDeberiaCrearMensajeEliminar()
     {
         $mensaje = new MensajeError();
-        $mensaje->eliminar('el producto Elaion F50');
+        $mensaje->eliminar('El producto Elaion F50');
         $actual = $mensaje->getObjeto();
 
         $esperado = [
             'tipo' => 'error',
             'codigo' => 'NO_ELIMINADO',
-            'descripcion' => 'Hubo un error al intentar eliminar el producto Elaion F50'
+            'descripcion' => 'El producto Elaion F50 no ha sido eliminado debido a un error interno'
         ];
 
         $this->assertEquals($esperado, $actual);
@@ -69,13 +69,13 @@ class MensajeErrorTest extends TestCase
     public function testDeberiaCrearMensajeRestaurar()
     {
         $mensaje = new MensajeError();
-        $mensaje->restaurar('al producto Elaion F50');
+        $mensaje->restaurar('El producto Elaion F50');
         $actual = $mensaje->getObjeto();
 
         $esperado = [
             'tipo' => 'error',
             'codigo' => 'NO_RESTAURADO',
-            'descripcion' => 'Hubo un error al intentar dar de alta al producto Elaion F50'
+            'descripcion' => 'El producto Elaion F50 no ha sido dado de alta debido a un error interno'
         ];
 
         $this->assertEquals($esperado, $actual);

@@ -2,11 +2,12 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Http\Controllers\BaseController;
-use Illuminate\Support\Facades\Hash;
 use App\User;
+use Exception;
+use Tests\TestCase;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\BaseController;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class BaseControllerTest extends TestCase
 {
@@ -22,14 +23,10 @@ class BaseControllerTest extends TestCase
                 'password' => Hash::make(12345678)
             ]
         ];
-
-        $nombres = [
-            'exito' => 'John',
-            'error' => 'a John'
-        ];
+        $nombre = 'El usuario John';
 
         $controller = new BaseController('usuario', 'usuarios');
-        return $controller->store($parametros, $nombres);
+        return $controller->store($parametros, $nombre);
     }
 
     /**
@@ -143,7 +140,7 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'exito',
             'codigo' => 'GUARDADO',
-            'descripcion' => 'John se ha creado'
+            'descripcion' => 'El usuario John ha sido creado'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
@@ -168,7 +165,7 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'error',
             'codigo' => 'NO_GUARDADO',
-            'descripcion' => 'Hubo un error al intentar guardar a John'
+            'descripcion' => 'El usuario John no ha sido creado debido a un error interno'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
@@ -184,8 +181,8 @@ class BaseControllerTest extends TestCase
     {
         $controller = new BaseController('usuario', 'usuarios');
         $parametros = ['modelo' => 'NoExiste'];
-        $nombres = ['error' => 'al usuario'];
-        $respuesta = $controller->store($parametros, $nombres);
+        $nombre = 'El usuario John';
+        $respuesta = $controller->store($parametros, $nombre);
 
         $status = $respuesta->status();
         $datos = $respuesta->getData(true);
@@ -195,7 +192,7 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'error',
             'codigo' => 'NO_GUARDADO',
-            'descripcion' => 'Hubo un error al intentar guardar al usuario'
+            'descripcion' => 'El usuario John no ha sido creado debido a un error interno'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
@@ -243,11 +240,7 @@ class BaseControllerTest extends TestCase
                 'email' => 'JohnDoe@email.com'
             ]
         ];
-
-        $nombres =  [
-            'exito' => 'John',
-            'error' => 'a John'
-        ];
+        $nombres = ['exito' => 'El usuario Johny', 'error' => 'El usuario John'];
 
         $controller = new BaseController('usuario', 'usuarios');
         $respuestaActualizado = $controller->update($parametros, $nombres);
@@ -263,7 +256,7 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'exito',
             'codigo' => 'ACTUALIZADO',
-            'descripcion' => 'John se ha modificado'
+            'descripcion' => 'El usuario Johny ha sido modificado'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
@@ -279,7 +272,7 @@ class BaseControllerTest extends TestCase
     {
         $controller = new BaseController('usuario', 'usuarios');
         $parametros = ['instancia' => 'NoExiste'];
-        $nombres = ['error' => 'al usuario'];
+        $nombres = ['exito' => 'El usuario Johny', 'error' => 'El usuario John'];
         $respuesta = $controller->update($parametros, $nombres);
 
         $status = $respuesta->status();
@@ -290,7 +283,7 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'error',
             'codigo' => 'NO_ACTUALIZADO',
-            'descripcion' => 'Hubo un error al intentar modificar al usuario'
+            'descripcion' => 'El usuario John no ha sido actualizado debido a un error interno'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
@@ -309,14 +302,10 @@ class BaseControllerTest extends TestCase
         $id = $respuestaCreado->getData(true)['usuario']['id'];
 
         $instancia = User::find($id);
-
-        $nombres = [
-            'exito' => 'John',
-            'error' => 'a John'
-        ];
+        $nombre = 'El usuario John';
 
         $controller = new BaseController('usuario', 'usuarios');
-        $respuestaMostrar = $controller->destroy($instancia, $nombres);
+        $respuestaMostrar = $controller->destroy($instancia, $nombre);
 
         $status = $respuestaMostrar->status();
         $datos = $respuestaMostrar->getData(true);
@@ -329,7 +318,7 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'exito',
             'codigo' => 'ELIMINADO',
-            'descripcion' => 'John se ha eliminado'
+            'descripcion' => 'El usuario John ha sido eliminado'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
@@ -345,8 +334,8 @@ class BaseControllerTest extends TestCase
     {
         $controller = new BaseController('usuario', 'usuarios');
         $parametros = ['instancia' => 'NoExiste'];
-        $nombres = ['error' => 'al usuario'];
-        $respuesta = $controller->destroy($parametros, $nombres);
+        $nombre = 'El usuario John';
+        $respuesta = $controller->destroy($parametros, $nombre);
 
         $status = $respuesta->status();
         $datos = $respuesta->getData(true);
@@ -356,7 +345,7 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'error',
             'codigo' => 'NO_ELIMINADO',
-            'descripcion' => 'Hubo un error al intentar eliminar al usuario'
+            'descripcion' => 'El usuario John no ha sido eliminado debido a un error interno'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
@@ -375,14 +364,10 @@ class BaseControllerTest extends TestCase
         $id = $respuestaCreado->getData(true)['usuario']['id'];
 
         $instancia = User::find($id);
-
-        $nombres = [
-            'exito' => 'John',
-            'error' => 'a John'
-        ];
+        $nombre = 'El usuario John';
 
         $controller = new BaseController('usuario', 'usuarios');
-        $respuestaMostrar = $controller->restore($instancia, $nombres);
+        $respuestaMostrar = $controller->restore($instancia, $nombre);
 
         $status = $respuestaMostrar->status();
         $datos = $respuestaMostrar->getData(true);
@@ -395,7 +380,7 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'exito',
             'codigo' => 'RESTAURADO',
-            'descripcion' => 'John se ha dado de alta'
+            'descripcion' =>  'El usuario John ha sido dado de alta'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
@@ -411,8 +396,8 @@ class BaseControllerTest extends TestCase
     {
         $controller = new BaseController('usuario', 'usuarios');
         $parametros = ['instancia' => 'NoExiste'];
-        $nombres = ['error' => 'al usuario'];
-        $respuesta = $controller->restore($parametros, $nombres);
+        $nombre = 'El usuario John';
+        $respuesta = $controller->restore($parametros, $nombre);
 
         $status = $respuesta->status();
         $datos = $respuesta->getData(true);
@@ -422,10 +407,102 @@ class BaseControllerTest extends TestCase
         $mensaje = [
             'tipo' => 'error',
             'codigo' => 'NO_RESTAURADO',
-            'descripcion' => 'Hubo un error al intentar dar de alta al usuario'
+            'descripcion' => 'El usuario John no ha sido dado de alta debido a un error interno'
         ];
 
         $this->assertArrayHasKey('mensaje', $datos);
         $this->assertEquals($mensaje, $datos['mensaje']);
+    }
+
+    public function testDeberiaUtilizarElMismoNombreEnAmbosMensajes()
+    {
+        $parametros = [
+            'modelo' => 'User',
+            'inputs' => [
+                'name' => 'John',
+                'email' => 'John@email.com',
+                'password' => Hash::make(12345678)
+            ]
+        ];
+        $nombre = 'El usuario Juan';
+
+        $controller = new BaseController('usuario', 'usuarios');
+        $respuesta = $controller->store($parametros, $nombre);
+        $datos = $respuesta->getData(true);
+
+        $mensaje = [
+            'tipo' => 'exito',
+            'codigo' => 'GUARDADO',
+            'descripcion' => 'El usuario Juan ha sido creado'
+        ];
+
+        $this->assertArrayHasKey('mensaje', $datos);
+        $this->assertEquals($mensaje, $datos['mensaje']);
+    }
+
+    public function testDeberiaUtilizarNombresDistintosEnCadaMensaje()
+    {
+        $parametros = [
+            'modelo' => 'User',
+            'inputs' => [
+                'name' => 'John',
+                'email' => 'John@email.com',
+                'password' => Hash::make(12345678)
+            ]
+        ];
+
+        $nombres = [
+            'exito' => 'El usuario Juan',
+            'error' => 'El usuario Juan'
+        ];
+
+        $controller = new BaseController('usuario', 'usuarios');
+        $respuesta = $controller->store($parametros, $nombres);
+        $datos = $respuesta->getData(true);
+
+        $mensaje = [
+            'tipo' => 'exito',
+            'codigo' => 'GUARDADO',
+            'descripcion' => 'El usuario Juan ha sido creado'
+        ];
+
+        $this->assertArrayHasKey('mensaje', $datos);
+        $this->assertEquals($mensaje, $datos['mensaje']);
+    }
+
+    public function testDeberiaLanzarUnaExcepcionCuandoNoExistaLaClaveExito()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("El argumento nombre debe tener la clave exito");
+
+        $parametros = [];
+        $nombres = ['error' => 'El usuario Juan'];
+
+        $controller = new BaseController('usuario', 'usuarios');
+        $controller->store($parametros, $nombres);
+    }
+
+    public function testDeberiaLanzarUnaExcepcionCuandoNoExistaLaClaveError()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("El argumento nombre debe tener la clave error");
+
+        $parametros = [];
+        $nombres = ['exito' => 'El usuario Juan'];
+
+        $controller = new BaseController('usuario', 'usuarios');
+        $controller->store($parametros, $nombres);
+    }
+
+    public function testDeberiaLanzarUnaExcepcionCuandoNombreNoEsUnTipoValido()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("El argumento nombre debe ser string o array");
+
+        $parametros = [];
+        $nombre = 123;
+
+        $controller = new BaseController('usuario', 'usuarios');
+        $controller->store($parametros, $nombre);
     }
 }

@@ -67,14 +67,9 @@ class UsersController extends Controller
             'inputs' => $input,
             'modelo' => 'User',
         ];
+        $nombre = "El usuario {$nombre}";
 
-
-        $nombres = [
-            'exito' => "{$nombre}",
-            'error' => "{$nombre}"
-        ];
-
-        return $this->controladorBase->store($parametros, $nombres);
+        return $this->controladorBase->store($parametros, $nombre);
     }
 
     /**
@@ -105,8 +100,8 @@ class UsersController extends Controller
         ];
 
         $nombres = [
-            'exito' => "{$nombre}",
-            'error' => "{$nombre}",
+            'exito' => "El usuario {$nombre}",
+            'error' => "El usuario {$user->name}",
         ];
 
         return $this->controladorBase->update($parametros, $nombres);
@@ -120,14 +115,8 @@ class UsersController extends Controller
      */
     public function destroy(User $user)
     {
-        $nombre  = $user->name;
-
-        $nombres = [
-            'exito' => "{$nombre}",
-            'error' => "{$nombre}",
-        ];
-
-        return $this->controladorBase->destroy($user, $nombres);
+        $nombre = "El usuario {$user->name}";
+        return $this->controladorBase->destroy($user, $nombre);
     }
 
     /**
@@ -138,13 +127,7 @@ class UsersController extends Controller
      */
     public function restore(User $user)
     {
-        $nombre  = $user->name;
-
-        $nombres = [
-            'exito' => "{$nombre}",
-            'error' => "{$nombre}",
-        ];
-
-        return $this->controladorBase->restore($user, $nombres);
+        $nombre = "El usuario {$user->name}";
+        return $this->controladorBase->restore($user, $nombre);
     }
 }

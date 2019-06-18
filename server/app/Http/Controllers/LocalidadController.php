@@ -22,9 +22,9 @@ class LocalidadController extends Controller
         $this->baseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
     }
 
-    protected function setTextoMensaje(string $nombreLocalidad, string $nombreProvincia): string
+    protected function getNombre(string $nombreLocalidad, string $nombreProvincia): string
     {
-        return "La localidad {$nombreLocalidad} - { $nombreProvincia}";
+        return "La localidad {$nombreLocalidad} - {$nombreProvincia}";
     }
 
     /**
@@ -35,9 +35,9 @@ class LocalidadController extends Controller
     public function index(Request $request, Provincia $provincia)
     {
         try {
-            $porPagina      = $request->only('porPagina');
-            $mails          = $provincia->localidades()->paginate($porPagina);
-            $respuesta      = [$this->modeloPlural => $mails];
+            $porPagina  = $request->only('porPagina');
+            $provincias = $provincia->localidades()->paginate($porPagina);
+            $respuesta  = [$this->modeloPlural => $provincias];
             return Respuesta::exito($respuesta, null, 200);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
@@ -54,19 +54,19 @@ class LocalidadController extends Controller
     public function store(LocalidadRequest $request, Provincia $provincia)
     {
         $inputs['nombre'] = $request->input('localidad');
-        $mensaje = $this->setTextoMensaje($inputs['nombre'], $provincia->nombre);
+        $nombre = $this->getNombre($inputs['nombre'], $provincia->nombre);
         try {
             $localidad      = new Localidad($inputs);
             $provincia->localidades()->save($localidad);
             $respuesta      = [$this->modeloSingular  => $localidad,];
 
             $mensajeExito   = new MensajeExito();
-            $mensajeExito->guardar($mensaje);
+            $mensajeExito->guardar($nombre);
 
             return Respuesta::exito($respuesta, $mensajeExito, 200);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
-            $mensajeError->guardar(lcfirst($mensaje));
+            $mensajeError->guardar($nombre);
             return Respuesta::error($mensajeError, 500);
         }
     }
@@ -94,12 +94,12 @@ class LocalidadController extends Controller
     {
         $provincia = $localidad->provincia;
         $inputs['nombre'] = $request->input('localidad');
-        $mensaje = $this->setTextoMensaje($localidad->nombre, $provincia->nombre);
+        $nombre = $this->getNombre($localidad->nombre, $provincia->nombre);
         $parametros = [
             'inputs' => $inputs,
-            'modelo' => $localidad,
+            'instancia' => $localidad,
         ];
-        return $this->baseController->update($parametros, lcfirst($mensaje));
+        return $this->baseController->update($parametros, $nombre);
     }
 
     /**
@@ -111,8 +111,8 @@ class LocalidadController extends Controller
     public function destroy(Localidad $localidad)
     {
         $provincia = $localidad->provincia;
-        $mensaje = $this->setTextoMensaje($localidad->nombre, $provincia->nombre);
-        return $this->baseController->destroy($localidad, lcfirst($mensaje));
+        $nombre = $this->getNombre($localidad->nombre, $provincia->nombre);
+        return $this->baseController->destroy($localidad, $nombre);
     }
 
     /**
@@ -124,7 +124,7 @@ class LocalidadController extends Controller
     public function restore(Localidad $localidad)
     {
         $provincia = $localidad->provincia;
-        $mensaje = $this->setTextoMensaje($localidad->nombre, $provincia->nombre);
-        return $this->baseController->restore($localidad, lcfirst($mensaje));
+        $nombre = $this->getNombre($localidad->nombre, $provincia->nombre);
+        return $this->baseController->restore($localidad, $nombre);
     }
 }
