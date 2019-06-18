@@ -30,7 +30,7 @@ class MensajeExitoTest extends TestCase
         $esperado = [
             'tipo' => 'exito',
             'codigo' => 'GUARDADO',
-            'descripcion' => 'Elaion F50 se ha creado'
+            'descripcion' => 'Elaion F50 ha sido creado'
         ];
 
         $this->assertEquals($esperado, $actual);
@@ -45,7 +45,7 @@ class MensajeExitoTest extends TestCase
         $esperado = [
             'tipo' => 'exito',
             'codigo' => 'ACTUALIZADO',
-            'descripcion' => 'Elaion F50 se ha modificado'
+            'descripcion' => 'Elaion F50 ha sido modificado'
         ];
 
         $this->assertEquals($esperado, $actual);
@@ -60,7 +60,7 @@ class MensajeExitoTest extends TestCase
         $esperado = [
             'tipo' => 'exito',
             'codigo' => 'ELIMINADO',
-            'descripcion' => 'Elaion F50 se ha eliminado'
+            'descripcion' => 'Elaion F50 ha sido eliminado'
         ];
 
         $this->assertEquals($esperado, $actual);
@@ -75,7 +75,7 @@ class MensajeExitoTest extends TestCase
         $esperado = [
             'tipo' => 'exito',
             'codigo' => 'RESTAURADO',
-            'descripcion' => 'Elaion F50 se ha dado de alta'
+            'descripcion' => 'Elaion F50 ha sido dado de alta'
         ];
 
         $this->assertEquals($esperado, $actual);

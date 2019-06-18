@@ -9,7 +9,7 @@ class ClienteTelefonoRequest extends FormRequest
     protected $reglas = [
         'area'          => ['bail', 'required', 'integer', 'digits_between:2,5'],
         'telefono'      => ['bail', 'required', 'integer', 'digits_between:6,10'],
-        'nombre_contacto' => ['bail', 'string', 'max:60',],
+        'nombreContacto' => ['bail', 'string', 'max:60',],
     ];
 
     /**

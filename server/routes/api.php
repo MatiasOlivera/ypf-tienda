@@ -74,14 +74,16 @@ Route::middleware('jwt.auth')->group(function () {
 
         Route::post('/{cliente}/domicilios', 'ClienteDomicilioController@store')->name('ClienteDomicilio.store');
 
-        Route::get('/domicilios/{domicilio}', 'ClienteDomicilioController@show')->name('ClienteDomicilio.show');
+        Route::get('/{cliente}/domicilios/{domicilio}', 'ClienteDomicilioController@show')
+            ->name('ClienteDomicilio.show');
 
-        Route::put('/domicilios/{domicilio}', 'ClienteDomicilioController@update')->name('ClienteDomicilio.update');
+        Route::put('/{cliente}/domicilios/{domicilio}', 'ClienteDomicilioController@update')
+            ->name('ClienteDomicilio.update');
 
-        Route::delete('/domicilios/{domicilio}', 'ClienteDomicilioController@destroy')
+        Route::delete('/{cliente}/domicilios/{domicilio}', 'ClienteDomicilioController@destroy')
             ->name('ClienteDomicilio.destroy');
 
-        Route::post('/domicilios/{domicilio}/restaurar/', 'ClienteDomicilioController@restore')
+        Route::post('/{cliente}/domicilios/{domicilio}/restaurar/', 'ClienteDomicilioController@restore')
             ->name('ClienteDomicilio.restore');
 
         /*
@@ -91,13 +93,15 @@ Route::middleware('jwt.auth')->group(function () {
 
         Route::post('/{cliente}/telefonos', 'ClienteTelefonoController@store')->name('ClienteTelefono.store');
 
-        Route::get('/telefonos/{telefono}', 'ClienteTelefonoController@show')->name('ClienteTelefono.show');
+        Route::get('/{cliente}/telefonos/{telefono}', 'ClienteTelefonoController@show')->name('ClienteTelefono.show');
 
-        Route::put('/telefonos/{telefono}', 'ClienteTelefonoController@update')->name('ClienteTelefono.update');
+        Route::put('/{cliente}/telefonos/{telefono}', 'ClienteTelefonoController@update')
+            ->name('ClienteTelefono.update');
 
-        Route::delete('/telefonos/{telefono}', 'ClienteTelefonoController@destroy')->name('ClienteTelefono.destroy');
+        Route::delete('/{cliente}/telefonos/{telefono}', 'ClienteTelefonoController@destroy')
+            ->name('ClienteTelefono.destroy');
 
-        Route::post('/telefonos/{telefono}/restaurar/', 'ClienteTelefonoController@restore')
+        Route::post('/{cliente}/telefonos/{telefono}/restaurar/', 'ClienteTelefonoController@restore')
             ->name('ClienteTelefonos.restore');
 
         /*
@@ -107,28 +111,30 @@ Route::middleware('jwt.auth')->group(function () {
 
         Route::post('/{cliente}/emails', 'ClienteMailController@store')->name('ClienteMails.store');
 
-        Route::get('/emails/{mail}', 'ClienteMailController@show')->name('ClienteMails.show');
+        Route::get('/{cliente}/emails/{mail}', 'ClienteMailController@show')->name('ClienteMails.show');
 
-        Route::put('/emails/{mail}', 'ClienteMailController@update')->name('ClienteMails.update');
+        Route::put('/{cliente}/emails/{mail}', 'ClienteMailController@update')->name('ClienteMails.update');
 
-        Route::delete('/emails/{mail}', 'ClienteMailController@destroy')->name('ClienteMails.destroy');
+        Route::delete('/{cliente}/emails/{mail}', 'ClienteMailController@destroy')->name('ClienteMails.destroy');
 
-        Route::post('/emails/{mail}/restaurar/', 'ClienteMailController@restore')->name('ClienteMails.restore');
+        Route::post('/{cliente}/emails/{mail}/restaurar/', 'ClienteMailController@restore')
+            ->name('ClienteMails.restore');
 
         /*
          *  Razón social
          */
-        Route::get('/{cliente}/razones', 'ClienteRazonSocialController@index')->name('RazonesCliente');
+        Route::group(['prefix' => '/{cliente}/razones',], function () {
+            Route::get('/', 'ClienteRazonSocialController@index')->name('RazonesCliente');
 
-        Route::post('/{cliente}/razones', 'ClienteRazonSocialController@store')->name('CrearRazonCliente');
+            Route::post('/', 'ClienteRazonSocialController@store')->name('CrearRazonCliente');
 
-        Route::post('/{cliente}/razones/{razonSocial}', 'ClienteRazonSocialController@asociar')
-            ->name('AsociarRazonesCliente');
+            Route::post('/{razonSocial}/asociar', 'ClienteRazonSocialController@asociar')
+                ->name('AsociarRazonesCliente');
 
-        Route::delete('/{cliente}/razones/{razonSocial}', 'ClienteRazonSocialController@desasociar')
-            ->name('DesasociarRazonesCliente');
+            Route::delete('/{razonSocial}/desasociar', 'ClienteRazonSocialController@desasociar')
+                ->name('DesasociarRazonesCliente');
 
-        Route::group(['prefix' => '/razones',], function () {
+
             Route::get('/{razonSocial}', 'ClienteRazonSocialController@show')->name('ClienteRazones.show');
 
             Route::put('/{razonSocial}', 'ClienteRazonSocialController@update')->name('ClienteRazones.update');
