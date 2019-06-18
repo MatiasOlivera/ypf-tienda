@@ -2,27 +2,28 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 
 import { Almacen, ServicioAlmacenamiento } from './almacen-servicio';
+import { Usuario } from '@/types/usuario-tipos';
 
-export class ServicioToken {
+export class ServicioAutenticacion {
   constructor(private almacen: ServicioAlmacenamiento = new Almacen()) {
     this.almacen = almacen;
   }
 
-  public setToken(tipo: string, token: string): boolean {
+  public setToken(tipo: string, token: Token): boolean {
     return this.almacen.setItem('token', `${tipo} ${token}`);
   }
 
-  public getToken(): string | null {
-    return this.almacen.getItem('token');
+  public getToken(): Token | null {
+    return this.almacen.getItem<Token>('token');
   }
 
   public setFechaExpiracion(fecha: string): boolean {
     return this.almacen.setItem('fecha-expiracion', fecha);
   }
 
-  public esPosibleRenovarToken(): Renovacion {
+  public getEstadoToken(): EstadoToken {
     const fecha = this.getFechaExpiracion();
-    if (fecha === null) return 'LOGIN';
+    if (fecha === null) return 'NO_TOKEN';
 
     dayjs.extend(utc);
 
@@ -31,17 +32,25 @@ export class ServicioToken {
     const renovarAPartirDe = fechaExpiracion.clone().subtract(30, 'minute');
 
     if (fechaActual.isBefore(renovarAPartirDe)) {
-      return 'NO_RENOVAR';
+      return 'VALIDO';
     }
 
     if (
       fechaActual.isAfter(renovarAPartirDe) &&
       fechaActual.isBefore(fechaExpiracion)
     ) {
-      return 'RENOVAR';
+      return 'POSIBLE_RENOVAR';
     }
 
-    return 'LOGIN';
+    return 'EXPIRO';
+  }
+
+  public setUsuario(usuario: Usuario): boolean {
+    return this.almacen.setItem('usuario', usuario);
+  }
+
+  public getUsuario(): Usuario | null {
+    return this.almacen.getItem<Usuario>('usuario');
   }
 
   public limpiar(): void {
@@ -49,11 +58,14 @@ export class ServicioToken {
     this.almacen.eliminarItem('fecha-expiracion');
   }
 
-  private getFechaExpiracion(): string | null {
-    return this.almacen.getItem('fecha-expiracion');
+  private getFechaExpiracion(): FechaExpiracion | null {
+    return this.almacen.getItem<FechaExpiracion>('fecha-expiracion');
   }
 }
 
-export type Renovacion = 'NO_RENOVAR' | 'RENOVAR' | 'LOGIN';
+type Token = string;
+type FechaExpiracion = string;
 
-export default ServicioToken;
+export type EstadoToken = 'NO_TOKEN' | 'VALIDO' | 'POSIBLE_RENOVAR' | 'EXPIRO';
+
+export default ServicioAutenticacion;

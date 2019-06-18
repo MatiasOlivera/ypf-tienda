@@ -11,7 +11,7 @@ import { RespuestaToken } from '../../types/token-tipos';
 import { Usuario } from '../../types/usuario-tipos';
 import { clienteApi, clienteApiSinToken } from '../cliente-api';
 import { Respuesta } from '../cliente-http';
-import { ServicioToken } from '../token-servicio';
+import { ServicioAutenticacion } from '../servicio-autenticacion';
 
 type CredencialesInvalidas = Respuesta<false, 401, MensajeError>;
 export type RespuestaLogin =
@@ -33,9 +33,9 @@ export async function login(
   if (respuesta.ok) {
     const { token, tipoToken, fechaExpiracion } = respuesta.datos.autenticacion;
 
-    const servicioToken = new ServicioToken();
-    servicioToken.setToken(tipoToken, token);
-    servicioToken.setFechaExpiracion(fechaExpiracion);
+    const autenticacion = new ServicioAutenticacion();
+    autenticacion.setToken(tipoToken, token);
+    autenticacion.setFechaExpiracion(fechaExpiracion);
   }
 
   return respuesta;
@@ -45,11 +45,19 @@ export type RespuestaUsuario =
   | Respuesta<true, 200, { usuario: Usuario }>
   | RespuestasComunesApi;
 
-export function getUsuario(): Promise<RespuestaUsuario> {
-  return clienteApi<RespuestaUsuario>({
+export async function getUsuario(): Promise<RespuestaUsuario> {
+  const respuesta = await clienteApi<RespuestaUsuario>({
     url: 'auth/usuario',
     metodo: 'GET'
   });
+
+  if (respuesta.ok) {
+    const { usuario } = respuesta.datos;
+    const autenticacion = new ServicioAutenticacion();
+    autenticacion.setUsuario(usuario);
+  }
+
+  return respuesta;
 }
 
 export type RespuestaLogout =
@@ -63,8 +71,8 @@ export async function logout(): Promise<RespuestaLogout> {
     metodo: 'POST'
   });
 
-  const servicioToken = new ServicioToken();
-  servicioToken.limpiar();
+  const autenticacion = new ServicioAutenticacion();
+  autenticacion.limpiar();
 
   return respuesta;
 }

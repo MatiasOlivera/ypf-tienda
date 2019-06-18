@@ -8,7 +8,13 @@ import {
   RespuestaLogout
 } from '@/services/api/auth-api';
 import { EstadoBase } from '@/store/tipos-store';
-import { LOGIN, LOGOUT, OBTENER_USUARIO } from '@/store/types/acciones';
+import {
+  LOGIN,
+  LOGOUT,
+  OBTENER_USUARIO,
+  LOGIN_CLIENTE,
+  LOGOUT_CLIENTE
+} from '@/store/types/acciones';
 import { NOMBRE_USUARIO } from '@/store/types/getters';
 import { SET_USUARIO, SET_ESTA_LOGUEADO } from '@/store/types/mutaciones';
 import { CredencialesUsuario } from '@/types/tipos-auth';
@@ -79,6 +85,16 @@ const moduloAutenticacion: Module<EstadoAutenticacion, EstadoBase> = {
       } catch (error) {
         throw error;
       }
+    },
+
+    [LOGIN_CLIENTE]({ commit }, usuario: Usuario): void {
+      commit(SET_USUARIO, usuario);
+      commit(SET_ESTA_LOGUEADO, true);
+    },
+
+    [LOGOUT_CLIENTE]({ commit }): void {
+      commit(SET_USUARIO, null);
+      commit(SET_ESTA_LOGUEADO, false);
     }
   },
 

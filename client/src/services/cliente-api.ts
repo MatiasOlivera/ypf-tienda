@@ -1,9 +1,9 @@
-import { rutaInicio } from '@/router/rutas';
+import { rutaLogin } from '@/router/rutas';
 
 import router from '../router';
 import { RespuestaToken } from '../types/token-tipos';
 import { Cabeceras, ClienteHttp, Metodo, Respuesta } from './cliente-http';
-import { ServicioToken } from './token-servicio';
+import { ServicioAutenticacion } from './servicio-autenticacion';
 import {
   RespuestaNoAutorizado,
   RespuestasComunesApi,
@@ -55,12 +55,12 @@ export async function clienteApi<RespuestaApi extends Respuesta>(
   const clienteHttp = new ClienteHttp(urlBase);
 
   // Servicio token
-  const servicioToken = new ServicioToken();
-  let token = servicioToken.getToken();
+  const autenticacion = new ServicioAutenticacion();
+  let token = autenticacion.getToken();
 
-  const renovacion = servicioToken.esPosibleRenovarToken();
+  const estado = autenticacion.getEstadoToken();
 
-  if (renovacion === 'RENOVAR') {
+  if (estado === 'POSIBLE_RENOVAR') {
     try {
       token = await _renovarToken();
     } catch (error) {
@@ -68,8 +68,8 @@ export async function clienteApi<RespuestaApi extends Respuesta>(
     }
   }
 
-  if (renovacion === 'LOGIN' || !token) {
-    router.push({ name: rutaInicio });
+  if (estado === 'EXPIRO' || !token) {
+    router.push({ name: rutaLogin });
 
     const respuesta: RespuestaNoAutorizado = {
       ok: false,
@@ -93,8 +93,8 @@ async function renovarToken(): Promise<string | null> {
     const urlBase: string = process.env.VUE_APP_API_ENDPOINT;
     const clienteHttp = new ClienteHttp(urlBase);
 
-    const servicioToken = new ServicioToken();
-    const token = servicioToken.getToken() as string;
+    const autenticacion = new ServicioAutenticacion();
+    const token = autenticacion.getToken() as string;
     const cabeceras = { ...cabecerasPorDefecto, authorization: token };
 
     const respuesta = await clienteHttp.peticion<RespuestaToken>({
@@ -110,10 +110,10 @@ async function renovarToken(): Promise<string | null> {
         fechaExpiracion
       } = respuesta.datos.autenticacion;
 
-      servicioToken.setToken(tipoToken, _token);
-      servicioToken.setFechaExpiracion(fechaExpiracion);
+      autenticacion.setToken(tipoToken, _token);
+      autenticacion.setFechaExpiracion(fechaExpiracion);
 
-      return servicioToken.getToken();
+      return autenticacion.getToken();
     }
 
     return null;

@@ -28,7 +28,12 @@ import {
   MODULO_AUTENTICACION,
   MODULO_NOTIFICACIONES
 } from './store/types/modulos';
-import { LOGOUT } from './store/types/acciones';
+import {
+  LOGIN_CLIENTE,
+  LOGOUT_CLIENTE,
+  LOGOUT,
+  CREAR_NOTIFICACION
+} from './store/types/acciones';
 import { NOMBRE_USUARIO, ULTIMA_NOTIFICACION } from './store/types/getters';
 import { UltimaNotificacion } from './store/modules/notificaciones/modulo-notificaciones';
 
@@ -40,6 +45,7 @@ import { rutaInicio, rutaLogin } from './router/rutas';
 
 // Otros
 import { mostrarNotificacion } from './utils/notificaciones';
+import { ServicioAutenticacion } from './services/servicio-autenticacion';
 
 export default Vue.extend({
   name: 'App',
@@ -63,8 +69,38 @@ export default Vue.extend({
     }
   },
 
+  created(): void {
+    const autenticacion = new ServicioAutenticacion();
+    const estado = autenticacion.getEstadoToken();
+
+    if (estado === 'VALIDO') {
+      const usuario = autenticacion.getUsuario();
+      if (usuario) {
+        this.loginCliente(usuario);
+      }
+      return;
+    }
+
+    if (estado === 'NO_TOKEN' || estado === 'EXPIRO') {
+      this.logoutCliente();
+
+      const notificacion: Notificacion = {
+        tipo: 'info',
+        descripcion: 'La sesión ha expirado, por favor vuelva a iniciar sesión'
+      };
+      this.crearNotificacion(notificacion);
+
+      this.irAIniciarSesion();
+    }
+  },
+
   methods: {
-    ...mapActions(MODULO_AUTENTICACION, [LOGOUT]),
+    ...mapActions(MODULO_AUTENTICACION, [
+      LOGIN_CLIENTE,
+      LOGOUT_CLIENTE,
+      LOGOUT
+    ]),
+    ...mapActions(MODULO_NOTIFICACIONES, [CREAR_NOTIFICACION]),
 
     irAInicio(): void {
       this.$router.push({ name: rutaInicio });
