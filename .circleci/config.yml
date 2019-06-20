@@ -1,4 +1,6 @@
-version: 2
+version: 2.1
+orbs:
+  codecov: codecov/codecov@1.0.4
 jobs:
   build:
     docker:
@@ -37,3 +39,7 @@ jobs:
           command: cd client && npm run test:unit -- --coverage
       - store_artifacts:
           path: client/coverage
+      # subir la cobertura del código a codecov
+      - codecov/upload:
+          file: client/coverage/clover.xml
+          flags: frontend
