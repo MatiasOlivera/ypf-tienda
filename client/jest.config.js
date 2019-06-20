@@ -1,4 +1,5 @@
 module.exports = {
+  coveragePathIgnorePatterns: ['/node_modules/', '<rootDir>/src/static/'],
   moduleFileExtensions: ['js', 'jsx', 'json', 'vue', 'ts', 'tsx'],
   transform: {
     '^.+\\.vue$': 'vue-jest',

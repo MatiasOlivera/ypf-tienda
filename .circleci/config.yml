@@ -34,4 +34,6 @@ jobs:
       # ejecutar los tests unitarios
       - run:
           name: Ejecutar los tests unitarios
-          command: cd client && npm run test:unit
+          command: cd client && npm run test:unit -- --coverage
+      - store_artifacts:
+          path: client/coverage
