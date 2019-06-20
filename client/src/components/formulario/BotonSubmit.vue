@@ -16,8 +16,8 @@ import Vue from 'vue';
 import { PropValidator } from 'vue/types/options';
 
 export type SubmitPropCargando = boolean;
-export type SubmitPropTexto = 'Guardar' | 'Actualizar';
-const texto = ['Guardar', 'Actualizar'];
+export type SubmitPropTexto = 'Iniciar sesión' | 'Guardar' | 'Actualizar';
+const texto = ['Iniciar sesión', 'Guardar', 'Actualizar'];
 
 export default Vue.extend({
   name: 'BotonSubmit',
