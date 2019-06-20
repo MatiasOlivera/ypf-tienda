@@ -1,5 +1,6 @@
 import { Diccionario } from '@/types/utilidades';
 
+// eslint-disable-next-line import/prefer-default-export
 export function respuestaFetchMock(
   datos: any,
   cabeceras: Diccionario<string> = { 'content-type': 'application/json' },

@@ -1,7 +1,7 @@
 // TODO: actualizar eslint-plugin-import cuando lancen una nueva versión
-var jsExtensions = ['.js', '.jsx'];
-var tsExtensions = ['.ts', '.tsx'];
-var allExtensions = jsExtensions.concat(tsExtensions);
+const jsExtensions = ['.js', '.jsx'];
+const tsExtensions = ['.ts', '.tsx'];
+const allExtensions = jsExtensions.concat(tsExtensions);
 
 module.exports = {
   root: true,
