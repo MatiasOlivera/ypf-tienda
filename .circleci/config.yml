@@ -26,6 +26,11 @@ jobs:
           paths:
             - client/node_modules
 
+      # ejecutar el linter
+      - run:
+          name: Ejecutar el linter
+          command: cd client && npm run lint
+
       # ejecutar los tests unitarios
       - run:
           name: Ejecutar los tests unitarios
