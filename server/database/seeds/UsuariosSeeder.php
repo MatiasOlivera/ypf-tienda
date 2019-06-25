@@ -118,11 +118,11 @@ class UsuariosSeeder extends Seeder
 
         foreach ($usuarios as $usuario) {
             $nuevoCliente = new Cliente();
-            $nuevoCliente->cliente = $usuario['name'];
+            $nuevoCliente->nombre = $usuario['name'];
 
             $nuevoUsuario = new User();
             $nuevoUsuario->fill($usuario);
-            $nuevoUsuario->cliente()->save($nuevoCliente);
+            $nuevoUsuario->cliente()->associate($nuevoCliente);
             $nuevoUsuario->save();
         }
     }
