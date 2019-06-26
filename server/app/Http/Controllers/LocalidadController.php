@@ -14,12 +14,14 @@ class LocalidadController extends Controller
     protected $baseController;
     protected $modeloSingular;
     protected $modeloPlural;
+    protected $generoModelo;
 
     public function __construct()
     {
         $this->modeloPlural     = 'localidades';
         $this->modeloSingular   = 'localidad';
-        $this->baseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
+        $this->generoModelo = 'femenino';
+        $this->baseController   = new BaseController($this->modeloSingular, $this->modeloPlural, $this->generoModelo);
     }
 
     protected function getNombre(string $nombreLocalidad, string $nombreProvincia): string
@@ -61,12 +63,12 @@ class LocalidadController extends Controller
             $respuesta      = [$this->modeloSingular  => $localidad,];
 
             $mensajeExito   = new MensajeExito();
-            $mensajeExito->guardar($nombre);
+            $mensajeExito->guardar($nombre, $this->generoModelo);
 
             return Respuesta::exito($respuesta, $mensajeExito, 200);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
-            $mensajeError->guardar($nombre);
+            $mensajeError->guardar($nombre, $this->generoModelo);
             return Respuesta::error($mensajeError, 500);
         }
     }
