@@ -81,7 +81,7 @@ export default Vue.extend({
       return;
     }
 
-    if (estado === 'NO_TOKEN' || estado === 'EXPIRO') {
+    if (estado === 'EXPIRO') {
       this.logoutCliente();
 
       const notificacion: Notificacion = {
