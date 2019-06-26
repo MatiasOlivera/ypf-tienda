@@ -36,9 +36,10 @@
       </b-form-group>
 
       <div class="mt-4">
-        <boton-submit :cargando="cargando">
-          Iniciar sesión
-        </boton-submit>
+        <boton-submit
+          :cargando="cargando"
+          texto="Iniciar sesión"
+        ></boton-submit>
 
         <boton-resetear :disabled="cargando" />
       </div>
