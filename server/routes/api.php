@@ -167,4 +167,11 @@ Route::middleware('jwt.auth')->group(function () {
 
         Route::post('/localidades/{localidad}/restaurar/', 'LocalidadController@restore')->name('Localidad.restore');
     });
+
+    /**
+     * Categorias producto
+     */
+    Route::group(['prefix' => 'categorias-productos'], function () {
+        Route::get('/', 'CategoriaProductoController@index')->name('categorias.index');
+    });
 });
