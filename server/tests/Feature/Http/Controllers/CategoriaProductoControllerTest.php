@@ -7,11 +7,28 @@ use App\CategoriaProducto;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Feature\Utilidades\EstructuraJsonHelper;
 
 class CategoriaProductoControllerTest extends TestCase
 {
     use AuthHelper;
     use RefreshDatabase;
+    use EstructuraJsonHelper;
+
+    private $estructuraCategoria = [
+        'categoria' => [
+            'id',
+            'descripcion',
+            'created_at',
+            'updated_at',
+            'deleted_at'
+        ]
+    ];
+
+    private function getEstructuraMutacion(): array
+    {
+        return array_merge($this->estructuraCategoria, $this->estructuraMensaje);
+    }
 
     /**
      * No debería obtener ninguna categoria
@@ -25,26 +42,11 @@ class CategoriaProductoControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('GET', 'api/categorias-productos');
 
+        $estructura = array_merge(['categorias'], $this->estructuraPaginacion);
+
         $respuesta
             ->assertOk()
-            ->assertJsonStructure([
-                'categorias',
-                'paginacion' => [
-                    'total',
-                    'porPagina',
-                    'paginaActual',
-                    'ultimaPagina',
-                    'desde',
-                    'hasta',
-                    'rutas' => [
-                        'primeraPagina',
-                        'ultimaPagina',
-                        'siguientePagina',
-                        'paginaAnterior',
-                        'base'
-                    ]
-                ]
-            ])
+            ->assertJsonStructure($estructura)
             ->assertJson(['categorias' => []]);
     }
 
@@ -63,26 +65,11 @@ class CategoriaProductoControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('GET', 'api/categorias-productos');
 
+        $estructura = array_merge(['categorias'], $this->estructuraPaginacion);
+
         $respuesta
             ->assertOk()
-            ->assertJsonStructure([
-                'categorias',
-                'paginacion' => [
-                    'total',
-                    'porPagina',
-                    'paginaActual',
-                    'ultimaPagina',
-                    'desde',
-                    'hasta',
-                    'rutas' => [
-                        'primeraPagina',
-                        'ultimaPagina',
-                        'siguientePagina',
-                        'paginaAnterior',
-                        'base'
-                    ]
-                ]
-            ])
+            ->assertJsonStructure($estructura)
             ->assertJson(['categorias' => $categorias]);
     }
 
@@ -103,18 +90,19 @@ class CategoriaProductoControllerTest extends TestCase
             ->get()
             ->toArray()[0];
 
+        $estructura = array_merge([
+            'categoria' => [
+                'id',
+                'descripcion',
+                'created_at',
+                'updated_at',
+                // 'deleted_at'
+            ]
+        ], $this->estructuraMensaje);
+
         $respuesta
             ->assertStatus(201)
-            ->assertJsonStructure([
-                'categoria' => [
-                    'id',
-                    'descripcion',
-                    'created_at',
-                    'updated_at',
-                    // 'deleted_at'
-                ],
-                'mensaje' => ['tipo', 'codigo', 'descripcion']
-            ])
+            ->assertJsonStructure($estructura)
             ->assertExactJson([
                 'categoria' => $categoriaDB,
                 'mensaje' => [
@@ -146,15 +134,7 @@ class CategoriaProductoControllerTest extends TestCase
 
         $respuesta
             ->assertStatus(200)
-            ->assertJsonStructure([
-                'categoria' => [
-                    'id',
-                    'descripcion',
-                    'created_at',
-                    'updated_at',
-                    'deleted_at'
-                ]
-            ])
+            ->assertJsonStructure($this->estructuraCategoria)
             ->assertExactJson([
                 'categoria' => $categoriaDB
             ]);
@@ -179,18 +159,11 @@ class CategoriaProductoControllerTest extends TestCase
 
         $categoriaDB = CategoriaProducto::findOrFail($id)->toArray();
 
+        $estructura = $this->getEstructuraMutacion();
+
         $respuesta
             ->assertStatus(200)
-            ->assertJsonStructure([
-                'categoria' => [
-                    'id',
-                    'descripcion',
-                    'created_at',
-                    'updated_at',
-                    'deleted_at'
-                ],
-                'mensaje' => ['tipo', 'codigo', 'descripcion']
-            ])
+            ->assertJsonStructure($estructura)
             ->assertExactJson([
                 'categoria' => $categoriaDB,
                 'mensaje' => [
@@ -223,18 +196,11 @@ class CategoriaProductoControllerTest extends TestCase
             ->firstOrFail()
             ->toArray();
 
+        $estructura = $this->getEstructuraMutacion();
+
         $respuesta
             ->assertStatus(200)
-            ->assertJsonStructure([
-                'categoria' => [
-                    'id',
-                    'descripcion',
-                    'created_at',
-                    'updated_at',
-                    'deleted_at'
-                ],
-                'mensaje' => ['tipo', 'codigo', 'descripcion']
-            ])
+            ->assertJsonStructure($estructura)
             ->assertExactJson([
                 'categoria' => $categoriaDB,
                 'mensaje' => [
@@ -269,18 +235,11 @@ class CategoriaProductoControllerTest extends TestCase
             ->firstOrFail()
             ->toArray();
 
+        $estructura = $this->getEstructuraMutacion();
+
         $respuesta
             ->assertStatus(200)
-            ->assertJsonStructure([
-                'categoria' => [
-                    'id',
-                    'descripcion',
-                    'created_at',
-                    'updated_at',
-                    'deleted_at'
-                ],
-                'mensaje' => ['tipo', 'codigo', 'descripcion']
-            ])
+            ->assertJsonStructure($estructura)
             ->assertExactJson([
                 'categoria' => $categoriaDB,
                 'mensaje' => [
