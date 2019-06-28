@@ -27,4 +27,9 @@ class CategoriaProducto extends Model
     protected $hidden = ['ID_CAT_prod', 'desc_cat', 'estado'];
 
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
+
+    public function productos()
+    {
+        return $this->hasMany('App\Producto', 'ID_CAT', 'ID_CAT_prod');
+    }
 }
