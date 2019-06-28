@@ -13,12 +13,14 @@ class ClienteMailController extends Controller
     protected $baseController;
     protected $modeloSingular;
     protected $modeloPlural;
+    protected $generoModelo;
 
     public function __construct()
     {
         $this->modeloPlural     = 'emails';
         $this->modeloSingular   = 'email';
-        $this->baseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
+        $this->generoModelo = 'masculino';
+        $this->baseController   = new BaseController($this->modeloSingular, $this->modeloPlural, $this->generoModelo);
     }
 
     /**
@@ -58,13 +60,13 @@ class ClienteMailController extends Controller
             $mail   = $cliente->mails()->save($mail);
 
             $mensajeExito = new MensajeExito();
-            $mensajeExito->guardar($nombre);
+            $mensajeExito->guardar($nombre, $this->generoModelo);
 
             $respuesta      = [$this->modeloSingular => $mail];
             return Respuesta::exito($respuesta, $mensajeExito, 200);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
-            $mensajeError->guardar($nombre);
+            $mensajeError->guardar($nombre, $this->generoModelo);
 
             return Respuesta::error($mensajeError, 500);
         }

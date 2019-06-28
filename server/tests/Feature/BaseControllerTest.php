@@ -25,7 +25,7 @@ class BaseControllerTest extends TestCase
         ];
         $nombre = 'El usuario John';
 
-        $controller = new BaseController('usuario', 'usuarios');
+        $controller = new BaseController('usuario', 'usuarios', 'masculino');
         return $controller->store($parametros, $nombre);
     }
 
@@ -54,7 +54,7 @@ class BaseControllerTest extends TestCase
 
         $mensaje = 'los usuarios';
 
-        $controller = new BaseController('usuario', 'usuarios');
+        $controller = new BaseController('usuario', 'usuarios', 'masculino');
         $respuestaIndex = $controller->index($parametros, $mensaje);
 
         $status = $respuestaIndex->status();
@@ -102,7 +102,7 @@ class BaseControllerTest extends TestCase
      */
     public function testIndexDeberiaDevolverMensajeError()
     {
-        $controller = new BaseController('usuario', 'usuarios');
+        $controller = new BaseController('usuario', 'usuarios', 'masculino');
         $parametros = ['modelo' => 'NoExiste'];
         $nombre = 'los usuarios';
         $respuestaIndex = $controller->index($parametros, $nombre);
@@ -179,7 +179,7 @@ class BaseControllerTest extends TestCase
      */
     public function testStoreDeberiaDevolverMensajeError()
     {
-        $controller = new BaseController('usuario', 'usuarios');
+        $controller = new BaseController('usuario', 'usuarios', 'masculino');
         $parametros = ['modelo' => 'NoExiste'];
         $nombre = 'El usuario John';
         $respuesta = $controller->store($parametros, $nombre);
@@ -211,7 +211,7 @@ class BaseControllerTest extends TestCase
 
         $instancia = $respuestaCreado->getData(true)['usuario'];
 
-        $controller = new BaseController('usuario', 'usuarios');
+        $controller = new BaseController('usuario', 'usuarios', 'masculino');
         $respuestaIndex = $controller->show($instancia);
 
         $status = $respuestaIndex->status();
@@ -242,7 +242,7 @@ class BaseControllerTest extends TestCase
         ];
         $nombres = ['exito' => 'El usuario Johny', 'error' => 'El usuario John'];
 
-        $controller = new BaseController('usuario', 'usuarios');
+        $controller = new BaseController('usuario', 'usuarios', 'masculino');
         $respuestaActualizado = $controller->update($parametros, $nombres);
 
         $status = $respuestaActualizado->status();
@@ -270,7 +270,7 @@ class BaseControllerTest extends TestCase
      */
     public function testUpdateDeberiaDevolverMensajeError()
     {
-        $controller = new BaseController('usuario', 'usuarios');
+        $controller = new BaseController('usuario', 'usuarios', 'masculino');
         $parametros = ['instancia' => 'NoExiste'];
         $nombres = ['exito' => 'El usuario Johny', 'error' => 'El usuario John'];
         $respuesta = $controller->update($parametros, $nombres);
@@ -304,7 +304,7 @@ class BaseControllerTest extends TestCase
         $instancia = User::find($id);
         $nombre = 'El usuario John';
 
-        $controller = new BaseController('usuario', 'usuarios');
+        $controller = new BaseController('usuario', 'usuarios', 'masculino');
         $respuestaMostrar = $controller->destroy($instancia, $nombre);
 
         $status = $respuestaMostrar->status();
@@ -332,7 +332,7 @@ class BaseControllerTest extends TestCase
      */
     public function testDestroyDeberiaDevolverMensajeError()
     {
-        $controller = new BaseController('usuario', 'usuarios');
+        $controller = new BaseController('usuario', 'usuarios', 'masculino');
         $parametros = ['instancia' => 'NoExiste'];
         $nombre = 'El usuario John';
         $respuesta = $controller->destroy($parametros, $nombre);
@@ -366,7 +366,7 @@ class BaseControllerTest extends TestCase
         $instancia = User::find($id);
         $nombre = 'El usuario John';
 
-        $controller = new BaseController('usuario', 'usuarios');
+        $controller = new BaseController('usuario', 'usuarios', 'masculino');
         $respuestaMostrar = $controller->restore($instancia, $nombre);
 
         $status = $respuestaMostrar->status();
@@ -394,7 +394,7 @@ class BaseControllerTest extends TestCase
      */
     public function testRestoreDeberiaDevolverMensajeError()
     {
-        $controller = new BaseController('usuario', 'usuarios');
+        $controller = new BaseController('usuario', 'usuarios', 'masculino');
         $parametros = ['instancia' => 'NoExiste'];
         $nombre = 'El usuario John';
         $respuesta = $controller->restore($parametros, $nombre);
@@ -426,7 +426,7 @@ class BaseControllerTest extends TestCase
         ];
         $nombre = 'El usuario Juan';
 
-        $controller = new BaseController('usuario', 'usuarios');
+        $controller = new BaseController('usuario', 'usuarios', 'masculino');
         $respuesta = $controller->store($parametros, $nombre);
         $datos = $respuesta->getData(true);
 
@@ -456,7 +456,7 @@ class BaseControllerTest extends TestCase
             'error' => 'El usuario Juan'
         ];
 
-        $controller = new BaseController('usuario', 'usuarios');
+        $controller = new BaseController('usuario', 'usuarios', 'masculino');
         $respuesta = $controller->store($parametros, $nombres);
         $datos = $respuesta->getData(true);
 
@@ -478,7 +478,7 @@ class BaseControllerTest extends TestCase
         $parametros = [];
         $nombres = ['error' => 'El usuario Juan'];
 
-        $controller = new BaseController('usuario', 'usuarios');
+        $controller = new BaseController('usuario', 'usuarios', 'masculino');
         $controller->store($parametros, $nombres);
     }
 
@@ -490,7 +490,7 @@ class BaseControllerTest extends TestCase
         $parametros = [];
         $nombres = ['exito' => 'El usuario Juan'];
 
-        $controller = new BaseController('usuario', 'usuarios');
+        $controller = new BaseController('usuario', 'usuarios', 'masculino');
         $controller->store($parametros, $nombres);
     }
 
@@ -502,7 +502,7 @@ class BaseControllerTest extends TestCase
         $parametros = [];
         $nombre = 123;
 
-        $controller = new BaseController('usuario', 'usuarios');
+        $controller = new BaseController('usuario', 'usuarios', 'masculino');
         $controller->store($parametros, $nombre);
     }
 }

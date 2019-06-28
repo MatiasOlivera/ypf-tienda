@@ -13,11 +13,13 @@ class BaseController
 {
     private $modeloSingular;
     private $modeloPlural;
+    private $generoModelo;
 
-    public function __construct(string $modeloSingular, string $modeloPlural)
+    public function __construct(string $modeloSingular, string $modeloPlural, string $generoModelo)
     {
         $this->modeloSingular = $modeloSingular;
         $this->modeloPlural = $modeloPlural;
+        $this->generoModelo = $generoModelo;
     }
 
     /**
@@ -67,13 +69,13 @@ class BaseController
 
             if ($instancia->save()) {
                 $mensajeExito = new MensajeExito();
-                $mensajeExito->guardar($nombres['exito']);
+                $mensajeExito->guardar($nombres['exito'], $this->generoModelo);
 
                 return Respuesta::exito([$this->modeloSingular => $instancia], $mensajeExito, 201);
             }
         } catch (\Throwable $th) {
             $mensajeError = new MensajeError();
-            $mensajeError->guardar($nombres['error']);
+            $mensajeError->guardar($nombres['error'], $this->generoModelo);
 
             return Respuesta::error($mensajeError, 500);
         }
@@ -106,13 +108,13 @@ class BaseController
             $instancia->fill($parametros['inputs']);
             if ($instancia->save()) {
                 $mensajeExito = new MensajeExito();
-                $mensajeExito->actualizar($nombres['exito']);
+                $mensajeExito->actualizar($nombres['exito'], $this->generoModelo);
 
                 return Respuesta::exito([$this->modeloSingular => $instancia], $mensajeExito, 200);
             }
         } catch (\Throwable $th) {
             $mensajeError = new MensajeError();
-            $mensajeError->actualizar($nombres['error']);
+            $mensajeError->actualizar($nombres['error'], $this->generoModelo);
 
             return Respuesta::error($mensajeError, 500);
         }
@@ -134,13 +136,13 @@ class BaseController
 
             if ($eliminado) {
                 $mensajeExito = new MensajeExito();
-                $mensajeExito->eliminar($nombres['exito']);
+                $mensajeExito->eliminar($nombres['exito'], $this->generoModelo);
 
                 return Respuesta::exito([$this->modeloSingular => $instancia], $mensajeExito, 200);
             }
         } catch (\Throwable $th) {
             $mensajeError = new MensajeError();
-            $mensajeError->eliminar($nombres['error']);
+            $mensajeError->eliminar($nombres['error'], $this->generoModelo);
 
             return Respuesta::error($mensajeError, 500);
         }
@@ -162,13 +164,13 @@ class BaseController
 
             if ($restaurada) {
                 $mensajeExito = new MensajeExito();
-                $mensajeExito->restaurar($nombres['exito']);
+                $mensajeExito->restaurar($nombres['exito'], $this->generoModelo);
 
                 return Respuesta::exito([$this->modeloSingular => $instancia], $mensajeExito, 200);
             }
         } catch (\Throwable $th) {
             $mensajeError = new MensajeError();
-            $mensajeError->restaurar($nombres['error']);
+            $mensajeError->restaurar($nombres['error'], $this->generoModelo);
 
             return Respuesta::error($mensajeError, 500);
         }
