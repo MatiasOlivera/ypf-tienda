@@ -106,6 +106,7 @@ class CategoriaProductoController extends Controller
      */
     public function destroy(CategoriaProducto $categoriaProducto)
     {
-        //
+        $nombre = "La categoria $categoriaProducto->descripcion";
+        return $this->controladorBase->destroy($categoriaProducto, $nombre);
     }
 }

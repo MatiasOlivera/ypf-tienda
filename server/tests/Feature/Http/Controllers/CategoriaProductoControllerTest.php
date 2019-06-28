@@ -200,4 +200,48 @@ class CategoriaProductoControllerTest extends TestCase
                 ]
             ]);
     }
+
+    /**
+     * Debería eliminar una categoria
+     */
+    public function testDeberiaEliminarUnaCategoria()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $categoria = $this
+            ->withHeaders($cabeceras)
+            ->json('POST', 'api/categorias-productos', ['descripcion' => 'Combustibles']);
+
+        $id = $categoria->getData(true)['categoria']['id'];
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('DELETE', "api/categorias-productos/$id");
+
+        $categoriaDB = CategoriaProducto::withTrashed()
+            ->where('ID_CAT_prod', $id)
+            ->firstOrFail()
+            ->toArray();
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'categoria' => [
+                    'id',
+                    'descripcion',
+                    'created_at',
+                    'updated_at',
+                    'deleted_at'
+                ],
+                'mensaje' => ['tipo', 'codigo', 'descripcion']
+            ])
+            ->assertExactJson([
+                'categoria' => $categoriaDB,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'ELIMINADO',
+                    'descripcion' => 'La categoria Combustibles ha sido eliminada'
+                ]
+            ]);
+    }
 }

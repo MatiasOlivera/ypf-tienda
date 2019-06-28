@@ -180,6 +180,8 @@ Route::middleware('jwt.auth')->group(function () {
             Route::get('/', 'CategoriaProductoController@show')->name('categorias.show');
 
             Route::put('/', 'CategoriaProductoController@update')->name('categorias.update');
+
+            Route::delete('/', 'CategoriaProductoController@destroy')->name('categorias.destroy');
         });
     });
 });
