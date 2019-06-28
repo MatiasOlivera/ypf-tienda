@@ -126,6 +126,41 @@ class CategoriaProductoControllerTest extends TestCase
     }
 
     /**
+     * Debería obtener una categoría
+     */
+    public function testDeberiaObtenerUnaCategoria()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $categoria = $this
+            ->withHeaders($cabeceras)
+            ->json('POST', 'api/categorias-productos', ['descripcion' => 'Combustible']);
+
+        $id = $categoria->getData(true)['categoria']['id'];
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('GET', "api/categorias-productos/$id");
+
+        $categoriaDB = CategoriaProducto::findOrFail($id)->toArray();
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'categoria' => [
+                    'id',
+                    'descripcion',
+                    'created_at',
+                    'updated_at',
+                    'deleted_at'
+                ]
+            ])
+            ->assertExactJson([
+                'categoria' => $categoriaDB
+            ]);
+    }
+
+    /**
      * Debería editar una categoria
      */
     public function testDeberiaEditarUnaCategoria()

@@ -74,7 +74,7 @@ class CategoriaProductoController extends Controller
      */
     public function show(CategoriaProducto $categoriaProducto)
     {
-        //
+        return $this->controladorBase->show($categoriaProducto);
     }
 
     /**

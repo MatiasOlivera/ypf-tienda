@@ -177,6 +177,8 @@ Route::middleware('jwt.auth')->group(function () {
         Route::post('/', 'CategoriaProductoController@store')->name('categorias.store');
 
         Route::group(['prefix' => '/{categoriaProducto}'], function () {
+            Route::get('/', 'CategoriaProductoController@show')->name('categorias.show');
+
             Route::put('/', 'CategoriaProductoController@update')->name('categorias.update');
         });
     });
