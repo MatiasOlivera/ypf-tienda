@@ -244,4 +244,50 @@ class CategoriaProductoControllerTest extends TestCase
                 ]
             ]);
     }
+
+    /**
+     * Debería restaurar una categoria
+     */
+    public function testDeberiaRestaurarUnaCategoria()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $categoria = $this
+            ->withHeaders($cabeceras)
+            ->json('POST', 'api/categorias-productos', ['descripcion' => 'Combustibles']);
+
+        $id = $categoria->getData(true)['categoria']['id'];
+
+        $this->withHeaders($cabeceras)
+            ->json('DELETE', "api/categorias-productos/$id");
+
+        $respuesta = $this->withHeaders($cabeceras)
+            ->json('POST', "api/categorias-productos/$id/restaurar");
+
+        $categoriaDB = CategoriaProducto::withTrashed()
+            ->where('ID_CAT_prod', $id)
+            ->firstOrFail()
+            ->toArray();
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'categoria' => [
+                    'id',
+                    'descripcion',
+                    'created_at',
+                    'updated_at',
+                    'deleted_at'
+                ],
+                'mensaje' => ['tipo', 'codigo', 'descripcion']
+            ])
+            ->assertExactJson([
+                'categoria' => $categoriaDB,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'RESTAURADO',
+                    'descripcion' => 'La categoria Combustibles ha sido dada de alta'
+                ]
+            ]);
+    }
 }

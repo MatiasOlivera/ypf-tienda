@@ -109,4 +109,16 @@ class CategoriaProductoController extends Controller
         $nombre = "La categoria $categoriaProducto->descripcion";
         return $this->controladorBase->destroy($categoriaProducto, $nombre);
     }
+
+     /**
+     * Restaurar la categoria que ha sido eliminada
+     *
+     * @param  \App\CategoriaProducto  $categoriaProducto
+     * @return \Illuminate\Http\Response
+     */
+    public function restore(CategoriaProducto $categoriaProducto)
+    {
+        $nombre = "La categoria $categoriaProducto->descripcion";
+        return $this->controladorBase->restore($categoriaProducto, $nombre);
+    }
 }

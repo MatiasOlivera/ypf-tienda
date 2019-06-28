@@ -182,6 +182,8 @@ Route::middleware('jwt.auth')->group(function () {
             Route::put('/', 'CategoriaProductoController@update')->name('categorias.update');
 
             Route::delete('/', 'CategoriaProductoController@destroy')->name('categorias.destroy');
+
+            Route::post('/restaurar/', 'CategoriaProductoController@restore')->name('categorias.restore');
         });
     });
 });
