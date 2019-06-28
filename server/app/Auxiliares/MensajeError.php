@@ -11,27 +11,35 @@ final class MensajeError extends Mensaje
         parent::__construct($descripcion, $codigo);
     }
 
-    public function guardar(string $nombre): void
+    public function guardar(string $nombre, string $genero): void
     {
-        $this->setDescripcion("$nombre no ha sido creado debido a un error interno");
+        $descMasculino = "$nombre no ha sido creado debido a un error interno";
+        $descFemenino = "$nombre no ha sido creada debido a un error interno";
+        $this->setDescripcionSegunGenero($descMasculino, $descFemenino, $genero);
         $this->setCodigo('NO_GUARDADO');
     }
 
-    public function actualizar(string $nombre): void
+    public function actualizar(string $nombre, string $genero): void
     {
-        $this->setDescripcion("$nombre no ha sido actualizado debido a un error interno");
+        $descMasculino = "$nombre no ha sido actualizado debido a un error interno";
+        $descFemenino = "$nombre no ha sido actualizada debido a un error interno";
+        $this->setDescripcionSegunGenero($descMasculino, $descFemenino, $genero);
         $this->setCodigo('NO_ACTUALIZADO');
     }
 
-    public function eliminar(string $nombre): void
+    public function eliminar(string $nombre, string $genero): void
     {
-        $this->setDescripcion("$nombre no ha sido eliminado debido a un error interno");
+        $descMasculino = "$nombre no ha sido eliminado debido a un error interno";
+        $descFemenino = "$nombre no ha sido eliminada debido a un error interno";
+        $this->setDescripcionSegunGenero($descMasculino, $descFemenino, $genero);
         $this->setCodigo('NO_ELIMINADO');
     }
 
-    public function restaurar(string $nombre): void
+    public function restaurar(string $nombre, string $genero): void
     {
-        $this->setDescripcion("$nombre no ha sido dado de alta debido a un error interno");
+        $descMasculino = "$nombre no ha sido dado de alta debido a un error interno";
+        $descFemenino = "$nombre no ha sido dada de alta debido a un error interno";
+        $this->setDescripcionSegunGenero($descMasculino, $descFemenino, $genero);
         $this->setCodigo('NO_RESTAURADO');
     }
 

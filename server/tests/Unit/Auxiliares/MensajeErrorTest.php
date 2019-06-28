@@ -21,10 +21,10 @@ class MensajeErrorTest extends TestCase
         $this->assertEquals($esperado, $actual);
     }
 
-    public function testDeberiaCrearMensajeGuardar()
+    public function testDeberiaCrearMensajeGuardarConGeneroMasculino()
     {
         $mensaje = new MensajeError();
-        $mensaje->guardar('El producto Elaion F50');
+        $mensaje->guardar('El producto Elaion F50', 'masculino');
         $actual = $mensaje->getObjeto();
 
         $esperado = [
@@ -36,25 +36,40 @@ class MensajeErrorTest extends TestCase
         $this->assertEquals($esperado, $actual);
     }
 
-    public function testDeberiaCrearMensajeActualizar()
+    public function testDeberiaCrearMensajeGuardarConGeneroFemenino()
     {
         $mensaje = new MensajeError();
-        $mensaje->actualizar('El producto Elaion F50');
+        $mensaje->guardar('El producto Elaion F50', 'masculino');
         $actual = $mensaje->getObjeto();
 
         $esperado = [
             'tipo' => 'error',
-            'codigo' => 'NO_ACTUALIZADO',
-            'descripcion' => 'El producto Elaion F50 no ha sido actualizado debido a un error interno'
+            'codigo' => 'NO_GUARDADO',
+            'descripcion' => 'El producto Elaion F50 no ha sido creado debido a un error interno'
         ];
 
         $this->assertEquals($esperado, $actual);
     }
 
-    public function testDeberiaCrearMensajeEliminar()
+    public function testDeberiaCrearMensajeActualizarConGeneroMasculino()
     {
         $mensaje = new MensajeError();
-        $mensaje->eliminar('El producto Elaion F50');
+        $mensaje->actualizar('La cotización', 'femenino');
+        $actual = $mensaje->getObjeto();
+
+        $esperado = [
+            'tipo' => 'error',
+            'codigo' => 'NO_ACTUALIZADO',
+            'descripcion' => 'La cotización no ha sido actualizada debido a un error interno'
+        ];
+
+        $this->assertEquals($esperado, $actual);
+    }
+
+    public function testDeberiaCrearMensajeEliminarConGeneroMasculino()
+    {
+        $mensaje = new MensajeError();
+        $mensaje->eliminar('El producto Elaion F50', 'masculino');
         $actual = $mensaje->getObjeto();
 
         $esperado = [
@@ -66,16 +81,46 @@ class MensajeErrorTest extends TestCase
         $this->assertEquals($esperado, $actual);
     }
 
-    public function testDeberiaCrearMensajeRestaurar()
+    public function testDeberiaCrearMensajeEliminarConGeneroFemenino()
     {
         $mensaje = new MensajeError();
-        $mensaje->restaurar('El producto Elaion F50');
+        $mensaje->eliminar('La cotización', 'femenino');
+        $actual = $mensaje->getObjeto();
+
+        $esperado = [
+            'tipo' => 'error',
+            'codigo' => 'NO_ELIMINADO',
+            'descripcion' => 'La cotización no ha sido eliminada debido a un error interno'
+        ];
+
+        $this->assertEquals($esperado, $actual);
+    }
+
+    public function testDeberiaCrearMensajeRestaurarConGeneroMasculino()
+    {
+        $mensaje = new MensajeError();
+        $mensaje->restaurar('El producto Elaion F50', 'masculino');
         $actual = $mensaje->getObjeto();
 
         $esperado = [
             'tipo' => 'error',
             'codigo' => 'NO_RESTAURADO',
             'descripcion' => 'El producto Elaion F50 no ha sido dado de alta debido a un error interno'
+        ];
+
+        $this->assertEquals($esperado, $actual);
+    }
+
+    public function testDeberiaCrearMensajeRestaurarConGeneroFemenino()
+    {
+        $mensaje = new MensajeError();
+        $mensaje->restaurar('La cotización', 'femenino');
+        $actual = $mensaje->getObjeto();
+
+        $esperado = [
+            'tipo' => 'error',
+            'codigo' => 'NO_RESTAURADO',
+            'descripcion' => 'La cotización no ha sido dada de alta debido a un error interno'
         ];
 
         $this->assertEquals($esperado, $actual);

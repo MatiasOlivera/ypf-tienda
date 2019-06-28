@@ -35,8 +35,26 @@ abstract class Mensaje
         $this->codigo = $codigo;
     }
 
-    abstract public function guardar(string $nombre): void;
-    abstract public function actualizar(string $nombre): void;
-    abstract public function eliminar(string $nombre): void;
-    abstract public function restaurar(string $nombre): void;
+    private function setGenero(string $genero): void
+    {
+        if ($genero !== 'masculino' && $genero !== 'femenino') {
+            throw new Exception('El género debe ser masculino o femenino');
+        }
+
+        $this->genero = $genero;
+    }
+
+    final public function setDescripcionSegunGenero(
+        string $descMasculino,
+        string $descFemenino,
+        ?string $genero = 'masculino'
+    ): void {
+        $this->setGenero($genero);
+        $this->descripcion = $this->genero === 'masculino' ? $descMasculino : $descFemenino;
+    }
+
+    abstract public function guardar(string $nombre, string $genero): void;
+    abstract public function actualizar(string $nombre, string $genero): void;
+    abstract public function eliminar(string $nombre, string $genero): void;
+    abstract public function restaurar(string $nombre, string $genero): void;
 }
