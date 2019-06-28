@@ -120,7 +120,7 @@ class CategoriaProductoControllerTest extends TestCase
                 'mensaje' => [
                     'tipo' => 'exito',
                     'codigo' => 'GUARDADO',
-                    'descripcion' => 'La categoria Combustibles ha sido creado'
+                    'descripcion' => 'La categoria Combustibles ha sido creada'
                 ]
             ]);
     }
@@ -161,7 +161,7 @@ class CategoriaProductoControllerTest extends TestCase
                 'mensaje' => [
                     'tipo' => 'exito',
                     'codigo' => 'ACTUALIZADO',
-                    'descripcion' => 'La categoria Combustible ha sido modificado'
+                    'descripcion' => 'La categoria Combustible ha sido modificada'
                 ]
             ]);
     }

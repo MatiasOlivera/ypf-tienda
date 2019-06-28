@@ -15,7 +15,7 @@ class CategoriaProductoController extends Controller
 
     public function __construct()
     {
-        $this->controladorBase = new BaseController('categoria', 'categorias');
+        $this->controladorBase = new BaseController('categoria', 'categorias', 'femenino');
     }
 
     /**
