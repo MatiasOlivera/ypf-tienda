@@ -171,19 +171,9 @@ Route::middleware('jwt.auth')->group(function () {
     /**
      * Categorias producto
      */
-    Route::group(['prefix' => 'categorias-productos'], function () {
-        Route::get('/', 'CategoriaProductoController@index')->name('categorias.index');
+    Route::apiResource('categorias-productos', 'CategoriaProductoController')
+        ->parameters(['categorias-productos' => 'categoriaProducto']);
 
-        Route::post('/', 'CategoriaProductoController@store')->name('categorias.store');
-
-        Route::group(['prefix' => '/{categoriaProducto}'], function () {
-            Route::get('/', 'CategoriaProductoController@show')->name('categorias.show');
-
-            Route::put('/', 'CategoriaProductoController@update')->name('categorias.update');
-
-            Route::delete('/', 'CategoriaProductoController@destroy')->name('categorias.destroy');
-
-            Route::post('/restaurar/', 'CategoriaProductoController@restore')->name('categorias.restore');
-        });
-    });
+    Route::post('categorias-productos/{categoriaProducto}/restaurar', 'CategoriaProductoController@restore')
+        ->name('categorias.restore');
 });
