@@ -173,5 +173,7 @@ Route::middleware('jwt.auth')->group(function () {
      */
     Route::group(['prefix' => 'categorias-productos'], function () {
         Route::get('/', 'CategoriaProductoController@index')->name('categorias.index');
+
+        Route::post('/', 'CategoriaProductoController@store')->name('categorias.store');
     });
 });

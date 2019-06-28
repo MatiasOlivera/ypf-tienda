@@ -85,4 +85,43 @@ class CategoriaProductoControllerTest extends TestCase
             ])
             ->assertJson(['categorias' => $categorias]);
     }
+
+    /**
+     * Debería crear una categoria
+     */
+    public function testDeberiaCrearUnaCategoria()
+    {
+        $categoria = ['descripcion' => 'Combustibles'];
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('POST', 'api/categorias-productos', $categoria);
+
+        /* TODO: seleccionar todas las columnas de la tabla */
+        $categoriaDB = CategoriaProducto::select('id', 'descripcion', 'created_at', 'updated_at')
+            ->get()
+            ->toArray()[0];
+
+        $respuesta
+            ->assertStatus(201)
+            ->assertJsonStructure([
+                'categoria' => [
+                    'id',
+                    'descripcion',
+                    'created_at',
+                    'updated_at',
+                    // 'deleted_at'
+                ],
+                'mensaje' => ['tipo', 'codigo', 'descripcion']
+            ])
+            ->assertExactJson([
+                'categoria' => $categoriaDB,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'GUARDADO',
+                    'descripcion' => 'La categoria Combustibles ha sido creado'
+                ]
+            ]);
+    }
 }

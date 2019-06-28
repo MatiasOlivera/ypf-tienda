@@ -6,6 +6,7 @@ use App\CategoriaProducto;
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\CategoriaProducto\CategoriasProductosRequest;
+use App\Http\Requests\CategoriaProducto\CrearCategoriaProductoRequest;
 
 class CategoriaProductoController extends Controller
 {
@@ -48,12 +49,20 @@ class CategoriaProductoController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\CrearCategoriaProductoRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CrearCategoriaProductoRequest $request)
     {
-        //
+        $inputs = $request->only('descripcion');
+        $nombre = "La categoria {$request->input('descripcion')}";
+
+        $parametros = [
+            'inputs' => $inputs,
+            'modelo' => 'CategoriaProducto',
+        ];
+
+        return $this->controladorBase->store($parametros, $nombre);
     }
 
     /**
