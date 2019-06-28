@@ -2,14 +2,10 @@
 
 namespace App\Http\Requests\CategoriaProducto;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class CrearCategoriaProductoRequest extends FormRequest
+class ActualizarCategoriaProductoRequest extends CrearCategoriaProductoRequest
 {
-    protected $reglas = [
-        'descripcion' => ['bail', 'required', 'string', 'min:3', 'max:200',]
-    ];
-
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -22,7 +18,10 @@ class CrearCategoriaProductoRequest extends FormRequest
 
     private function setReglaDescripcion()
     {
-        array_push($this->reglas['descripcion'], 'unique:categorias,desc_cat');
+        $unico = Rule::unique('categorias', 'desc_cat')
+            ->ignore($this->categoriaProducto->id, 'ID_CAT_prod');
+
+        array_push($this->reglas['descripcion'], $unico);
     }
 
     /**

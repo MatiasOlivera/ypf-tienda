@@ -175,5 +175,9 @@ Route::middleware('jwt.auth')->group(function () {
         Route::get('/', 'CategoriaProductoController@index')->name('categorias.index');
 
         Route::post('/', 'CategoriaProductoController@store')->name('categorias.store');
+
+        Route::group(['prefix' => '/{categoriaProducto}'], function () {
+            Route::put('/', 'CategoriaProductoController@update')->name('categorias.update');
+        });
     });
 });

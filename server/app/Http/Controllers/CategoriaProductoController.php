@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\CategoriaProducto\CategoriasProductosRequest;
 use App\Http\Requests\CategoriaProducto\CrearCategoriaProductoRequest;
+use App\Http\Requests\CategoriaProducto\ActualizarCategoriaProductoRequest;
 
 class CategoriaProductoController extends Controller
 {
@@ -79,13 +80,22 @@ class CategoriaProductoController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\ActualizarCategoriaProductoRequest  $request
      * @param  \App\CategoriaProducto  $categoriaProducto
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, CategoriaProducto $categoriaProducto)
+    public function update(ActualizarCategoriaProductoRequest $request, CategoriaProducto $categoriaProducto)
     {
-        //
+        $nombres = [
+            'exito' => "La categoria $categoriaProducto->descripcion",
+            'error' => "La categoria {$request->input('descripcion')}"
+        ];
+        $inputs = $request->only('descripcion');
+        $parametros = [
+            'inputs' => $inputs,
+            'instancia' => $categoriaProducto
+        ];
+        return $this->controladorBase->update($parametros, $nombres);
     }
 
     /**

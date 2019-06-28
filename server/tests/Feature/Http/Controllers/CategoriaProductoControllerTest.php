@@ -124,4 +124,45 @@ class CategoriaProductoControllerTest extends TestCase
                 ]
             ]);
     }
+
+    /**
+     * Debería editar una categoria
+     */
+    public function testDeberiaEditarUnaCategoria()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $categoria = $this
+            ->withHeaders($cabeceras)
+            ->json('POST', 'api/categorias-productos', ['descripcion' => 'Combustible']);
+
+        $id = $categoria->getData(true)['categoria']['id'];
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('PUT', "api/categorias-productos/$id", ['descripcion' => 'Combustibles']);
+
+        $categoriaDB = CategoriaProducto::findOrFail($id)->toArray();
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'categoria' => [
+                    'id',
+                    'descripcion',
+                    'created_at',
+                    'updated_at',
+                    'deleted_at'
+                ],
+                'mensaje' => ['tipo', 'codigo', 'descripcion']
+            ])
+            ->assertExactJson([
+                'categoria' => $categoriaDB,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'ACTUALIZADO',
+                    'descripcion' => 'La categoria Combustible ha sido modificado'
+                ]
+            ]);
+    }
 }
