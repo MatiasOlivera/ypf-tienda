@@ -10,6 +10,7 @@ use App\Auxiliares\MensajeError;
 use App\Auxiliares\MensajeExito;
 use App\Http\Requests\Producto\ProductosRequest;
 use App\Http\Requests\Producto\CrearProductoRequest;
+use App\Http\Requests\Producto\ActualizarProductoRequest;
 
 class ProductosController extends Controller
 {
@@ -126,13 +127,42 @@ class ProductosController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\ActualizarProductoRequest  $request
      * @param  \App\Producto  $producto
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Producto $producto)
+    public function update(ActualizarProductoRequest $request, Producto $producto)
     {
-        //
+        try {
+            $nombres = [
+                'exito' => "El producto {$request->input('nombre')}",
+                'error' => "El producto $producto->nombre"
+            ];
+
+            $inputs = $request->only(
+                'codigo',
+                'nombre',
+                'presentacion',
+                'precio_por_mayor',
+                'consumidor_final',
+                'id_categoria'
+            );
+
+            $producto->fill($inputs);
+            $actualizado = $producto->save();
+
+            if ($actualizado) {
+                $mensajeExito = new MensajeExito();
+                $mensajeExito->actualizar($nombres['exito'], $this->generoModelo);
+
+                return Respuesta::exito([$this->modeloSingular => $producto], $mensajeExito, 200);
+            }
+        } catch (\Throwable $th) {
+            $mensajeError = new MensajeError();
+            $mensajeError->actualizar($nombres['error'], $this->generoModelo);
+
+            return Respuesta::error($mensajeError, 500);
+        }
     }
 
     /**

@@ -31,6 +31,31 @@ class ProductosControllerTest extends TestCase
         ]
     ];
 
+    private function crearProducto($cabeceras)
+    {
+        $categoria = ['descripcion' => 'Automotriz Alta Gama'];
+        $respuestaCategoria = $this
+            ->withHeaders($cabeceras)
+            ->json('POST', 'api/categorias-productos', $categoria);
+
+        $idCategoria = $respuestaCategoria->getData(true)['categoria']['id'];
+
+        $producto = [
+            'codigo' => '181696',
+            'nombre' => 'ELAION F50 d1 0W-20 12/1',
+            'presentacion' => 'Caja 12u / 1 litro',
+            'precio_por_mayor' => 150,
+            'consumidor_final' => 200,
+            'id_categoria' => $idCategoria
+        ];
+
+        $respuestaProducto = $this
+            ->withHeaders($cabeceras)
+            ->json('POST', 'api/productos', $producto);
+
+        return $respuestaProducto->getData(true)['producto'];
+    }
+
     /**
      * No debería obtener ningun producto
      */
@@ -113,6 +138,45 @@ class ProductosControllerTest extends TestCase
                     'tipo' => 'exito',
                     'codigo' => 'GUARDADO',
                     'descripcion' => 'El producto ELAION F50 d1 0W-20 12/1 ha sido creado'
+                ]
+            ]);
+    }
+
+    /**
+     * Debería editar un producto
+     */
+    public function testDeberiaEditarUnProducto()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $productoGuardado = $this->crearProducto($cabeceras);
+        $idProducto = $productoGuardado['id'];
+        $idCategoria = $productoGuardado['id_categoria'];
+
+        $producto = [
+            'codigo' => '181696',
+            'nombre' => 'ELAION F50 d1 0W-20',
+            'presentacion' => '12 x 1 litro',
+            'precio_por_mayor' => 150,
+            'consumidor_final' => 200,
+            'id_categoria' => $idCategoria
+        ];
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('PUT', "api/productos/$idProducto", $producto);
+
+        $estructura = array_merge($this->estructuraProducto, $this->estructuraMensaje);
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'producto' => $producto,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'ACTUALIZADO',
+                    'descripcion' => 'El producto ELAION F50 d1 0W-20 ha sido modificado'
                 ]
             ]);
     }
