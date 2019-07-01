@@ -12,12 +12,14 @@ class ProvinciaController extends Controller
     protected $baseController;
     protected $modeloSingular;
     protected $modeloPlural;
+    protected $generoModelo;
 
     public function __construct()
     {
         $this->modeloPlural     = 'provincias';
         $this->modeloSingular   = 'provincia';
-        $this->baseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
+        $this->generoModelo = 'femenino';
+        $this->baseController   = new BaseController($this->modeloSingular, $this->modeloPlural, $this->generoModelo);
     }
 
     /**

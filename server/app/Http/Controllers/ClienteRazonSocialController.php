@@ -14,12 +14,14 @@ class ClienteRazonSocialController extends Controller
     protected $baseController;
     protected $modeloSingular;
     protected $modeloPlural;
+    protected $generoModelo;
 
     public function __construct()
     {
         $this->modeloPlural     = 'razonesSociales';
         $this->modeloSingular   = 'razonSocial';
-        $this->baseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
+        $this->generoModelo = 'femenino';
+        $this->baseController   = new BaseController($this->modeloSingular, $this->modeloPlural, $this->generoModelo);
     }
 
     /**
@@ -63,12 +65,12 @@ class ClienteRazonSocialController extends Controller
             );
             $razon          = $cliente->razonesSociales()->create($inputs);
             $mensajeExito   = new MensajeExito();
-            $mensajeExito->guardar($nombre);
+            $mensajeExito->guardar($nombre, $this->generoModelo);
             $respuesta      = [$this->modeloSingular => $razon];
             return Respuesta::exito($respuesta, null, 200);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
-            $mensajeError->guardar($nombre);
+            $mensajeError->guardar($nombre, $this->generoModelo);
             return Respuesta::error($mensajeError, 500);
         }
     }

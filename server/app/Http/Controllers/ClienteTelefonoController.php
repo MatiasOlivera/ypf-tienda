@@ -13,12 +13,14 @@ class ClienteTelefonoController extends Controller
     protected $baseController;
     protected $modeloSingular;
     protected $modeloPlural;
+    protected $generoModelo;
 
     public function __construct()
     {
         $this->modeloPlural     = 'telefonos';
         $this->modeloSingular   = 'telefono';
-        $this->baseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
+        $this->generoModelo = 'masculino';
+        $this->baseController   = new BaseController($this->modeloSingular, $this->modeloPlural, $this->generoModelo);
     }
 
     protected function setTextoMensaje(int $area, int $telefono, string $nombreContacto = null): string
@@ -66,12 +68,12 @@ class ClienteTelefonoController extends Controller
             $respuesta      = [$this->modeloSingular => $telefono];
 
             $mensajeExito   = new MensajeExito();
-            $mensajeExito->guardar($telefonoMensaje);
+            $mensajeExito->guardar($telefonoMensaje, $this->generoModelo);
 
             return Respuesta::exito($respuesta, $mensajeExito, 200);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
-            $mensajeError->guardar($telefonoMensaje);
+            $mensajeError->guardar($telefonoMensaje, $this->generoModelo);
 
             return Respuesta::error($mensajeError, 500);
         }

@@ -12,10 +12,12 @@ use App\Http\Requests\UsersRequest\UserUpdateRequest;
 class UsersController extends Controller
 {
     private $controladorBase;
+    private $generoModelo;
 
     public function __construct()
     {
-        $this->controladorBase = new BaseController('usuario', 'usuarios');
+        $this->generoModelo = 'masculino';
+        $this->controladorBase = new BaseController('usuario', 'usuarios', $this->generoModelo);
     }
 
     /**

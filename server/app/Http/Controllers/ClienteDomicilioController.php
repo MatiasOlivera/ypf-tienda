@@ -12,12 +12,14 @@ class ClienteDomicilioController extends Controller
     protected $baseController;
     protected $modeloSingular;
     protected $modeloPlural;
+    protected $generoModelo;
 
     public function __construct()
     {
         $this->modeloPlural     = 'domicilios';
         $this->modeloSingular   = 'domicilio';
-        $this->baseController   = new BaseController($this->modeloSingular, $this->modeloPlural);
+        $this->generoModelo = 'masculino';
+        $this->baseController   = new BaseController($this->modeloSingular, $this->modeloPlural, $this->generoModelo);
     }
 
     /**
@@ -55,12 +57,12 @@ class ClienteDomicilioController extends Controller
             $cliente->domicilios()->save($domicilio);
             $domicilio->localidad;
             $mensajeExito = new MensajeExito();
-            $mensajeExito->guardar($nombre);
+            $mensajeExito->guardar($nombre, $this->generoModelo);
             $respuesta = [$this->modeloSingular => $domicilio];
             return Respuesta::exito($respuesta, $mensajeExito, 200);
         } catch (\Throwable $th) {
             $mensajeError = new MensajeError();
-            $mensajeError->guardar($nombre);
+            $mensajeError->guardar($nombre, $this->generoModelo);
             return Respuesta::error($mensajeError, 500);
         }
     }

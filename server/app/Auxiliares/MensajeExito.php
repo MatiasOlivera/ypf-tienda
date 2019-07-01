@@ -11,27 +11,27 @@ final class MensajeExito extends Mensaje
         parent::__construct($descripcion, $codigo);
     }
 
-    public function guardar(string $nombre): void
+    public function guardar(string $nombre, string $genero): void
     {
-        $this->setDescripcion("$nombre ha sido creado");
+        $this->setDescripcionSegunGenero("$nombre ha sido creado", "$nombre ha sido creada", $genero);
         $this->setCodigo('GUARDADO');
     }
 
-    public function actualizar(string $nombre): void
+    public function actualizar(string $nombre, string $genero): void
     {
-        $this->setDescripcion("$nombre ha sido modificado");
+        $this->setDescripcionSegunGenero("$nombre ha sido modificado", "$nombre ha sido modificada", $genero);
         $this->setCodigo('ACTUALIZADO');
     }
 
-    public function eliminar(string $nombre): void
+    public function eliminar(string $nombre, string $genero): void
     {
-        $this->setDescripcion("$nombre ha sido eliminado");
+        $this->setDescripcionSegunGenero("$nombre ha sido eliminado", "$nombre ha sido eliminada", $genero);
         $this->setCodigo('ELIMINADO');
     }
 
-    public function restaurar(string $nombre): void
+    public function restaurar(string $nombre, string $genero): void
     {
-        $this->setDescripcion("$nombre ha sido dado de alta");
+        $this->setDescripcionSegunGenero("$nombre ha sido dado de alta", "$nombre ha sido dada de alta", $genero);
         $this->setCodigo('RESTAURADO');
     }
 }
