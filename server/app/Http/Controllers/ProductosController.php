@@ -121,7 +121,7 @@ class ProductosController extends Controller
      */
     public function show(Producto $producto)
     {
-        //
+        return Respuesta::exito([$this->modeloSingular => $producto], null, 200);
     }
 
     /**

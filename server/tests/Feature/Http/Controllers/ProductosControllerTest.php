@@ -143,6 +143,28 @@ class ProductosControllerTest extends TestCase
     }
 
     /**
+     * Debería obtener un producto
+     */
+    public function testDeberiaObtenerUnProducto()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $productoGuardado = $this->crearProducto($cabeceras);
+        $id = $productoGuardado['id'];
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('GET', "api/productos/$id");
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($this->estructuraProducto)
+            ->assertExactJson([
+                'producto' => $productoGuardado
+            ]);
+    }
+
+    /**
      * Debería editar un producto
      */
     public function testDeberiaEditarUnProducto()
