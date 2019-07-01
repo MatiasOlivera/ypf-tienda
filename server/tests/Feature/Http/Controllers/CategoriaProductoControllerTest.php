@@ -25,7 +25,7 @@ class CategoriaProductoControllerTest extends TestCase
         ]
     ];
 
-    private function getEstructuraMutacion(): array
+    private function getEstructuraCategoria(): array
     {
         return array_merge($this->estructuraCategoria, $this->estructuraMensaje);
     }
@@ -159,7 +159,7 @@ class CategoriaProductoControllerTest extends TestCase
 
         $categoriaDB = CategoriaProducto::findOrFail($id)->toArray();
 
-        $estructura = $this->getEstructuraMutacion();
+        $estructura = $this->getEstructuraCategoria();
 
         $respuesta
             ->assertStatus(200)
@@ -196,7 +196,7 @@ class CategoriaProductoControllerTest extends TestCase
             ->firstOrFail()
             ->toArray();
 
-        $estructura = $this->getEstructuraMutacion();
+        $estructura = $this->getEstructuraCategoria();
 
         $respuesta
             ->assertStatus(200)
@@ -235,7 +235,7 @@ class CategoriaProductoControllerTest extends TestCase
             ->firstOrFail()
             ->toArray();
 
-        $estructura = $this->getEstructuraMutacion();
+        $estructura = $this->getEstructuraCategoria();
 
         $respuesta
             ->assertStatus(200)
