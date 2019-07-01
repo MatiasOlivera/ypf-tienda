@@ -63,7 +63,6 @@ class CategoriaProductoControllerTest extends TestCase
     public function testDeberiaObtenerCategorias()
     {
         factory(CategoriaProducto::class, 10)->create();
-        $categorias = CategoriaProducto::orderBy('descripcion', 'ASC')->get()->toArray();
 
         $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
@@ -71,6 +70,7 @@ class CategoriaProductoControllerTest extends TestCase
             ->json('GET', 'api/categorias-productos');
 
         $estructura = $this->getEstructuraCategorias();
+        $categorias = CategoriaProducto::orderBy('descripcion', 'ASC')->get()->toArray();
 
         $respuesta
             ->assertOk()
