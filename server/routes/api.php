@@ -176,4 +176,10 @@ Route::middleware('jwt.auth')->group(function () {
 
     Route::post('categorias-productos/{categoriaProducto}/restaurar', 'CategoriaProductoController@restore')
         ->name('categorias.restore');
+
+    /**
+     * Producto
+     */
+    Route::apiResource('productos', 'ProductosController')
+        ->parameters(['productos' => 'producto']);
 });
