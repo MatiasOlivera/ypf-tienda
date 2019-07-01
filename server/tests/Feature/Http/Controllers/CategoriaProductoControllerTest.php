@@ -160,19 +160,19 @@ class CategoriaProductoControllerTest extends TestCase
         $categoriaGuardada = $this->crearCategoria($cabeceras, $categoria);
         $id = $categoriaGuardada['id'];
 
+        $categoriaModificada = ['descripcion' => 'Combustibles'];
         $respuesta = $this
             ->withHeaders($cabeceras)
-            ->json('PUT', "api/categorias-productos/$id", ['descripcion' => 'Combustibles']);
+            ->json('PUT', "api/categorias-productos/$id", $categoriaModificada);
 
-        $categoriaDB = CategoriaProducto::findOrFail($id)->toArray();
-
+        $categoriaActualizada = array_merge($categoriaGuardada, $categoriaModificada);
         $estructura = $this->getEstructuraCategoria();
 
         $respuesta
             ->assertStatus(200)
             ->assertJsonStructure($estructura)
-            ->assertExactJson([
-                'categoria' => $categoriaDB,
+            ->assertJson([
+                'categoria' => $categoriaActualizada,
                 'mensaje' => [
                     'tipo' => 'exito',
                     'codigo' => 'ACTUALIZADO',
