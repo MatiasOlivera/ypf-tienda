@@ -202,4 +202,38 @@ class ProductosControllerTest extends TestCase
                 ]
             ]);
     }
+
+    /**
+     * Debería eliminar un producto
+     */
+    public function testDeberiaEliminarUnProducto()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $productoGuardado = $this->crearProducto($cabeceras);
+        $id = $productoGuardado['id'];
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('DELETE', "api/productos/$id");
+
+        $estructura = array_merge($this->estructuraProducto, $this->estructuraMensaje);
+
+        $productoDB = Producto::withTrashed()
+            ->where('id', $id)
+            ->firstOrFail()
+            ->toArray();
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertExactJson([
+                'producto' => $productoDB,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'ELIMINADO',
+                    'descripcion' => 'El producto ELAION F50 d1 0W-20 12/1 ha sido eliminado'
+                ]
+            ]);
+    }
 }

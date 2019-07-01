@@ -173,6 +173,22 @@ class ProductosController extends Controller
      */
     public function destroy(Producto $producto)
     {
-        //
+        $nombre = "El producto $producto->nombre";
+
+        try {
+            $eliminado = $producto->delete();
+
+            if ($eliminado) {
+                $mensajeExito = new MensajeExito();
+                $mensajeExito->eliminar($nombre, $this->generoModelo);
+
+                return Respuesta::exito([$this->modeloSingular => $producto], $mensajeExito, 200);
+            }
+        } catch (\Throwable $th) {
+            $mensajeError = new MensajeError();
+            $mensajeError->eliminar($nombre, $this->generoModelo);
+
+            return Respuesta::error($mensajeError, 500);
+        }
     }
 }
