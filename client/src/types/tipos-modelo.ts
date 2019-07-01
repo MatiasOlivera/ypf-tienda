@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 export type Modelo = { id: ID } & Timestamps;
 
 export type ID = number;

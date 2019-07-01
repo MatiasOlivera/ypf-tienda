@@ -1,6 +1,10 @@
+/* eslint-disable no-plusplus */
 import { CREAR_NOTIFICACION } from '@/store/types/acciones';
 import { MODULO_NOTIFICACIONES } from '@/store/types/modulos';
-import { AGREGAR_NOTIFICACION, ELIMINAR_ULTIMA_NOTIFICACION } from '@/store/types/mutaciones';
+import {
+  AGREGAR_NOTIFICACION,
+  ELIMINAR_ULTIMA_NOTIFICACION
+} from '@/store/types/mutaciones';
 import { Notificacion } from '@/types/tipos-notificacion';
 import Vue from 'vue';
 import Vuex from 'vuex';
