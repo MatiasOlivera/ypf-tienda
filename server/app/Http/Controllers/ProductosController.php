@@ -191,4 +191,31 @@ class ProductosController extends Controller
             return Respuesta::error($mensajeError, 500);
         }
     }
+
+    /**
+     * Restaurar el producto que ha sido eliminado
+     *
+     * @param  \App\Producto  $producto
+     * @return \Illuminate\Http\Response
+     */
+    public function restore(Producto $producto)
+    {
+        $nombre = "El producto $producto->nombre";
+
+        try {
+            $restaurado = $producto->restore();
+
+            if ($restaurado) {
+                $mensajeExito = new MensajeExito();
+                $mensajeExito->restaurar($nombre, $this->generoModelo);
+
+                return Respuesta::exito([$this->modeloSingular => $producto], $mensajeExito, 200);
+            }
+        } catch (\Throwable $th) {
+            $mensajeError = new MensajeError();
+            $mensajeError->restaurar($nombre, $this->generoModelo);
+
+            return Respuesta::error($mensajeError, 500);
+        }
+    }
 }

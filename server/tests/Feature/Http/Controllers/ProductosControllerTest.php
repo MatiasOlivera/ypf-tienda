@@ -236,4 +236,41 @@ class ProductosControllerTest extends TestCase
                 ]
             ]);
     }
+
+    /**
+     * Debería restaurar un producto
+     */
+    public function testDeberiaRestaurarUnProducto()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $productoGuardado = $this->crearProducto($cabeceras);
+        $id = $productoGuardado['id'];
+
+        $this
+            ->withHeaders($cabeceras)
+            ->json('DELETE', "api/productos/$id");
+
+        $respuesta = $this->withHeaders($cabeceras)
+            ->json('POST', "api/productos/$id/restaurar");
+
+        $estructura = array_merge($this->estructuraProducto, $this->estructuraMensaje);
+
+        $productoDB = Producto::withTrashed()
+            ->where('id', $id)
+            ->firstOrFail()
+            ->toArray();
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertExactJson([
+                'producto' => $productoDB,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'RESTAURADO',
+                    'descripcion' => 'El producto ELAION F50 d1 0W-20 12/1 ha sido dado de alta'
+                ]
+            ]);
+    }
 }

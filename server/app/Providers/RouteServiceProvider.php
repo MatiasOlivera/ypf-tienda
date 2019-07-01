@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\User;
 use App\Cliente;
+use App\Producto;
 use App\ClienteMail;
 use App\ClienteTelefono;
 use App\ClienteDomicilio;
@@ -80,6 +81,13 @@ class RouteServiceProvider extends ServiceProvider
         Route::bind('categoriaProducto', function ($id) {
             return CategoriaProducto::withTrashed()
                 ->where('ID_CAT_prod', $id)
+                ->firstOrFail();
+        });
+
+        // Producto
+        Route::bind('producto', function ($id) {
+            return Producto::withTrashed()
+                ->where('id', $id)
                 ->firstOrFail();
         });
     }
