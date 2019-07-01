@@ -31,6 +31,16 @@ class ProductosControllerTest extends TestCase
         ]
     ];
 
+    private function getEstructuraProductos(): array
+    {
+        return array_merge(['productos'], $this->estructuraPaginacion);
+    }
+
+    private function getEstructuraProducto(): array
+    {
+        return array_merge($this->estructuraProducto, $this->estructuraMensaje);
+    }
+
     private function crearProducto($cabeceras)
     {
         $categoria = ['descripcion' => 'Automotriz Alta Gama'];
@@ -66,7 +76,7 @@ class ProductosControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('GET', 'api/productos');
 
-        $estructura = array_merge(['productos'], $this->estructuraPaginacion);
+        $estructura = $this->getEstructuraProductos();
 
         $respuesta
             ->assertOk()
@@ -90,7 +100,7 @@ class ProductosControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('GET', 'api/productos');
 
-        $estructura = array_merge(['productos'], $this->estructuraPaginacion);
+        $estructura = $this->getEstructuraProductos();
         $productos = Producto::orderBy('nombre', 'ASC')->get()->toArray();
 
         $respuesta
@@ -127,7 +137,7 @@ class ProductosControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('POST', 'api/productos', $producto);
 
-        $estructura = array_merge($this->estructuraProducto, $this->estructuraMensaje);
+        $estructura = $this->getEstructuraProducto();
 
         $respuesta
             ->assertStatus(201)
@@ -188,7 +198,7 @@ class ProductosControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('PUT', "api/productos/$idProducto", $producto);
 
-        $estructura = array_merge($this->estructuraProducto, $this->estructuraMensaje);
+        $estructura = $this->getEstructuraProducto();
 
         $respuesta
             ->assertStatus(200)
@@ -217,7 +227,7 @@ class ProductosControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('DELETE', "api/productos/$id");
 
-        $estructura = array_merge($this->estructuraProducto, $this->estructuraMensaje);
+        $estructura = $this->getEstructuraProducto();
 
         $productoDB = Producto::withTrashed()
             ->where('id', $id)
@@ -254,7 +264,7 @@ class ProductosControllerTest extends TestCase
         $respuesta = $this->withHeaders($cabeceras)
             ->json('POST', "api/productos/$id/restaurar");
 
-        $estructura = array_merge($this->estructuraProducto, $this->estructuraMensaje);
+        $estructura = $this->getEstructuraProducto();
 
         $productoDB = Producto::withTrashed()
             ->where('id', $id)
