@@ -4,10 +4,11 @@ namespace Tests\Feature\Http\Controllers;
 
 use App\Producto;
 use Tests\TestCase;
+use App\CategoriaProducto;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
-use Tests\Feature\Utilidades\EstructuraJsonHelper;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Feature\Utilidades\EstructuraJsonHelper;
 
 class ProductosControllerTest extends TestCase
 {
@@ -29,6 +30,49 @@ class ProductosControllerTest extends TestCase
             'deleted_at'
         ]
     ];
+
+    /**
+     * No debería obtener ningun producto
+     */
+    public function testNoDeberiaObtenerNingunProducto()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('GET', 'api/productos');
+
+        $estructura = array_merge(['productos'], $this->estructuraPaginacion);
+
+        $respuesta
+            ->assertOk()
+            ->assertJsonStructure($estructura)
+            ->assertJson(['productos' => []]);
+    }
+
+    /**
+     * Debería obtener productos
+     *
+     * @return void
+     */
+    public function testDeberiaObtenerProductos()
+    {
+        factory(CategoriaProducto::class, 10)->create()->each(function ($categoria) {
+            $categoria->productos()->save(factory(Producto::class)->make());
+        });
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('GET', 'api/productos');
+
+        $estructura = array_merge(['productos'], $this->estructuraPaginacion);
+        $productos = Producto::orderBy('nombre', 'ASC')->get()->toArray();
+
+        $respuesta
+            ->assertOk()
+            ->assertJsonStructure($estructura)
+            ->assertJson(['productos' => $productos]);
+    }
 
     /**
      * Debería crear un producto

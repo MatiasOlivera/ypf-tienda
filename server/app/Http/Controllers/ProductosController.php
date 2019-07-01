@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Producto;
+use App\Auxiliares\Consulta;
 use Illuminate\Http\Request;
 use App\Auxiliares\Respuesta;
 use App\Auxiliares\MensajeError;
 use App\Auxiliares\MensajeExito;
+use App\Http\Requests\Producto\ProductosRequest;
 use App\Http\Requests\Producto\CrearProductoRequest;
 
 class ProductosController extends Controller
@@ -26,9 +28,50 @@ class ProductosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(ProductosRequest $request)
     {
-        //
+        try {
+            $parametros = [
+                'modelo' => 'Producto',
+                'campos' => [
+                    'id',
+                    'codigo',
+                    'nombre',
+                    'presentacion',
+                    'precio_por_mayor',
+                    'consumidor_final',
+                    'id_categoria',
+                    'created_at',
+                    'updated_at',
+                    'deleted_at',
+                ],
+                'relaciones' => null,
+                'buscar' => $request->input('buscar', null),
+                'eliminados' => $request->input('eliminados', false),
+                'paginado' => [
+                    'porPagina' => $request->input('porPagina', 10),
+                    'ordenarPor' => $request->input('ordenarPor', 'nombre'),
+                    'orden' => $request->input('orden', 'ASC'),
+                ]
+            ];
+
+            $consulta = new Consulta();
+            $resultado = $consulta->ejecutarconsulta($parametros);
+
+            $respuesta = [
+                $this->modeloPlural => $resultado['datos'],
+                'paginacion' => $resultado['paginacion']
+            ];
+
+            if ($resultado) {
+                return Respuesta::exito($respuesta, null, 200);
+            }
+        } catch (\Throwable $th) {
+            $mensajeError = new MensajeError();
+            $mensajeError->obtenerTodos('los productos');
+
+            return Respuesta::error($mensajeError, 500);
+        }
     }
 
     /**
