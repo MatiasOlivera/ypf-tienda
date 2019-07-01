@@ -1,26 +1,100 @@
-version: 2
+version: 2.1
+orbs:
+  codecov: codecov/codecov@1.0.4
 jobs:
-  build:
+  frontend:
     docker:
       - image: circleci/node:10
 
     working_directory: ~/ypf-tienda
 
     steps:
+      # descargar el repositorio o la rama usada en la pull request a la ruta
+      # configurada en `working_directory`
       - checkout
 
+      # restaurar las dependencias desde la cache
       - restore_cache:
           key: dependency-cache-{{ checksum "client/package.json" }}
 
+      # instalar las dependencias
       - run:
-          name: Instalar dependencias
+          name: Instalar las dependencias
           command: cd client && npm install
 
+      # guardar las dependencias en la cache
       - save_cache:
           key: dependency-cache-{{ checksum "client/package.json" }}
           paths:
             - client/node_modules
 
+      # ejecutar el linter
+      - run:
+          name: Ejecutar el linter
+          command: cd client && npm run lint
+
+      # ejecutar los tests unitarios
       - run:
           name: Ejecutar los tests unitarios
-          command: cd client && npm run test:unit
+          command: cd client && npm run test:unit -- --coverage
+      - store_artifacts:
+          path: client/coverage
+      # subir la cobertura del código a codecov
+      - codecov/upload:
+          file: client/coverage/clover.xml
+          flags: frontend
+  backend:
+    docker:
+      - image: circleci/php:7.3
+      - image: circleci/mysql:5.7-ram
+        environment:
+          MYSQL_DATABASE: ypf_testing
+          MYSQL_USER: ypf_usuario
+          MYSQL_PASSWORD: ypf_password
+          MYSQL_ROOT_PASSWORD: root
+
+    working_directory: ~/ypf-tienda
+
+    steps:
+      - checkout
+
+      - run: sudo apt update
+
+      # instalar extensiones de php
+      - run: |
+          sudo docker-php-ext-install pdo_mysql
+          sudo docker-php-ext-enable pdo_mysql
+
+      # restaurar las dependencias desde la cache
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "server/composer.lock" }}
+            # usar la última cache si no se encuentra una con la clave especificada
+            - v1-dependencies-
+
+      # instalar las dependencias
+      - run: cd server && composer install -n --prefer-dist
+
+      # guardar las dependencias en la cache
+      - save_cache:
+          key: v1-dependencies-{{ checksum "server/composer.lock" }}
+          paths:
+            - ./server/vendor
+
+      # ejecutar las migraciones de la base de datos
+      - run: cd server && php artisan migrate --env=testing --force
+
+      # ejecutar los tests unitarios
+      - run: cd server && phpdbg -qrr vendor/bin/phpunit --coverage-clover=coverage/clover.xml
+      - store_artifacts:
+          path: server/coverage/clover.xml
+      # subir la cobertura del código a codecov
+      - codecov/upload:
+          file: server/coverage/clover.xml
+          flags: backend
+workflows:
+  version: 2
+  app:
+    jobs:
+      - frontend
+      - backend
