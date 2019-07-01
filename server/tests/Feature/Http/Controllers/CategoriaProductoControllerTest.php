@@ -141,13 +141,11 @@ class CategoriaProductoControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('GET', "api/categorias-productos/$id");
 
-        $categoriaDB = CategoriaProducto::findOrFail($id)->toArray();
-
         $respuesta
             ->assertStatus(200)
             ->assertJsonStructure($this->estructuraCategoria)
-            ->assertExactJson([
-                'categoria' => $categoriaDB
+            ->assertJson([
+                'categoria' => $categoriaGuardada
             ]);
     }
 
