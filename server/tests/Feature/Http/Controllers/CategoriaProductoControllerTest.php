@@ -25,6 +25,11 @@ class CategoriaProductoControllerTest extends TestCase
         ]
     ];
 
+    private function getEstructuraCategorias(): array
+    {
+        return array_merge(['categorias'], $this->estructuraPaginacion);
+    }
+
     private function getEstructuraCategoria(): array
     {
         return array_merge($this->estructuraCategoria, $this->estructuraMensaje);
@@ -42,7 +47,7 @@ class CategoriaProductoControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('GET', 'api/categorias-productos');
 
-        $estructura = array_merge(['categorias'], $this->estructuraPaginacion);
+        $estructura = $this->getEstructuraCategorias();
 
         $respuesta
             ->assertOk()
@@ -65,7 +70,7 @@ class CategoriaProductoControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('GET', 'api/categorias-productos');
 
-        $estructura = array_merge(['categorias'], $this->estructuraPaginacion);
+        $estructura = $this->getEstructuraCategorias();
 
         $respuesta
             ->assertOk()
