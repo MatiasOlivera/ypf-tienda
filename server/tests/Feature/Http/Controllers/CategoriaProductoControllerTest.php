@@ -35,6 +35,19 @@ class CategoriaProductoControllerTest extends TestCase
         return array_merge($this->estructuraCategoria, $this->estructuraMensaje);
     }
 
+    private function crearCategoria($cabeceras, $categoria = null)
+    {
+        if ($categoria === null) {
+            $categoria = ['descripcion' => 'Automotriz Alta Gama'];
+        }
+
+        $respuestaCategoria = $this
+            ->withHeaders($cabeceras)
+            ->json('POST', 'api/categorias-productos', $categoria);
+
+        return $respuestaCategoria->getData(true)['categoria'];
+    }
+
     /**
      * No debería obtener ninguna categoria
      *
@@ -125,11 +138,8 @@ class CategoriaProductoControllerTest extends TestCase
     {
         $cabeceras = $this->loguearseComo('defecto');
 
-        $categoria = $this
-            ->withHeaders($cabeceras)
-            ->json('POST', 'api/categorias-productos', ['descripcion' => 'Combustible']);
-
-        $id = $categoria->getData(true)['categoria']['id'];
+        $categoriaGuardada = $this->crearCategoria($cabeceras);
+        $id = $categoriaGuardada['id'];
 
         $respuesta = $this
             ->withHeaders($cabeceras)
@@ -152,11 +162,9 @@ class CategoriaProductoControllerTest extends TestCase
     {
         $cabeceras = $this->loguearseComo('defecto');
 
-        $categoria = $this
-            ->withHeaders($cabeceras)
-            ->json('POST', 'api/categorias-productos', ['descripcion' => 'Combustible']);
-
-        $id = $categoria->getData(true)['categoria']['id'];
+        $categoria = ['descripcion' => 'Combustible'];
+        $categoriaGuardada = $this->crearCategoria($cabeceras, $categoria);
+        $id = $categoriaGuardada['id'];
 
         $respuesta = $this
             ->withHeaders($cabeceras)
@@ -186,11 +194,9 @@ class CategoriaProductoControllerTest extends TestCase
     {
         $cabeceras = $this->loguearseComo('defecto');
 
-        $categoria = $this
-            ->withHeaders($cabeceras)
-            ->json('POST', 'api/categorias-productos', ['descripcion' => 'Combustibles']);
-
-        $id = $categoria->getData(true)['categoria']['id'];
+        $categoria = ['descripcion' => 'Combustibles'];
+        $categoriaGuardada = $this->crearCategoria($cabeceras, $categoria);
+        $id = $categoriaGuardada['id'];
 
         $respuesta = $this
             ->withHeaders($cabeceras)
@@ -223,11 +229,9 @@ class CategoriaProductoControllerTest extends TestCase
     {
         $cabeceras = $this->loguearseComo('defecto');
 
-        $categoria = $this
-            ->withHeaders($cabeceras)
-            ->json('POST', 'api/categorias-productos', ['descripcion' => 'Combustibles']);
-
-        $id = $categoria->getData(true)['categoria']['id'];
+        $categoria = ['descripcion' => 'Combustibles'];
+        $categoriaGuardada = $this->crearCategoria($cabeceras, $categoria);
+        $id = $categoriaGuardada['id'];
 
         $this->withHeaders($cabeceras)
             ->json('DELETE', "api/categorias-productos/$id");
