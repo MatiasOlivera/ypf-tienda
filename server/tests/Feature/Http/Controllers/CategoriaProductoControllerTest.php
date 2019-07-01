@@ -104,10 +104,6 @@ class CategoriaProductoControllerTest extends TestCase
             ->json('POST', 'api/categorias-productos', $categoria);
 
         /* TODO: seleccionar todas las columnas de la tabla */
-        $categoriaDB = CategoriaProducto::select('id', 'descripcion', 'created_at', 'updated_at')
-            ->get()
-            ->toArray()[0];
-
         $estructura = array_merge([
             'categoria' => [
                 'id',
@@ -121,8 +117,8 @@ class CategoriaProductoControllerTest extends TestCase
         $respuesta
             ->assertStatus(201)
             ->assertJsonStructure($estructura)
-            ->assertExactJson([
-                'categoria' => $categoriaDB,
+            ->assertJson([
+                'categoria' => $categoria,
                 'mensaje' => [
                     'tipo' => 'exito',
                     'codigo' => 'GUARDADO',
