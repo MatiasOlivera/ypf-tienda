@@ -37,9 +37,37 @@ class ClientesControllerTest extends TestCase
         'mensaje' => ['tipo', 'codigo', 'descripcion']
     ];
 
+    private $estructuraCliente = [
+        'cliente' => [
+            'id',
+            'nombre',
+            'documento',
+            'observacion',
+            'created_at',
+            'updated_at',
+            'deleted_at'
+        ]
+    ];
+
     private function getEstructuraClientes()
     {
         return array_merge(['clientes'], $this->estructuraPaginacion);
+    }
+
+    private function crearCliente($cabeceras, $cliente = null)
+    {
+        if ($cliente === null) {
+            $cliente = [
+                'nombre' => 'Juan Perez',
+                'documento' => 12345678
+            ];
+        }
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('POST', 'api/clientes', $cliente);
+
+        return $respuesta->getData(true)['cliente'];
     }
 
     /**
@@ -119,6 +147,28 @@ class ClientesControllerTest extends TestCase
                     'codigo' => 'GUARDADO',
                     'descripcion' => 'El cliente Juan Perez ha sido creado'
                 ]
+            ]);
+    }
+
+    /**
+     * Debería obtener un cliente
+     */
+    public function testDeberiaObtenerUnCliente()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $clienteGuardado = $this->crearCliente($cabeceras);
+        $id = $clienteGuardado['id'];
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('GET', "api/clientes/$id");
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($this->estructuraCliente)
+            ->assertJson([
+                'cliente' => $clienteGuardado
             ]);
     }
 }
