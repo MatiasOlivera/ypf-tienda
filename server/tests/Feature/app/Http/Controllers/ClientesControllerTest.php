@@ -80,4 +80,45 @@ class ClientesControllerTest extends TestCase
             ->assertJsonStructure($estructura)
             ->assertJson(['clientes' => $clientes]);
     }
+
+    /**
+     * Debería crear un cliente
+     */
+    public function testDeberiaCrearUnCliente()
+    {
+        $cliente = [
+            'nombre' => 'Juan Perez',
+            'documento' => 12345678
+        ];
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('POST', 'api/clientes', $cliente);
+
+        /* TODO: seleccionar todas las columnas de la tabla */
+        $estructura = array_merge([
+            'cliente' => [
+                'id',
+                'nombre',
+                'documento',
+                'observacion',
+                'created_at',
+                'updated_at',
+                // 'deleted_at'
+            ]
+        ], $this->estructuraMensaje);
+
+        $respuesta
+            ->assertStatus(201)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'cliente' => $cliente,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'GUARDADO',
+                    'descripcion' => 'El cliente Juan Perez ha sido creado'
+                ]
+            ]);
+    }
 }
