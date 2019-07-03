@@ -38,7 +38,7 @@ class Cliente extends Model
      *
      * @var array
      */
-    protected $fillable = ['dni', 'nombre', 'observacion', 'otros',];
+    protected $fillable = ['documento', 'nombre', 'observacion', 'otros',];
 
 
     public function getNombreAttribute()
