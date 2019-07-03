@@ -60,10 +60,13 @@ jobs:
 
       - run: sudo apt update
 
+      - run: sudo apt-get install -y libpng-dev
+
       # instalar extensiones de php
       - run: |
           sudo docker-php-ext-install pdo_mysql
           sudo docker-php-ext-enable pdo_mysql
+          sudo docker-php-ext-install gd
 
       # restaurar las dependencias desde la cache
       - restore_cache:
