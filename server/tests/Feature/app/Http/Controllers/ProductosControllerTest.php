@@ -5,6 +5,8 @@ namespace Tests\Feature\Http\Controllers;
 use App\Producto;
 use Tests\TestCase;
 use App\CategoriaProducto;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,6 +26,7 @@ class ProductosControllerTest extends TestCase
             'presentacion',
             'precio_por_mayor',
             'consumidor_final',
+            'imagen',
             'id_categoria',
             'created_at',
             'updated_at',
@@ -64,6 +67,23 @@ class ProductosControllerTest extends TestCase
             ->json('POST', 'api/productos', $producto);
 
         return $respuestaProducto->getData(true)['producto'];
+    }
+
+    private function getImagen()
+    {
+        return UploadedFile::fake()->image('imagen.jpg', 200, 200)->size(256);
+    }
+
+    private function getNombreImagen($producto, UploadedFile $imagen)
+    {
+        $id = $producto['id'];
+        $extension = $imagen->extension();
+        return "$id.$extension";
+    }
+
+    private function getURLImagen($nombreArchivo)
+    {
+        return Storage::disk('productos')->url($nombreArchivo);
     }
 
     /**
@@ -110,9 +130,9 @@ class ProductosControllerTest extends TestCase
     }
 
     /**
-     * Debería crear un producto
+     * Debería crear un producto sin imagen
      */
-    public function testDeberiaCrearUnProducto()
+    public function testDeberiaCrearUnProductoSinImagen()
     {
         $cabeceras = $this->loguearseComo('defecto');
 
@@ -153,6 +173,61 @@ class ProductosControllerTest extends TestCase
     }
 
     /**
+     * Debería crear un producto con imagen
+     */
+    public function testDeberiaCrearUnProductoConImagen()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $categoria = ['descripcion' => 'Automotriz Alta Gama'];
+
+        $respuestaCategoria = $this
+            ->withHeaders($cabeceras)
+            ->json('POST', 'api/categorias-productos', $categoria);
+
+        $idCategoria = $respuestaCategoria->getData(true)['categoria']['id'];
+
+        Storage::fake('productos');
+        $imagen = $this->getImagen();
+
+        $producto = [
+            'codigo' => '181696',
+            'nombre' => 'ELAION F50 d1 0W-20 12/1',
+            'presentacion' => 'Caja 12u / 1 litro',
+            'precio_por_mayor' => 150,
+            'consumidor_final' => 200,
+            'id_categoria' => $idCategoria,
+            'imagen' => $imagen
+        ];
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('POST', 'api/productos', $producto);
+
+        $estructura = $this->getEstructuraProducto();
+
+        $productoGuardado = $respuesta->getData(true)['producto'];
+        $nombreArchivo = $this->getNombreImagen($productoGuardado, $imagen);
+
+        $productoEsperado = $producto;
+        $productoEsperado['imagen'] = $this->getURLImagen($nombreArchivo);
+
+        $respuesta
+            ->assertStatus(201)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'producto' => $productoEsperado,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'GUARDADO',
+                    'descripcion' => 'El producto ELAION F50 d1 0W-20 12/1 ha sido creado'
+                ]
+            ]);
+
+        Storage::disk('productos')->assertExists($nombreArchivo);
+    }
+
+    /**
      * Debería obtener un producto
      */
     public function testDeberiaObtenerUnProducto()
@@ -175,9 +250,60 @@ class ProductosControllerTest extends TestCase
     }
 
     /**
-     * Debería editar un producto
+     * Debería editar un producto sin imagen
      */
-    public function testDeberiaEditarUnProducto()
+    public function testDeberiaEditarUnProductoSinImagen()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $productoGuardado = $this->crearProducto($cabeceras);
+        $idProducto = $productoGuardado['id'];
+        $idCategoria = $productoGuardado['id_categoria'];
+
+        Storage::fake('productos');
+        $imagen = $this->getImagen();
+
+        $producto = [
+            'codigo' => '181696',
+            'nombre' => 'ELAION F50 d1 0W-20',
+            'presentacion' => '12 x 1 litro',
+            'precio_por_mayor' => 150,
+            'consumidor_final' => 200,
+            'id_categoria' => $idCategoria,
+            'imagen' => $imagen
+        ];
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('PUT', "api/productos/$idProducto", $producto);
+
+        $estructura = $this->getEstructuraProducto();
+
+        $productoActualizado = $respuesta->getData(true)['producto'];
+        $nombreArchivo = $this->getNombreImagen($productoActualizado, $imagen);
+
+        $productoEsperado = $producto;
+        $productoEsperado['imagen'] = $this->getURLImagen($nombreArchivo);
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'producto' => $productoEsperado,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'ACTUALIZADO',
+                    'descripcion' => 'El producto ELAION F50 d1 0W-20 ha sido modificado'
+                ]
+            ]);
+
+        Storage::disk('productos')->assertExists($nombreArchivo);
+    }
+
+    /**
+     * Debería editar un producto con imagen
+     */
+    public function testDeberiaEditarUnProductoConImagen()
     {
         $cabeceras = $this->loguearseComo('defecto');
 

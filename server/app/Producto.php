@@ -3,8 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 use Sofa\Eloquence\{Eloquence, Mappable};
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Producto extends Model
 {
@@ -21,7 +22,7 @@ class Producto extends Model
         'consumidor_final' => 'cons_fin'
     ];
 
-    protected $appends = ['codigo', 'nombre', 'id_categoria', 'precio_por_mayor', 'consumidor_final'];
+    protected $appends = ['codigo', 'nombre', 'id_categoria', 'precio_por_mayor', 'consumidor_final', 'imagen'];
 
     protected $hidden = [
         'codigo_prod',
@@ -30,6 +31,7 @@ class Producto extends Model
         'por_mayor',
         'cons_fin',
         'estado',
+        'imagen_ruta',
 
         /**
          * Estos campos no son usados
@@ -51,6 +53,13 @@ class Producto extends Model
         'iva',
         'consumidor_final'
     ];
+
+    public function getImagenAttribute(): ?string
+    {
+        return $this->imagen_ruta
+            ? Storage::disk('productos')->url($this->imagen_ruta)
+            : null;
+    }
 
     public function categoria()
     {

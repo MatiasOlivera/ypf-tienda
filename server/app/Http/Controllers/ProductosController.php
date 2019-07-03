@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Auxiliares\Respuesta;
 use App\Auxiliares\MensajeError;
 use App\Auxiliares\MensajeExito;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Producto\ProductosRequest;
 use App\Http\Requests\Producto\CrearProductoRequest;
 use App\Http\Requests\Producto\ActualizarProductoRequest;
@@ -99,6 +100,13 @@ class ProductosController extends Controller
             $guardado = $producto->save();
 
             if ($guardado) {
+                $imagenRuta = $this->guardarImagen($request, $producto);
+
+                if (!is_null($imagenRuta)) {
+                    $producto->imagen_ruta = $imagenRuta;
+                    $producto->save();
+                }
+
                 $productoGuardado = Producto::find($producto->id);
 
                 $mensajeExito = new MensajeExito();
@@ -149,6 +157,7 @@ class ProductosController extends Controller
             );
 
             $producto->fill($inputs);
+            $producto->imagen_ruta = $this->guardarImagen($request, $producto);
             $actualizado = $producto->save();
 
             if ($actualizado) {
@@ -217,5 +226,35 @@ class ProductosController extends Controller
 
             return Respuesta::error($mensajeError, 500);
         }
+    }
+
+    /**
+     * Guardar la imagen en el disco
+     */
+    private function guardarImagen(Request $request, Producto $producto): ?string
+    {
+        if ($request->hasFile('imagen')) {
+            $imagen = $request->file('imagen');
+
+            if ($imagen->isValid()) {
+                // Nombre del archivo
+                $id = $producto->id;
+                $extension = $imagen->extension();
+                $nombreArchivo = "$id.$extension";
+
+                // Almacenar la imagen nueva
+                $rutaNueva = Storage::disk('productos')->putFileAs('', $imagen, $nombreArchivo);
+                $rutaAnterior = $producto->imagen_ruta;
+
+                // Eliminar la imagen anterior si la extension es distinta
+                if (!is_null($rutaAnterior) && $rutaNueva !== $rutaAnterior) {
+                    Storage::disk('productos')->delete($rutaAnterior);
+                }
+
+                return $rutaNueva;
+            }
+        }
+
+        return null;
     }
 }
