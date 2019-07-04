@@ -54,6 +54,11 @@ class ClientesControllerTest extends TestCase
         return array_merge(['clientes'], $this->estructuraPaginacion);
     }
 
+    private function getEstructuraCliente()
+    {
+        return array_merge($this->estructuraCliente, $this->estructuraMensaje);
+    }
+
     private function crearCliente($cabeceras, $cliente = null)
     {
         if ($cliente === null) {
@@ -169,6 +174,43 @@ class ClientesControllerTest extends TestCase
             ->assertJsonStructure($this->estructuraCliente)
             ->assertJson([
                 'cliente' => $clienteGuardado
+            ]);
+    }
+
+    /**
+     * Debería editar un cliente
+     */
+    public function testDeberiaEditarUnCliente()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $clienteGuardado = $this->crearCliente($cabeceras);
+        $id = $clienteGuardado['id'];
+
+        $clienteModificado = [
+            'nombre' => 'Juan Manuel Perez',
+            'documento' => 12345678
+        ];
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('PUT', "api/clientes/$id", $clienteModificado);
+
+        $clienteDB = Cliente::withTrashed()
+            ->where('id_cliente', $id)
+            ->firstOrFail()
+            ->toArray();
+        $estructura = $this->getEstructuraCliente();
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'cliente' => $clienteDB,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'ACTUALIZADO',
+                    'descripcion' => 'El cliente Juan Manuel Perez ha sido modificado'
+                ]
             ]);
     }
 }
