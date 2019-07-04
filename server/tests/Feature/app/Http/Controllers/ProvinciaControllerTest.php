@@ -15,6 +15,29 @@ class ProvinciaControllerTest extends TestCase
     use RefreshDatabase;
     use EstructuraJsonHelper;
 
+    private $estructuraProvincia = [
+        'provincia' => [
+            'id',
+            'nombre',
+            'created_at',
+            'updated_at',
+            'deleted_at'
+        ]
+    ];
+
+    private function crearProvincia($cabeceras, $provincia = null)
+    {
+        if ($provincia === null) {
+            $provincia = ['nombre' => 'Corrientes'];
+        }
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('POST', 'api/provincias', $provincia);
+
+        return $respuesta->getData(true)['provincia'];
+    }
+
     /**
      * No debería obtener ninguna provincia
      */
@@ -84,6 +107,28 @@ class ProvinciaControllerTest extends TestCase
                     'codigo' => 'GUARDADO',
                     'descripcion' => 'La provincia Corrientes ha sido creada'
                 ]
+            ]);
+    }
+
+    /**
+     * Debería obtener una provincia
+     */
+    public function testDeberiaObtenerUnaProvincia()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $provinciaGuardada = $this->crearProvincia($cabeceras);
+        $id = $provinciaGuardada['id'];
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('GET', "api/provincias/$id");
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($this->estructuraProvincia)
+            ->assertJson([
+                'provincia' => $provinciaGuardada
             ]);
     }
 }
