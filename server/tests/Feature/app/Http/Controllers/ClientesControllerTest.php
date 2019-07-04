@@ -250,4 +250,43 @@ class ClientesControllerTest extends TestCase
         $deletedAt = $respuesta->getData(true)['cliente']['deleted_at'];
         $this->assertNotNull($deletedAt);
     }
+
+    /**
+     * Debería restaurar un cliente
+     */
+    public function testDeberiaRestaurarUnCliente()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $clienteGuardado = $this->crearCliente($cabeceras);
+        $id = $clienteGuardado['id'];
+
+        $this->withHeaders($cabeceras)
+            ->json('DELETE', "api/clientes/$id");
+
+        $respuesta = $this->withHeaders($cabeceras)
+            ->json('POST', "api/clientes/$id/restaurar");
+
+        $clienteDB = Cliente::withTrashed()
+            ->where('id_cliente', $id)
+            ->firstOrFail()
+            ->toArray();
+
+        $estructura = $this->getEstructuraCliente();
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertExactJson([
+                'cliente' => $clienteDB,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'RESTAURADO',
+                    'descripcion' => 'El cliente Juan Perez ha sido dado de alta'
+                ]
+            ]);
+
+        $deletedAt = $respuesta->getData(true)['cliente']['deleted_at'];
+        $this->assertNull($deletedAt);
+    }
 }
