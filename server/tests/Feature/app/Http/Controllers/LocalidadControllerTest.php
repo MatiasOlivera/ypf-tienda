@@ -247,4 +247,44 @@ class LocalidadControllerTest extends TestCase
         $deletedAt = $respuesta->getData(true)['localidad']['deleted_at'];
         $this->assertNotNull($deletedAt);
     }
+
+    /**
+     * Debería restaurar una localidad
+     */
+    public function testDeberiaRestaurarUnaLocalidad()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $localidadGuardada = $this->crearLocalidad($cabeceras);
+        $id = $localidadGuardada['id'];
+
+        $this->withHeaders($cabeceras)
+            ->json('DELETE', "api/provincias/localidades/$id");
+
+        $respuesta = $this->withHeaders($cabeceras)
+            ->json('POST', "api/provincias/localidades/$id/restaurar");
+
+        $localidadDB = Localidad::withTrashed()
+            ->with('provincia')
+            ->where('id_localidad', $id)
+            ->firstOrFail()
+            ->toArray();
+
+        $estructura = $this->getEstructuraLocalidad();
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertExactJson([
+                'localidad' => $localidadDB,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'RESTAURADO',
+                    'descripcion' => 'La localidad Mercedes - Corrientes ha sido dada de alta'
+                ]
+            ]);
+
+        $deletedAt = $respuesta->getData(true)['localidad']['deleted_at'];
+        $this->assertNull($deletedAt);
+    }
 }
