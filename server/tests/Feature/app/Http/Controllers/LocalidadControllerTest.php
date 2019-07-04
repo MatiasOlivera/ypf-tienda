@@ -86,7 +86,7 @@ class LocalidadControllerTest extends TestCase
         $provincia = $this->crearProvincia($cabeceras);
         $idProvincia = $provincia['id'];
 
-        $localidad = ['localidad' => 'Mercedes'];
+        $localidad = ['nombre' => 'Mercedes'];
 
         $respuesta = $this
             ->withHeaders($cabeceras)

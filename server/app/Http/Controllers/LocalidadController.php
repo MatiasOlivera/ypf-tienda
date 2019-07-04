@@ -55,8 +55,10 @@ class LocalidadController extends Controller
      */
     public function store(LocalidadRequest $request, Provincia $provincia)
     {
-        $inputs['nombre'] = $request->input('localidad');
-        $nombre = $this->getNombre($inputs['nombre'], $provincia->nombre);
+        $inputs = $request->only('nombre');
+        $nombreLocalidad = $request->input('nombre');
+        $nombre = $this->getNombre($nombreLocalidad, $provincia->nombre);
+
         try {
             $localidad      = new Localidad($inputs);
             $provincia->localidades()->save($localidad);
@@ -95,8 +97,11 @@ class LocalidadController extends Controller
     public function update(LocalidadRequest $request, Localidad $localidad)
     {
         $provincia = $localidad->provincia;
-        $inputs['nombre'] = $request->input('localidad');
-        $nombre = $this->getNombre($localidad->nombre, $provincia->nombre);
+        $inputs = $request->only('nombre');
+
+        $nombreLocalidad = $request->input('nombre');
+        $nombre = $this->getNombre($nombreLocalidad, $provincia->nombre);
+
         $parametros = [
             'inputs' => $inputs,
             'instancia' => $localidad,
