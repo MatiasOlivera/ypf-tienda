@@ -170,4 +170,40 @@ class ProvinciaControllerTest extends TestCase
                 ]
             ]);
     }
+
+     /**
+     * Debería eliminar una provincia
+     */
+    public function testDeberiaEliminarUnaProvincia()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $provinciaGuardada = $this->crearProvincia($cabeceras);
+        $id = $provinciaGuardada['id'];
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('DELETE', "api/provincias/$id");
+
+        $provinciaDB = Provincia::withTrashed()
+            ->where('id_provincia', $id)
+            ->firstOrFail()
+            ->toArray();
+        $estructura = $this->getEstructuraProvincia();
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'provincia' => $provinciaDB,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'ELIMINADO',
+                    'descripcion' => 'La provincia Corrientes ha sido eliminada'
+                ]
+            ]);
+
+        $deletedAt = $respuesta->getData(true)['provincia']['deleted_at'];
+        $this->assertNotNull($deletedAt);
+    }
 }
