@@ -25,6 +25,11 @@ class ProvinciaControllerTest extends TestCase
         ]
     ];
 
+    private function getEstructuraProvincia()
+    {
+        return array_merge($this->estructuraProvincia, $this->estructuraMensaje);
+    }
+
     private function crearProvincia($cabeceras, $provincia = null)
     {
         if ($provincia === null) {
@@ -129,6 +134,40 @@ class ProvinciaControllerTest extends TestCase
             ->assertJsonStructure($this->estructuraProvincia)
             ->assertJson([
                 'provincia' => $provinciaGuardada
+            ]);
+    }
+
+    /**
+     * Debería editar una provincia
+     */
+    public function testDeberiaEditarUnaProvincia()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $provinciaGuardada = $this->crearProvincia($cabeceras);
+        $id = $provinciaGuardada['id'];
+
+        $provinciaModificada = ['nombre' => 'Buenos Aires'];
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('PUT', "api/provincias/$id", $provinciaModificada);
+
+        $provinciaDB = Provincia::withTrashed()
+            ->where('id_provincia', $id)
+            ->firstOrFail()
+            ->toArray();
+        $estructura = $this->getEstructuraProvincia();
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'provincia' => $provinciaDB,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'ACTUALIZADO',
+                    'descripcion' => 'La provincia Buenos Aires ha sido modificada'
+                ]
             ]);
     }
 }
