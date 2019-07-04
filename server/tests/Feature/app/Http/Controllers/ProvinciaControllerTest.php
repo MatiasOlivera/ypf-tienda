@@ -50,4 +50,40 @@ class ProvinciaControllerTest extends TestCase
             ->assertJsonStructure(['provincias'])
             ->assertJson(['provincias' => $provincias]);
     }
+
+    /**
+     * Debería crear una provincia
+     */
+    public function testDeberiaCrearUnaProvincia()
+    {
+        $provincia = ['nombre' => 'Corrientes'];
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('POST', 'api/provincias', $provincia);
+
+        /* TODO: seleccionar todas las columnas de la tabla */
+        $estructura = array_merge([
+            'provincia' => [
+                'id',
+                'nombre',
+                'created_at',
+                'updated_at',
+                // 'deleted_at'
+            ]
+        ], $this->estructuraMensaje);
+
+        $respuesta
+            ->assertStatus(201)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'provincia' => $provincia,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'GUARDADO',
+                    'descripcion' => 'La provincia Corrientes ha sido creada'
+                ]
+            ]);
+    }
 }
