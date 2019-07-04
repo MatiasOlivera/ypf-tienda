@@ -105,7 +105,7 @@ class LocalidadControllerTest extends TestCase
         ], $this->estructuraMensaje);
 
         $respuesta
-            ->assertStatus(200)
+            ->assertStatus(201)
             ->assertJsonStructure($estructura)
             ->assertJson([
                 'localidad' => ['nombre' => 'Mercedes'],

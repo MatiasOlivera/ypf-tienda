@@ -67,7 +67,7 @@ class LocalidadController extends Controller
             $mensajeExito   = new MensajeExito();
             $mensajeExito->guardar($nombre, $this->generoModelo);
 
-            return Respuesta::exito($respuesta, $mensajeExito, 200);
+            return Respuesta::exito($respuesta, $mensajeExito, 201);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
             $mensajeError->guardar($nombre, $this->generoModelo);
