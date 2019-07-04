@@ -75,4 +75,45 @@ class LocalidadControllerTest extends TestCase
                 ]
             ]);
     }
+
+    /**
+     * Debería crear una localidad
+     */
+    public function testDeberiaCrearUnaLocalidad()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $provincia = $this->crearProvincia($cabeceras);
+        $idProvincia = $provincia['id'];
+
+        $localidad = ['localidad' => 'Mercedes'];
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('POST', "api/provincias/$idProvincia/localidades", $localidad);
+
+        /* TODO: seleccionar todas las columnas de la tabla */
+        $estructura = array_merge([
+            'localidad' => [
+                'id',
+                'nombre',
+                'provincia_id',
+                'created_at',
+                'updated_at',
+                // 'deleted_at'
+            ]
+        ], $this->estructuraMensaje);
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'localidad' => ['nombre' => 'Mercedes'],
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'GUARDADO',
+                    'descripcion' => 'La localidad Mercedes - Corrientes ha sido creada'
+                ]
+            ]);
+    }
 }
