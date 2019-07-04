@@ -66,6 +66,15 @@ class LocalidadControllerTest extends TestCase
         return $respuesta->getData(true)['localidad'];
     }
 
+    private function getLocalidad($id)
+    {
+        return Localidad::withTrashed()
+            ->with('provincia')
+            ->where('id_localidad', $id)
+            ->firstOrFail()
+            ->toArray();
+    }
+
      /**
      * No debería obtener ninguna localidad
      */
@@ -193,10 +202,7 @@ class LocalidadControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('PUT', "api/provincias/localidades/$id", $localidadModificada);
 
-        $localidadDB = Localidad::withTrashed()
-            ->where('id_localidad', $id)
-            ->firstOrFail()
-            ->toArray();
+        $localidadDB = $this->getLocalidad($id);
         $estructura = $this->getEstructuraLocalidad();
 
         $respuesta
@@ -226,10 +232,7 @@ class LocalidadControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('DELETE', "api/provincias/localidades/$id");
 
-        $localidadDB = Localidad::withTrashed()
-            ->where('id_localidad', $id)
-            ->firstOrFail()
-            ->toArray();
+        $localidadDB = $this->getLocalidad($id);
         $estructura = $this->getEstructuraLocalidad();
 
         $respuesta
@@ -264,12 +267,7 @@ class LocalidadControllerTest extends TestCase
         $respuesta = $this->withHeaders($cabeceras)
             ->json('POST', "api/provincias/localidades/$id/restaurar");
 
-        $localidadDB = Localidad::withTrashed()
-            ->with('provincia')
-            ->where('id_localidad', $id)
-            ->firstOrFail()
-            ->toArray();
-
+        $localidadDB = $this->getLocalidad($id);
         $estructura = $this->getEstructuraLocalidad();
 
         $respuesta
