@@ -211,4 +211,40 @@ class LocalidadControllerTest extends TestCase
                 ]
             ]);
     }
+
+    /**
+     * Debería eliminar una localidad
+     */
+    public function testDeberiaEliminarUnaLocalidad()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $localidadGuardada = $this->crearLocalidad($cabeceras);
+        $id = $localidadGuardada['id'];
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('DELETE', "api/provincias/localidades/$id");
+
+        $localidadDB = Localidad::withTrashed()
+            ->where('id_localidad', $id)
+            ->firstOrFail()
+            ->toArray();
+        $estructura = $this->getEstructuraLocalidad();
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'localidad' => $localidadDB,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'ELIMINADO',
+                    'descripcion' => 'La localidad Mercedes - Corrientes ha sido eliminada'
+                ]
+            ]);
+
+        $deletedAt = $respuesta->getData(true)['localidad']['deleted_at'];
+        $this->assertNotNull($deletedAt);
+    }
 }
