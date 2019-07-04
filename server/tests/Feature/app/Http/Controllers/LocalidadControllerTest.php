@@ -16,7 +16,7 @@ class LocalidadControllerTest extends TestCase
     use RefreshDatabase;
     use EstructuraJsonHelper;
 
-    private $estructuraLocalidad= [
+    private $estructuraLocalidad = [
         'localidad' => [
             'id',
             'nombre',
@@ -33,6 +33,11 @@ class LocalidadControllerTest extends TestCase
             ]
         ]
     ];
+
+    private function getEstructuraLocalidad()
+    {
+        return array_merge($this->estructuraLocalidad, $this->estructuraMensaje);
+    }
 
     private function crearProvincia($cabeceras)
     {
@@ -170,6 +175,40 @@ class LocalidadControllerTest extends TestCase
             ->assertJsonStructure($this->estructuraLocalidad)
             ->assertJson([
                 'localidad' => $localidadGuardada
+            ]);
+    }
+
+    /**
+     * Debería editar una localidad
+     */
+    public function testDeberiaEditarUnaLocalidad()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $localidadGuardada = $this->crearLocalidad($cabeceras);
+        $id = $localidadGuardada['id'];
+
+        $localidadModificada = ['nombre' => 'Curuzú Cuatía'];
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('PUT', "api/provincias/localidades/$id", $localidadModificada);
+
+        $localidadDB = Localidad::withTrashed()
+            ->where('id_localidad', $id)
+            ->firstOrFail()
+            ->toArray();
+        $estructura = $this->getEstructuraLocalidad();
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'localidad' => $localidadDB,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'ACTUALIZADO',
+                    'descripcion' => 'La localidad Curuzú Cuatía - Corrientes ha sido modificada'
+                ]
             ]);
     }
 }
