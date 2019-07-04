@@ -100,13 +100,16 @@ class LocalidadController extends Controller
         $inputs = $request->only('nombre');
 
         $nombreLocalidad = $request->input('nombre');
-        $nombre = $this->getNombre($nombreLocalidad, $provincia->nombre);
+        $nombres = [
+            'exito' => $this->getNombre($nombreLocalidad, $provincia->nombre),
+            'error' => $this->getNombre($localidad->nombre, $provincia->nombre)
+        ];
 
         $parametros = [
             'inputs' => $inputs,
             'instancia' => $localidad,
         ];
-        return $this->baseController->update($parametros, $nombre);
+        return $this->baseController->update($parametros, $nombres);
     }
 
     /**
