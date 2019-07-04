@@ -167,4 +167,22 @@ Route::middleware('jwt.auth')->group(function () {
 
         Route::post('/localidades/{localidad}/restaurar/', 'LocalidadController@restore')->name('Localidad.restore');
     });
+
+    /**
+     * Categorias producto
+     */
+    Route::apiResource('categorias-productos', 'CategoriaProductoController')
+        ->parameters(['categorias-productos' => 'categoriaProducto']);
+
+    Route::post('categorias-productos/{categoriaProducto}/restaurar', 'CategoriaProductoController@restore')
+        ->name('categorias.restore');
+
+    /**
+     * Producto
+     */
+    Route::apiResource('productos', 'ProductosController')
+        ->parameters(['productos' => 'producto']);
+
+    Route::post('productos/{producto}/restaurar', 'ProductosController@restore')
+        ->name('productos.restore');
 });

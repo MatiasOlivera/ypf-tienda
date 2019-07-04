@@ -4,9 +4,11 @@ namespace App\Providers;
 
 use App\User;
 use App\Cliente;
-use App\ClienteDomicilio;
+use App\Producto;
 use App\ClienteMail;
 use App\ClienteTelefono;
+use App\ClienteDomicilio;
+use App\CategoriaProducto;
 use App\ClienteRazonSocial;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
@@ -72,6 +74,20 @@ class RouteServiceProvider extends ServiceProvider
         Route::bind('razonSocial', function ($id) {
             return ClienteRazonSocial::withTrashed()
                 ->where('id_razon', $id)
+                ->firstOrFail();
+        });
+
+        // CategoriaProducto
+        Route::bind('categoriaProducto', function ($id) {
+            return CategoriaProducto::withTrashed()
+                ->where('ID_CAT_prod', $id)
+                ->firstOrFail();
+        });
+
+        // Producto
+        Route::bind('producto', function ($id) {
+            return Producto::withTrashed()
+                ->where('id', $id)
                 ->firstOrFail();
         });
     }
