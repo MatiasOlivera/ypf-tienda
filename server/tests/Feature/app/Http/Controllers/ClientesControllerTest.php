@@ -213,4 +213,41 @@ class ClientesControllerTest extends TestCase
                 ]
             ]);
     }
+
+    /**
+     * Debería eliminar una cliente
+     */
+    public function testDeberiaEliminarUnCliente()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $clienteGuardado = $this->crearCliente($cabeceras);
+        $id = $clienteGuardado['id'];
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('DELETE', "api/clientes/$id");
+
+        $clienteDB = Cliente::withTrashed()
+            ->where('id_cliente', $id)
+            ->firstOrFail()
+            ->toArray();
+
+        $estructura = $this->getEstructuraCliente();
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'cliente' => $clienteDB,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'ELIMINADO',
+                    'descripcion' => 'El cliente Juan Perez ha sido eliminado'
+                ]
+            ]);
+
+        $deletedAt = $respuesta->getData(true)['cliente']['deleted_at'];
+        $this->assertNotNull($deletedAt);
+    }
 }
