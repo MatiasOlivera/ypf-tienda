@@ -151,6 +151,9 @@ Route::middleware('jwt.auth')->group(function () {
      */
     Route::apiResource('/provincias', 'ProvinciaController')->parameters(['provincias' => 'provincia']);
 
+    Route::post('provincias/{provincia}/restaurar', 'ProvinciaController@restore')
+        ->name('provincias.restore');
+
     /**
      * Localidad
      */
