@@ -7,35 +7,13 @@ use Tests\TestCase;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Feature\Utilidades\EstructuraJsonHelper;
 
 class ClientesControllerTest extends TestCase
 {
     use AuthHelper;
     use RefreshDatabase;
-
-    // TODO: usar EstructuraJsonHelper en vez de definir $estructuraPaginacion
-    // y $estructuraMensaje
-    protected $estructuraPaginacion = [
-        'paginacion' => [
-            'total',
-            'porPagina',
-            'paginaActual',
-            'ultimaPagina',
-            'desde',
-            'hasta',
-            'rutas' => [
-                'primeraPagina',
-                'ultimaPagina',
-                'siguientePagina',
-                'paginaAnterior',
-                'base'
-            ]
-        ]
-    ];
-
-    protected $estructuraMensaje = [
-        'mensaje' => ['tipo', 'codigo', 'descripcion']
-    ];
+    use EstructuraJsonHelper;
 
     private $estructuraCliente = [
         'cliente' => [
