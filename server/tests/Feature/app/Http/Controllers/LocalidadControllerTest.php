@@ -16,6 +16,24 @@ class LocalidadControllerTest extends TestCase
     use RefreshDatabase;
     use EstructuraJsonHelper;
 
+    private $estructuraLocalidad= [
+        'localidad' => [
+            'id',
+            'nombre',
+            'provincia_id',
+            'created_at',
+            'updated_at',
+            'deleted_at',
+            'provincia' => [
+                'id',
+                'nombre',
+                'created_at',
+                'updated_at',
+                'deleted_at'
+            ]
+        ]
+    ];
+
     private function crearProvincia($cabeceras)
     {
         $provincia = ['nombre' => 'Corrientes'];
@@ -25,6 +43,22 @@ class LocalidadControllerTest extends TestCase
             ->json('POST', 'api/provincias', $provincia);
 
         return $respuesta->getData(true)['provincia'];
+    }
+
+    private function crearLocalidad($cabeceras, $localidad = null)
+    {
+        $provincia = $this->crearProvincia($cabeceras);
+        $id = $provincia['id'];
+
+        if ($localidad === null) {
+            $localidad = ['nombre' => 'Mercedes'];
+        }
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('POST', "api/provincias/$id/localidades", $localidad);
+
+        return $respuesta->getData(true)['localidad'];
     }
 
      /**
@@ -114,6 +148,28 @@ class LocalidadControllerTest extends TestCase
                     'codigo' => 'GUARDADO',
                     'descripcion' => 'La localidad Mercedes - Corrientes ha sido creada'
                 ]
+            ]);
+    }
+
+     /**
+     * Debería obtener una localidad
+     */
+    public function testDeberiaObtenerUnaLocalidad()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $localidadGuardada = $this->crearLocalidad($cabeceras);
+        $id = $localidadGuardada['id'];
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('GET', "api/provincias/localidades/$id");
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($this->estructuraLocalidad)
+            ->assertJson([
+                'localidad' => $localidadGuardada
             ]);
     }
 }
