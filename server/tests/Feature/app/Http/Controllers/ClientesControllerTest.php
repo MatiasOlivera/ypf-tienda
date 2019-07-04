@@ -173,17 +173,15 @@ class ClientesControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('PUT', "api/clientes/$id", $clienteModificado);
 
-        $clienteDB = Cliente::withTrashed()
-            ->where('id_cliente', $id)
-            ->firstOrFail()
-            ->toArray();
+        $clienteEsperado = array_merge($clienteGuardado, $clienteModificado);
+        unset($clienteEsperado['updated_at']);
         $estructura = $this->getEstructuraCliente();
 
         $respuesta
             ->assertStatus(200)
             ->assertJsonStructure($estructura)
             ->assertJson([
-                'cliente' => $clienteDB,
+                'cliente' => $clienteEsperado,
                 'mensaje' => [
                     'tipo' => 'exito',
                     'codigo' => 'ACTUALIZADO',
