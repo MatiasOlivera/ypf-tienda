@@ -152,17 +152,15 @@ class ProvinciaControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('PUT', "api/provincias/$id", $provinciaModificada);
 
-        $provinciaDB = Provincia::withTrashed()
-            ->where('id_provincia', $id)
-            ->firstOrFail()
-            ->toArray();
+        $provinciaEsperada = array_merge($provinciaGuardada, $provinciaModificada);
+        unset($provinciaEsperada['updated_at']);
         $estructura = $this->getEstructuraProvincia();
 
         $respuesta
             ->assertStatus(200)
             ->assertJsonStructure($estructura)
             ->assertJson([
-                'provincia' => $provinciaDB,
+                'provincia' => $provinciaEsperada,
                 'mensaje' => [
                     'tipo' => 'exito',
                     'codigo' => 'ACTUALIZADO',

@@ -202,14 +202,16 @@ class LocalidadControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('PUT', "api/provincias/localidades/$id", $localidadModificada);
 
-        $localidadDB = $this->getLocalidad($id);
+        $localidadEsperada = array_merge($localidadGuardada, $localidadModificada);
+        unset($localidadEsperada['updated_at']);
+
         $estructura = $this->getEstructuraLocalidad();
 
         $respuesta
             ->assertStatus(200)
             ->assertJsonStructure($estructura)
             ->assertJson([
-                'localidad' => $localidadDB,
+                'localidad' => $localidadEsperada,
                 'mensaje' => [
                     'tipo' => 'exito',
                     'codigo' => 'ACTUALIZADO',

@@ -282,7 +282,8 @@ class ProductosControllerTest extends TestCase
         $productoActualizado = $respuesta->getData(true)['producto'];
         $nombreArchivo = $this->getNombreImagen($productoActualizado, $imagen);
 
-        $productoEsperado = $producto;
+        $productoEsperado = array_merge($productoGuardado, $productoActualizado);
+        unset($productoEsperado['updated_at']);
         $productoEsperado['imagen'] = $this->getURLImagen($nombreArchivo);
 
         $respuesta
