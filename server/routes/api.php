@@ -33,16 +33,6 @@ Route::group(['prefix' => 'auth', 'middleware' => ['jwt.auth',],], function () {
     Route::post('logout', 'AuthController@logout');
 });
 
-/**
- * Provincias
- */
-Route::get('/provincias', 'ProvinciaController@index')->name('Provincia.index');
-
-/**
- * Localidades
- */
-Route::get('/provincias/{provincia}/localidades', 'LocalidadController@index')->name('Localidad.index');
-
 Route::middleware('jwt.auth')->group(function () {
     /**
      * Usuarios
