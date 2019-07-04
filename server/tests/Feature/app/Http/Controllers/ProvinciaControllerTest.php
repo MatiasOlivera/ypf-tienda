@@ -206,4 +206,42 @@ class ProvinciaControllerTest extends TestCase
         $deletedAt = $respuesta->getData(true)['provincia']['deleted_at'];
         $this->assertNotNull($deletedAt);
     }
+
+    /**
+     * Debería restaurar una provincia
+     */
+    public function testDeberiaRestaurarUnaProvincia()
+    {
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $provinciaGuardada = $this->crearProvincia($cabeceras);
+        $id = $provinciaGuardada['id'];
+
+        $this->withHeaders($cabeceras)
+            ->json('DELETE', "api/provincias/$id");
+
+        $respuesta = $this->withHeaders($cabeceras)
+            ->json('POST', "api/provincias/$id/restaurar");
+
+        $provinciaDB = Provincia::withTrashed()
+            ->where('id_provincia', $id)
+            ->firstOrFail()
+            ->toArray();
+        $estructura = $this->getEstructuraProvincia();
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertExactJson([
+                'provincia' => $provinciaDB,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'RESTAURADO',
+                    'descripcion' => 'La provincia Corrientes ha sido dada de alta'
+                ]
+            ]);
+
+        $deletedAt = $respuesta->getData(true)['provincia']['deleted_at'];
+        $this->assertNull($deletedAt);
+    }
 }
