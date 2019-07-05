@@ -32,3 +32,22 @@ export interface ParametrosObtenerTodos<CamposOrden extends string = string> {
 }
 
 export type DireccionOrden = 'asc' | 'desc';
+
+// Paginación
+export interface Paginacion {
+  total: number;
+  porPagina: number;
+  paginaActual: number;
+  ultimaPagina: number;
+  desde: number | null;
+  hasta: number | null;
+  rutas: Rutas;
+}
+
+interface Rutas {
+  primeraPagina: string;
+  ultimaPagina: string;
+  siguientePagina: string | null;
+  paginaAnterior: string | null;
+  base: string;
+}
