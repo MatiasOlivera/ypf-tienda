@@ -4,6 +4,7 @@
       :esta-logueado="estaLogueado"
       :nombre-usuario="nombreUsuario"
       @clickLogotipo="irAInicio"
+      @clickProductos="irAProductos"
       @clickLogin="irAIniciarSesion"
       @clickCerrarSesion="cerrarSesion"
     />
@@ -41,7 +42,7 @@ import { UltimaNotificacion } from './store/modules/notificaciones/modulo-notifi
 import { Notificacion } from './types/tipos-notificacion';
 
 // Router
-import { rutaInicio, rutaLogin } from './router/rutas';
+import { rutaInicio, rutaProductos, rutaLogin } from './router/rutas';
 
 // Otros
 import { mostrarNotificacion } from './utils/notificaciones';
@@ -104,6 +105,10 @@ export default Vue.extend({
 
     irAInicio(): void {
       this.$router.push({ name: rutaInicio });
+    },
+
+    irAProductos(): void {
+      this.$router.push({ name: rutaProductos });
     },
 
     irAIniciarSesion(): void {
