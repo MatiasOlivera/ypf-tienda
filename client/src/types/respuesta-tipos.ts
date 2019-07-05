@@ -21,3 +21,14 @@ export type RespuestasComunesApi =
   | RespuestaNoAutorizado
   | RespuestaErrorInterno;
 export type RespuestasComunesApiSinToken = RespuestaErrorInterno;
+
+export interface ParametrosObtenerTodos<CamposOrden extends string = string> {
+  buscar?: string;
+  eliminados?: boolean;
+  pagina?: number;
+  porPagina?: number;
+  ordenarPor?: CamposOrden;
+  orden?: DireccionOrden;
+}
+
+export type DireccionOrden = 'asc' | 'desc';
