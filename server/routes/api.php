@@ -33,16 +33,6 @@ Route::group(['prefix' => 'auth', 'middleware' => ['jwt.auth',],], function () {
     Route::post('logout', 'AuthController@logout');
 });
 
-/**
- * Provincias
- */
-Route::get('/provincias', 'ProvinciaController@index')->name('Provincia.index');
-
-/**
- * Localidades
- */
-Route::get('/provincias/{provincia}/localidades', 'LocalidadController@index')->name('Localidad.index');
-
 Route::middleware('jwt.auth')->group(function () {
     /**
      * Usuarios
@@ -150,6 +140,9 @@ Route::middleware('jwt.auth')->group(function () {
      * Provincia
      */
     Route::apiResource('/provincias', 'ProvinciaController')->parameters(['provincias' => 'provincia']);
+
+    Route::post('provincias/{provincia}/restaurar', 'ProvinciaController@restore')
+        ->name('provincias.restore');
 
     /**
      * Localidad
