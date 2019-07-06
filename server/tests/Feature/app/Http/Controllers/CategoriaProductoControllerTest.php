@@ -165,14 +165,15 @@ class CategoriaProductoControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('PUT', "api/categorias-productos/$id", $categoriaModificada);
 
-        $categoriaActualizada = array_merge($categoriaGuardada, $categoriaModificada);
+        $categoriaEsperada = array_merge($categoriaGuardada, $categoriaModificada);
+        unset($categoriaEsperada['updated_at']);
         $estructura = $this->getEstructuraCategoria();
 
         $respuesta
             ->assertStatus(200)
             ->assertJsonStructure($estructura)
             ->assertJson([
-                'categoria' => $categoriaActualizada,
+                'categoria' => $categoriaEsperada,
                 'mensaje' => [
                     'tipo' => 'exito',
                     'codigo' => 'ACTUALIZADO',
