@@ -15,7 +15,7 @@ import { clienteApi } from '../cliente-api';
  * Debería obtener un listado de productos
  */
 export async function getProductos(
-  parametros?: ParametrosObtenerTodos<CamposOrdenamiento>
+  parametros?: ParametrosGetProductos
 ): Promise<RespuestaProductos> {
   const respuesta = await clienteApi<RespuestaProductosServidor>({
     url: 'productos',
@@ -27,11 +27,16 @@ export async function getProductos(
     const productos = respuesta.datos.productos.map(convertirPreciosANumero);
     const { paginacion } = respuesta.datos;
 
-    return { ...respuesta, datos: { productos, paginacion } };
+    return {
+      ...respuesta,
+      datos: { productos, paginacion }
+    };
   }
 
   return respuesta;
 }
+
+export type ParametrosGetProductos = ParametrosObtenerTodos<CamposOrdenamiento>;
 
 export type CamposOrdenamiento =
   | 'codigo'
