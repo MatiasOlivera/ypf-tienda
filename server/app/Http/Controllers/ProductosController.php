@@ -40,6 +40,7 @@ class ProductosController extends Controller
                     'codigo',
                     'nombre',
                     'presentacion',
+                    'imagen_ruta',
                     'precio_por_mayor',
                     'consumidor_final',
                     'id_categoria',
