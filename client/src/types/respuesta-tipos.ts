@@ -22,16 +22,20 @@ export type RespuestasComunesApi =
   | RespuestaErrorInterno;
 export type RespuestasComunesApiSinToken = RespuestaErrorInterno;
 
+export type Buscar = string;
+export type Eliminados = boolean;
+export type Pagina = number;
+export type PorPagina = number;
+export type DireccionOrden = 'asc' | 'desc';
+
 export interface ParametrosObtenerTodos<CamposOrden extends string = string> {
-  buscar?: string;
-  eliminados?: boolean;
-  pagina?: number;
-  porPagina?: number;
+  buscar?: Buscar;
+  eliminados?: Eliminados;
+  pagina?: Pagina;
+  porPagina?: PorPagina;
   ordenarPor?: CamposOrden;
   orden?: DireccionOrden;
 }
-
-export type DireccionOrden = 'asc' | 'desc';
 
 // Paginación
 export interface Paginacion {
