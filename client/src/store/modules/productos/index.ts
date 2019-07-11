@@ -10,8 +10,12 @@ import { Module } from 'vuex';
 import { OBTENER_PRODUCTOS } from '@/store/types/acciones';
 import { Paginacion } from '@/types/respuesta-tipos';
 import { paginacionPorDefecto } from '@/store/defaults/paginacion-por-defecto';
+import usarParametros, {
+  EstadoParametros,
+  SET_CARGANDO
+} from '@/store/mixins/parametros';
 
-interface EstadoProductos {
+interface EstadoProductos extends EstadoParametros<ParametrosGetProductos> {
   productos: Array<Producto>;
   paginacion: Paginacion;
 }
@@ -20,25 +24,33 @@ interface EstadoProductos {
 const SET_PRODUCTOS = 'setProductos';
 const SET_PAGINACION = 'setPaginacion';
 
+const parametros = usarParametros(OBTENER_PRODUCTOS);
+
 const moduloProductos: Module<EstadoProductos, EstadoBase> = {
   namespaced: true,
 
   state: {
+    cargando: false,
+    parametros: {},
     productos: [],
     paginacion: paginacionPorDefecto
   },
 
   actions: {
-    async [OBTENER_PRODUCTOS](
-      { commit },
-      parametros?: ParametrosGetProductos
-    ): Promise<RespuestaProductos> {
+    ...parametros.actions,
+
+    async [OBTENER_PRODUCTOS]({ commit, state }): Promise<RespuestaProductos> {
       try {
-        const respuesta = await getProductos(parametros);
+        commit(SET_CARGANDO, true);
+
+        const respuesta = await getProductos(state.parametros);
         if (respuesta.ok) {
           commit(SET_PRODUCTOS, respuesta.datos.productos);
           commit(SET_PAGINACION, respuesta.datos.paginacion);
         }
+
+        commit(SET_CARGANDO, false);
+
         return respuesta;
       } catch (error) {
         throw error;
@@ -47,6 +59,8 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
   },
 
   mutations: {
+    ...parametros.mutations,
+
     [SET_PRODUCTOS](estado, productos: Array<Producto>): void {
       estado.productos = productos;
     },
