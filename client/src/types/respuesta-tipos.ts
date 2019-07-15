@@ -2,8 +2,16 @@ import { Respuesta } from '@/services/cliente-http';
 
 import { MensajeError, MensajeExito } from './mensaje-tipos';
 
-export type RespuestaMensajeExito = Respuesta<true, 200, MensajeExito>;
-export type RespuestaMensajeError = Respuesta<false, 500, MensajeError>;
+export type RespuestaMensajeExito = Respuesta<
+  true,
+  200,
+  { mensaje: MensajeExito }
+>;
+export type RespuestaMensajeError = Respuesta<
+  false,
+  500,
+  { mensaje: MensajeError }
+>;
 
 export type ErroresValidacion<Modelo> = {
   [Clave in keyof Modelo]: string | null
