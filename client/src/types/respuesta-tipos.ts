@@ -16,6 +16,7 @@ export type RespuestaMensajeError = Respuesta<
 export type ErroresValidacion<Modelo> = {
   [Clave in keyof Modelo]: string | null
 };
+export type ValidacionObtenerTodos = ErroresValidacion<ParametrosObtenerTodos>;
 
 export type RespuestaValidacion<Modelo> = Respuesta<
   false,
