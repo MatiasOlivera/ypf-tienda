@@ -10,7 +10,6 @@ import { Producto } from '@/types/tipos-producto';
 import { Module } from 'vuex';
 import { OBTENER_PRODUCTOS } from '@/store/types/acciones';
 import { Paginacion, ValidacionObtenerTodos } from '@/types/respuesta-tipos';
-import { paginacionPorDefecto } from '@/store/defaults/paginacion-por-defecto';
 import usarParametros, {
   EstadoParametros,
   SET_CARGANDO
@@ -19,7 +18,7 @@ import { MensajeError } from '@/types/mensaje-tipos';
 
 interface EstadoProductos extends EstadoParametros<ParametrosGetProductos> {
   productos: Array<Producto>;
-  paginacion: Paginacion;
+  paginacion: Paginacion | null;
   validacion: ValidacionObtenerTodos;
   mensaje: MensajeError | null;
 }
@@ -45,7 +44,7 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
     cargando: false,
     parametros: {},
     productos: [],
-    paginacion: paginacionPorDefecto,
+    paginacion: null,
     validacion: {},
     mensaje: null
   },
@@ -110,8 +109,8 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
     },
 
     [RESETEAR_PAGINACION]({ commit, state }): void {
-      if (!isEqual(state.paginacion, paginacionPorDefecto)) {
-        commit(SET_PAGINACION, paginacionPorDefecto);
+      if (state.paginacion !== null) {
+        commit(SET_PAGINACION, null);
       }
     },
 
@@ -135,7 +134,7 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
       estado.productos = productos;
     },
 
-    [SET_PAGINACION](estado, paginacion: Paginacion): void {
+    [SET_PAGINACION](estado, paginacion: Paginacion | null): void {
       estado.paginacion = paginacion;
     },
 
