@@ -49,11 +49,11 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
           commit(SET_PAGINACION, respuesta.datos.paginacion);
         }
 
-        commit(SET_CARGANDO, false);
-
         return respuesta;
       } catch (error) {
         throw error;
+      } finally {
+        commit(SET_CARGANDO, false);
       }
     }
   },
