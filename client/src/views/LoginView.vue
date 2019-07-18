@@ -14,7 +14,7 @@
           <formulario-login
             :cargando="cargando"
             :mensaje="mensaje"
-            :validacion="validacion"
+            :validacion.sync="validacion"
             @submit="loginLocal"
           ></formulario-login>
         </b-col>

@@ -16,7 +16,7 @@
         ></b-form-input>
 
         <b-form-invalid-feedback id="email-input-error">
-          {{ validacionLocal.email }}
+          {{ validacion.email }}
         </b-form-invalid-feedback>
       </b-form-group>
 
@@ -31,7 +31,7 @@
         ></b-form-input>
 
         <b-form-invalid-feedback id="password-input-error">
-          {{ validacionLocal.password }}
+          {{ validacion.password }}
         </b-form-invalid-feedback>
       </b-form-group>
 
@@ -74,7 +74,6 @@ export type EventoSubmit = CredencialesUsuario;
 // Data
 interface Data {
   credenciales: CredencialesUsuario;
-  validacionLocal: PropValidacion;
 }
 
 // Valores por defecto
@@ -109,20 +108,13 @@ export default Vue.extend({
 
   data(): Data {
     return {
-      credenciales: { ...credencialesPorDefecto },
-      validacionLocal: { ...validacionPorDefecto }
+      credenciales: { ...credencialesPorDefecto }
     };
   },
 
   computed: {
     validacionEstado(): EstadoValidacion<CredencialesUsuario> {
-      return obtenerEstadoValidacion<CredencialesUsuario>(this.validacionLocal);
-    }
-  },
-
-  watch: {
-    validacion(nuevosErrores) {
-      this.validacionLocal = nuevosErrores;
+      return obtenerEstadoValidacion<CredencialesUsuario>(this.validacion);
     }
   },
 
@@ -133,7 +125,7 @@ export default Vue.extend({
 
     resetear(): void {
       this.credenciales = { ...credencialesPorDefecto };
-      this.validacionLocal = { ...validacionPorDefecto };
+      this.$emit('update:validacion', { ...validacionPorDefecto });
     }
   }
 });
