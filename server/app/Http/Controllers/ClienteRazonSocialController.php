@@ -65,8 +65,12 @@ class ClienteRazonSocialController extends Controller
             );
             $razon          = $cliente->razonesSociales()->create($inputs);
             $mensajeExito   = new MensajeExito();
+
+            $razonGuardada = ClienteRazonSocial::findOrFail($razon->id);
+            $razonGuardada->localidad;
+
             $mensajeExito->guardar($nombre, $this->generoModelo);
-            $respuesta      = [$this->modeloSingular => $razon];
+            $respuesta      = [$this->modeloSingular => $razonGuardada];
             return Respuesta::exito($respuesta, null, 200);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
