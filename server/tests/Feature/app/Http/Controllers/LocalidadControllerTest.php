@@ -140,17 +140,7 @@ class LocalidadControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('POST', "api/provincias/$idProvincia/localidades", $localidad);
 
-        /* TODO: seleccionar todas las columnas de la tabla */
-        $estructura = array_merge([
-            'localidad' => [
-                'id',
-                'nombre',
-                'provincia_id',
-                'created_at',
-                'updated_at',
-                // 'deleted_at'
-            ]
-        ], $this->estructuraMensaje);
+        $estructura = $this->getEstructuraLocalidad();
 
         $respuesta
             ->assertStatus(201)

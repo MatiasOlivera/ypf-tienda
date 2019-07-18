@@ -62,7 +62,11 @@ class LocalidadController extends Controller
         try {
             $localidad      = new Localidad($inputs);
             $provincia->localidades()->save($localidad);
-            $respuesta      = [$this->modeloSingular  => $localidad,];
+
+            $localidadGuardada = Localidad::findOrFail($localidad->id);
+            $localidadGuardada->provincia;
+
+            $respuesta = [$this->modeloSingular  => $localidadGuardada,];
 
             $mensajeExito   = new MensajeExito();
             $mensajeExito->guardar($nombre, $this->generoModelo);
