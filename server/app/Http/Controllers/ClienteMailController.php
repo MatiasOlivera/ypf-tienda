@@ -59,10 +59,12 @@ class ClienteMailController extends Controller
             $mail   = new ClienteMail($inputs);
             $mail   = $cliente->mails()->save($mail);
 
+            $emailGuardado = ClienteMail::findOrFail($mail->id);
+
             $mensajeExito = new MensajeExito();
             $mensajeExito->guardar($nombre, $this->generoModelo);
 
-            $respuesta      = [$this->modeloSingular => $mail];
+            $respuesta      = [$this->modeloSingular => $emailGuardado];
             return Respuesta::exito($respuesta, $mensajeExito, 200);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
