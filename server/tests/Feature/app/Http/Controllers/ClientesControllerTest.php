@@ -107,18 +107,7 @@ class ClientesControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('POST', 'api/clientes', $cliente);
 
-        /* TODO: seleccionar todas las columnas de la tabla */
-        $estructura = array_merge([
-            'cliente' => [
-                'id',
-                'nombre',
-                'documento',
-                'observacion',
-                'created_at',
-                'updated_at',
-                // 'deleted_at'
-            ]
-        ], $this->estructuraMensaje);
+        $estructura = $this->getEstructuraCliente();
 
         $respuesta
             ->assertStatus(201)

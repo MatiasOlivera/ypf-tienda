@@ -103,16 +103,7 @@ class CategoriaProductoControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('POST', 'api/categorias-productos', $categoria);
 
-        /* TODO: seleccionar todas las columnas de la tabla */
-        $estructura = array_merge([
-            'categoria' => [
-                'id',
-                'descripcion',
-                'created_at',
-                'updated_at',
-                // 'deleted_at'
-            ]
-        ], $this->estructuraMensaje);
+        $estructura = $this->getEstructuraCategoria();
 
         $respuesta
             ->assertStatus(201)
