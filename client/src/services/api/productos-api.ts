@@ -10,6 +10,7 @@ import {
 } from '@/types/respuesta-tipos';
 import { Producto, ProductoBase } from '@/types/tipos-producto';
 import { clienteApi } from '../cliente-api';
+import { MensajeError } from '@/types/mensaje-tipos';
 
 /**
  * Debería obtener un listado de productos
@@ -17,23 +18,32 @@ import { clienteApi } from '../cliente-api';
 export async function getProductos(
   parametros?: ParametrosGetProductos
 ): Promise<RespuestaProductos> {
-  const respuesta = await clienteApi<RespuestaProductosServidor>({
-    url: 'productos',
-    metodo: 'GET',
-    datos: parametros
-  });
+  try {
+    const respuesta = await clienteApi<RespuestaProductosServidor>({
+      url: 'productos',
+      metodo: 'GET',
+      datos: parametros
+    });
 
-  if (respuesta.ok) {
-    const productos = respuesta.datos.productos.map(convertirPreciosANumero);
-    const { paginacion } = respuesta.datos;
+    if (respuesta.ok) {
+      const productos = respuesta.datos.productos.map(convertirPreciosANumero);
+      const { paginacion } = respuesta.datos;
 
-    return {
-      ...respuesta,
-      datos: { productos, paginacion }
+      return {
+        ...respuesta,
+        datos: { productos, paginacion }
+      };
+    }
+
+    return respuesta;
+  } catch (error) {
+    const mensaje: MensajeError = {
+      tipo: 'error',
+      codigo: 'NO_OBTENIDOS',
+      descripcion: 'Hubo un error al consultar el listado de los productos'
     };
+    throw mensaje;
   }
-
-  return respuesta;
 }
 
 export type ParametrosGetProductos = ParametrosObtenerTodos<CamposOrdenamiento>;
@@ -79,17 +89,26 @@ interface DatosProductos {
  * Debería obtener un producto
  */
 export async function getProducto(id: number): Promise<RespuestaProducto> {
-  const respuesta = await clienteApi<RespuestaProductoServidor>({
-    url: `productos/${id}`,
-    metodo: 'GET'
-  });
+  try {
+    const respuesta = await clienteApi<RespuestaProductoServidor>({
+      url: `productos/${id}`,
+      metodo: 'GET'
+    });
 
-  if (respuesta.ok) {
-    const producto = convertirPreciosANumero(respuesta.datos.producto);
-    return { ...respuesta, datos: { producto } };
+    if (respuesta.ok) {
+      const producto = convertirPreciosANumero(respuesta.datos.producto);
+      return { ...respuesta, datos: { producto } };
+    }
+
+    return respuesta;
+  } catch (error) {
+    const mensaje: MensajeError = {
+      tipo: 'error',
+      codigo: 'NO_OBTENIDO',
+      descripcion: 'Hubo un error al consultar los datos del producto'
+    };
+    throw mensaje;
   }
-
-  return respuesta;
 }
 
 type RespuestasProducto<DatosEstado200> =
