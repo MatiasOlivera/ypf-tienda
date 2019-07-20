@@ -55,10 +55,13 @@ class ClienteDomicilioController extends Controller
         try {
             $domicilio = new ClienteDomicilio($inputs);
             $cliente->domicilios()->save($domicilio);
-            $domicilio->localidad;
+
+            $domicilioGuardado = ClienteDomicilio::findOrFail($domicilio->id);
+            $domicilioGuardado->localidad;
+
             $mensajeExito = new MensajeExito();
             $mensajeExito->guardar($nombre, $this->generoModelo);
-            $respuesta = [$this->modeloSingular => $domicilio];
+            $respuesta = [$this->modeloSingular => $domicilioGuardado];
             return Respuesta::exito($respuesta, $mensajeExito, 200);
         } catch (\Throwable $th) {
             $mensajeError = new MensajeError();

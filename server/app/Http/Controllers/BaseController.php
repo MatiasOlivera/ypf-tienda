@@ -68,10 +68,13 @@ class BaseController
             $instancia->fill($parametros['inputs']);
 
             if ($instancia->save()) {
+                $id = $instancia->getKey();
+                $instanciaGuardada = $nombreModelo::findOrFail($id);
+
                 $mensajeExito = new MensajeExito();
                 $mensajeExito->guardar($nombres['exito'], $this->generoModelo);
 
-                return Respuesta::exito([$this->modeloSingular => $instancia], $mensajeExito, 201);
+                return Respuesta::exito([$this->modeloSingular => $instanciaGuardada], $mensajeExito, 201);
             }
         } catch (\Throwable $th) {
             $mensajeError = new MensajeError();

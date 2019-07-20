@@ -91,16 +91,7 @@ class ProvinciaControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('POST', 'api/provincias', $provincia);
 
-        /* TODO: seleccionar todas las columnas de la tabla */
-        $estructura = array_merge([
-            'provincia' => [
-                'id',
-                'nombre',
-                'created_at',
-                'updated_at',
-                // 'deleted_at'
-            ]
-        ], $this->estructuraMensaje);
+        $estructura = $this->getEstructuraProvincia();
 
         $respuesta
             ->assertStatus(201)

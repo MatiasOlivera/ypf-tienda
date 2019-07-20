@@ -65,7 +65,10 @@ class ClienteTelefonoController extends Controller
         try {
             $telefono = new ClienteTelefono($inputs);
             $cliente->telefonos()->save($telefono);
-            $respuesta      = [$this->modeloSingular => $telefono];
+
+            $telefonoGuardado = ClienteTelefono::findOrFail($telefono->id);
+
+            $respuesta      = [$this->modeloSingular => $telefonoGuardado];
 
             $mensajeExito   = new MensajeExito();
             $mensajeExito->guardar($telefonoMensaje, $this->generoModelo);
