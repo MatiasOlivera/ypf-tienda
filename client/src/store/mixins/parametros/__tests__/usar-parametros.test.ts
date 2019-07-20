@@ -4,7 +4,7 @@ describe('Usar parámetros', () => {
   let estado: EstadoParametros;
 
   beforeEach(() => {
-    estado = { cargando: false, parametros: {} };
+    estado = { parametros: {} };
   });
 
   describe('actions', () => {
@@ -99,22 +99,6 @@ describe('Usar parámetros', () => {
 
   describe('mutations', () => {
     const { mutations } = usarParametros('getProductos');
-
-    describe('SET_CARGANDO', () => {
-      test('debería establecer cargando como true', () => {
-        // @ts-ignore
-        const { setCargando } = mutations;
-        setCargando(estado, true);
-        expect(estado.cargando).toBe(true);
-      });
-
-      test('debería establecer cargando como false', () => {
-        // @ts-ignore
-        const { setCargando } = mutations;
-        setCargando(estado, false);
-        expect(estado.cargando).toBe(false);
-      });
-    });
 
     describe('SET_BUSCAR', () => {
       test('debería establecer el valor buscado', () => {

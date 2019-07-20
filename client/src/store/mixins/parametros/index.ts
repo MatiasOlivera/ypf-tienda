@@ -21,12 +21,10 @@ import {
 export interface EstadoParametros<
   Parametros extends ParametrosObtenerTodos = ParametrosObtenerTodos
 > {
-  cargando: boolean;
   parametros: Parametros;
 }
 
 // Mutaciones
-export const SET_CARGANDO = 'setCargando';
 const SET_BUSCAR = 'setBuscar';
 const SET_ELIMINADOS = 'setEliminados';
 const SET_PAGINA = 'setPagina';
@@ -39,7 +37,6 @@ type ModuloParametros = Module<EstadoParametros, EstadoBase>;
 function usarParametros(accionObtenerTodos: string): ModuloParametros {
   return {
     state: {
-      cargando: false,
       parametros: {}
     },
 
@@ -85,10 +82,6 @@ function usarParametros(accionObtenerTodos: string): ModuloParametros {
     },
 
     mutations: {
-      [SET_CARGANDO](estado, cargando: boolean): void {
-        estado.cargando = cargando;
-      },
-
       [SET_BUSCAR](estado, buscar: Buscar): void {
         estado.parametros.buscar = buscar;
       },

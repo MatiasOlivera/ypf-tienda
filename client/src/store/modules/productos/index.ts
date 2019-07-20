@@ -10,13 +10,18 @@ import { Producto } from '@/types/tipos-producto';
 import { Module } from 'vuex';
 import { OBTENER_PRODUCTOS } from '@/store/types/acciones';
 import { Paginacion, ValidacionObtenerTodos } from '@/types/respuesta-tipos';
-import usarParametros, {
-  EstadoParametros,
-  SET_CARGANDO
-} from '@/store/mixins/parametros';
+import usarParametros, { EstadoParametros } from '@/store/mixins/parametros';
 import { MensajeError } from '@/types/mensaje-tipos';
 
+type EstadoActual =
+  | 'inicial'
+  | 'cargando'
+  | 'productos'
+  | 'validacion'
+  | 'mensaje';
+
 interface EstadoProductos extends EstadoParametros<ParametrosGetProductos> {
+  estadoActual: EstadoActual;
   productos: Array<Producto>;
   paginacion: Paginacion | null;
   validacion: ValidacionObtenerTodos;
@@ -30,6 +35,7 @@ const RESETEAR_VALIDACION = 'resetearValidacion';
 const RESETEAR_MENSAJE = 'resetearMensaje';
 
 // Mutaciones
+const SET_ESTADO_ACTUAL = 'setEstadoActual';
 const SET_PRODUCTOS = 'setProductos';
 const SET_PAGINACION = 'setPaginacion';
 const SET_VALIDACION = 'setValidacion';
@@ -41,12 +47,34 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
   namespaced: true,
 
   state: {
-    cargando: false,
+    estadoActual: 'inicial',
     parametros: {},
     productos: [],
     paginacion: null,
     validacion: {},
     mensaje: null
+  },
+
+  getters: {
+    estadoEsInicial(estado): boolean {
+      return estado.estadoActual === 'inicial';
+    },
+
+    estadoEsCargando(estado): boolean {
+      return estado.estadoActual === 'cargando';
+    },
+
+    estadoEsProductos(estado): boolean {
+      return estado.estadoActual === 'productos';
+    },
+
+    estadoEsValidacion(estado): boolean {
+      return estado.estadoActual === 'validacion';
+    },
+
+    estadoEsMensaje(estado): boolean {
+      return estado.estadoActual === 'mensaje';
+    }
   },
 
   actions: {
@@ -58,12 +86,13 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
       state
     }): Promise<RespuestaProductos> {
       try {
-        commit(SET_CARGANDO, true);
+        commit(SET_ESTADO_ACTUAL, 'cargando' as EstadoActual);
 
         const respuesta = await getProductos(state.parametros);
         if (respuesta.ok) {
           commit(SET_PRODUCTOS, respuesta.datos.productos);
           commit(SET_PAGINACION, respuesta.datos.paginacion);
+          commit(SET_ESTADO_ACTUAL, 'productos' as EstadoActual);
 
           // Resetear el estado de las validaciones y el mensaje
           dispatch(RESETEAR_VALIDACION);
@@ -73,6 +102,7 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
             // Validación
             case 422:
               commit(SET_VALIDACION, respuesta.datos.errores);
+              commit(SET_ESTADO_ACTUAL, 'validacion' as EstadoActual);
 
               // Resetear el estado del mensaje
               dispatch(RESETEAR_MENSAJE);
@@ -82,6 +112,7 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
             case 500:
               if (respuesta.datos && respuesta.datos.mensaje) {
                 commit(SET_MENSAJE, respuesta.datos.mensaje);
+                commit(SET_ESTADO_ACTUAL, 'mensaje' as EstadoActual);
 
                 // Resetear el estado de productos, la paginación y las validaciones
                 dispatch(RESETEAR_PRODUCTOS);
@@ -96,9 +127,9 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
 
         return respuesta;
       } catch (error) {
+        commit(SET_MENSAJE, error as MensajeError);
+        commit(SET_ESTADO_ACTUAL, 'mensaje' as EstadoActual);
         throw error;
-      } finally {
-        commit(SET_CARGANDO, false);
       }
     },
 
@@ -129,6 +160,10 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
 
   mutations: {
     ...parametros.mutations,
+
+    [SET_ESTADO_ACTUAL](estado, estadoActual: EstadoActual): void {
+      estado.estadoActual = estadoActual;
+    },
 
     [SET_PRODUCTOS](estado, productos: Array<Producto>): void {
       estado.productos = productos;
