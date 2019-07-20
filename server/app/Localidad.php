@@ -37,7 +37,7 @@ class Localidad extends Model
      *
      * @var array
      */
-    protected $fillable = ['id', 'nombre', 'provincia_id',];
+    protected $fillable = ['nombre', 'provincia_id',];
 
 
     public function provincia()

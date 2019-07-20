@@ -45,7 +45,7 @@ jobs:
           flags: frontend
   backend:
     docker:
-      - image: circleci/php:7.3
+      - image: circleci/php:7.3.6-stretch
       - image: circleci/mysql:5.7-ram
         environment:
           MYSQL_DATABASE: ypf_testing

@@ -55,17 +55,23 @@ class LocalidadController extends Controller
      */
     public function store(LocalidadRequest $request, Provincia $provincia)
     {
-        $inputs['nombre'] = $request->input('localidad');
-        $nombre = $this->getNombre($inputs['nombre'], $provincia->nombre);
+        $inputs = $request->only('nombre');
+        $nombreLocalidad = $request->input('nombre');
+        $nombre = $this->getNombre($nombreLocalidad, $provincia->nombre);
+
         try {
             $localidad      = new Localidad($inputs);
             $provincia->localidades()->save($localidad);
-            $respuesta      = [$this->modeloSingular  => $localidad,];
+
+            $localidadGuardada = Localidad::findOrFail($localidad->id);
+            $localidadGuardada->provincia;
+
+            $respuesta = [$this->modeloSingular  => $localidadGuardada,];
 
             $mensajeExito   = new MensajeExito();
             $mensajeExito->guardar($nombre, $this->generoModelo);
 
-            return Respuesta::exito($respuesta, $mensajeExito, 200);
+            return Respuesta::exito($respuesta, $mensajeExito, 201);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
             $mensajeError->guardar($nombre, $this->generoModelo);
@@ -95,13 +101,19 @@ class LocalidadController extends Controller
     public function update(LocalidadRequest $request, Localidad $localidad)
     {
         $provincia = $localidad->provincia;
-        $inputs['nombre'] = $request->input('localidad');
-        $nombre = $this->getNombre($localidad->nombre, $provincia->nombre);
+        $inputs = $request->only('nombre');
+
+        $nombreLocalidad = $request->input('nombre');
+        $nombres = [
+            'exito' => $this->getNombre($nombreLocalidad, $provincia->nombre),
+            'error' => $this->getNombre($localidad->nombre, $provincia->nombre)
+        ];
+
         $parametros = [
             'inputs' => $inputs,
             'instancia' => $localidad,
         ];
-        return $this->baseController->update($parametros, $nombre);
+        return $this->baseController->update($parametros, $nombres);
     }
 
     /**

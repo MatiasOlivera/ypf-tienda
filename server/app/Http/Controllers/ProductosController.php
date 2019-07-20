@@ -108,7 +108,7 @@ class ProductosController extends Controller
                     $producto->save();
                 }
 
-                $productoGuardado = Producto::find($producto->id);
+                $productoGuardado = Producto::findOrFail($producto->id);
 
                 $mensajeExito = new MensajeExito();
                 $mensajeExito->guardar($nombre, $this->generoModelo);
