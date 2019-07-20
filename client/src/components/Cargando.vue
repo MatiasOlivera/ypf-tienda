@@ -1,11 +1,15 @@
 <template>
   <div id="contenedor">
-    <loading :active.sync="estaCargando" :is-full-page="pantallaCompleta"></loading>
+    <loading
+      :active.sync="estaCargando"
+      :is-full-page="pantallaCompleta"
+    ></loading>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import { PropValidator } from 'vue/types/options';
 
 // Componentes
 import Loading from 'vue-loading-overlay';
