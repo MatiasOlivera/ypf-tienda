@@ -20,7 +20,7 @@ export type PropEstaCargando = boolean;
 export type PropPantallaCompleta = boolean;
 
 export default Vue.extend({
-  name: 'Cargando',
+  name: 'VCargando',
 
   components: { Loading },
 
