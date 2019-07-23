@@ -1,7 +1,7 @@
 <template>
   <b-container tag="main" class="mt-5">
     <VCargando
-      :esta-cargando="estadoEsCargando"
+      :esta-cargando="estadoEsPendiente"
       :pantalla-completa="true"
     ></VCargando>
 
@@ -71,8 +71,7 @@ export default Vue.extend({
   computed: {
     ...mapState(MODULO_PRODUCTOS, ['productos', 'mensaje']),
     ...mapGetters(MODULO_PRODUCTOS, [
-      'estadoEsInicial',
-      'estadoEsCargando',
+      'estadoEsPendiente',
       'estadoEsProductos',
       'estadoEsValidacion',
       'estadoEsMensaje'
@@ -80,7 +79,7 @@ export default Vue.extend({
 
     mostrarProductos(): boolean {
       return (
-        ((this.estadoEsCargando as unknown) as boolean) ||
+        ((this.estadoEsPendiente as unknown) as boolean) ||
         ((this.estadoEsValidacion as unknown) as boolean) ||
         (((this.estadoEsProductos as unknown) as boolean) && this.hayProductos)
       );

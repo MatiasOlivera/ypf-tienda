@@ -1,5 +1,4 @@
 /* eslint-disable no-param-reassign */
-import isEqual from 'lodash/isEqual';
 import {
   getProductos,
   RespuestaProductos,
@@ -12,30 +11,19 @@ import { OBTENER_PRODUCTOS } from '@/store/types/acciones';
 import { Paginacion, ValidacionObtenerTodos } from '@/types/respuesta-tipos';
 import usarParametros, { EstadoParametros } from '@/store/mixins/parametros';
 import { MensajeError } from '@/types/mensaje-tipos';
-
-type EstadoActual =
-  | 'inicial'
-  | 'cargando'
-  | 'productos'
-  | 'validacion'
-  | 'mensaje';
+import { maquinaProductos, Estado, Evento } from './maquina-productos';
+import { OmniEvent } from 'xstate/lib/types';
 
 interface EstadoProductos extends EstadoParametros<ParametrosGetProductos> {
-  estadoActual: EstadoActual;
+  estadoActual: Estado;
   productos: Array<Producto>;
   paginacion: Paginacion | null;
   validacion: ValidacionObtenerTodos;
   mensaje: MensajeError | null;
 }
 
-// Acciones
-const RESETEAR_PRODUCTOS = 'resetearProductos';
-const RESETEAR_PAGINACION = 'resetearPaginacion';
-const RESETEAR_VALIDACION = 'resetearValidacion';
-const RESETEAR_MENSAJE = 'resetearMensaje';
-
 // Mutaciones
-const SET_ESTADO_ACTUAL = 'setEstadoActual';
+const MAQUINA_EVENTO = 'maquinaEvento';
 const SET_PRODUCTOS = 'setProductos';
 const SET_PAGINACION = 'setPaginacion';
 const SET_VALIDACION = 'setValidacion';
@@ -47,7 +35,7 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
   namespaced: true,
 
   state: {
-    estadoActual: 'inicial',
+    estadoActual: maquinaProductos.initialState,
     parametros: {},
     productos: [],
     paginacion: null,
@@ -56,24 +44,24 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
   },
 
   getters: {
-    estadoEsInicial(estado): boolean {
-      return estado.estadoActual === 'inicial';
+    estadoEsInactivo(estado): boolean {
+      return estado.estadoActual.matches('inactivo');
     },
 
-    estadoEsCargando(estado): boolean {
-      return estado.estadoActual === 'cargando';
+    estadoEsPendiente(estado): boolean {
+      return estado.estadoActual.matches('pendiente');
     },
 
     estadoEsProductos(estado): boolean {
-      return estado.estadoActual === 'productos';
+      return estado.estadoActual.matches('productos');
     },
 
     estadoEsValidacion(estado): boolean {
-      return estado.estadoActual === 'validacion';
+      return estado.estadoActual.matches('validacion');
     },
 
     estadoEsMensaje(estado): boolean {
-      return estado.estadoActual === 'mensaje';
+      return estado.estadoActual.matches('mensaje');
     }
   },
 
@@ -82,42 +70,43 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
 
     async [OBTENER_PRODUCTOS]({
       commit,
-      dispatch,
+      getters,
       state
-    }): Promise<RespuestaProductos> {
+    }): Promise<RespuestaProductos | undefined> {
       try {
-        commit(SET_ESTADO_ACTUAL, 'cargando' as EstadoActual);
+        if (getters.estadoEsPendiente) {
+          return;
+        }
+
+        commit(MAQUINA_EVENTO, 'OBTENER');
 
         const respuesta = await getProductos(state.parametros);
         if (respuesta.ok) {
-          commit(SET_PRODUCTOS, respuesta.datos.productos);
-          commit(SET_PAGINACION, respuesta.datos.paginacion);
-          commit(SET_ESTADO_ACTUAL, 'productos' as EstadoActual);
+          commit(MAQUINA_EVENTO, 'OBTUVO_PRODUCTOS');
 
-          // Resetear el estado de las validaciones y el mensaje
-          dispatch(RESETEAR_VALIDACION);
-          dispatch(RESETEAR_MENSAJE);
+          if (getters.estadoEsProductos) {
+            commit(SET_PRODUCTOS, respuesta.datos.productos);
+            commit(SET_PAGINACION, respuesta.datos.paginacion);
+          }
         } else {
           switch (respuesta.estado) {
             // Validación
             case 422:
-              commit(SET_VALIDACION, respuesta.datos.errores);
-              commit(SET_ESTADO_ACTUAL, 'validacion' as EstadoActual);
+              commit(MAQUINA_EVENTO, 'OBTUVO_VALIDACION');
 
-              // Resetear el estado del mensaje
-              dispatch(RESETEAR_MENSAJE);
+              if (getters.estadoEsValidacion) {
+                commit(SET_VALIDACION, respuesta.datos.errores);
+              }
               break;
 
             // Mensaje de error
             case 500:
               if (respuesta.datos && respuesta.datos.mensaje) {
-                commit(SET_MENSAJE, respuesta.datos.mensaje);
-                commit(SET_ESTADO_ACTUAL, 'mensaje' as EstadoActual);
+                commit(MAQUINA_EVENTO, 'OBTUVO_MENSAJE');
 
-                // Resetear el estado de productos, la paginación y las validaciones
-                dispatch(RESETEAR_PRODUCTOS);
-                dispatch(RESETEAR_PAGINACION);
-                dispatch(RESETEAR_VALIDACION);
+                if (getters.estadoEsMensaje) {
+                  commit(SET_MENSAJE, respuesta.datos.mensaje);
+                }
               }
               break;
 
@@ -125,35 +114,15 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
           }
         }
 
+        // eslint-disable-next-line consistent-return
         return respuesta;
       } catch (error) {
-        commit(SET_MENSAJE, error as MensajeError);
-        commit(SET_ESTADO_ACTUAL, 'mensaje' as EstadoActual);
+        commit(MAQUINA_EVENTO, 'OBTUVO_MENSAJE');
+
+        if (getters.estadoEsMensaje) {
+          commit(SET_MENSAJE, error as MensajeError);
+        }
         throw error;
-      }
-    },
-
-    [RESETEAR_PRODUCTOS]({ commit, state }): void {
-      if (!isEqual(state.productos, [])) {
-        commit(SET_PRODUCTOS, []);
-      }
-    },
-
-    [RESETEAR_PAGINACION]({ commit, state }): void {
-      if (state.paginacion !== null) {
-        commit(SET_PAGINACION, null);
-      }
-    },
-
-    [RESETEAR_VALIDACION]({ commit, state }): void {
-      if (!isEqual(state.validacion, {})) {
-        commit(SET_VALIDACION, {});
-      }
-    },
-
-    [RESETEAR_MENSAJE]({ commit, state }): void {
-      if (state.mensaje !== null) {
-        commit(SET_MENSAJE, null);
       }
     }
   },
@@ -161,8 +130,9 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
   mutations: {
     ...parametros.mutations,
 
-    [SET_ESTADO_ACTUAL](estado, estadoActual: EstadoActual): void {
-      estado.estadoActual = estadoActual;
+    [MAQUINA_EVENTO](estado, evento: OmniEvent<Evento>): void {
+      const { estadoActual } = estado;
+      estado.estadoActual = maquinaProductos.transition(estadoActual, evento);
     },
 
     [SET_PRODUCTOS](estado, productos: Array<Producto>): void {
