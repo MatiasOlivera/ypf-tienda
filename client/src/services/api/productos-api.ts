@@ -9,7 +9,7 @@ import {
   RespuestaMensajeError
 } from '@/types/respuesta-tipos';
 import { Producto, ProductoBase } from '@/types/tipos-producto';
-import { clienteApi } from '../cliente-api';
+import { clienteApiSinToken } from '../cliente-api';
 import { MensajeError } from '@/types/mensaje-tipos';
 
 /**
@@ -19,7 +19,7 @@ export async function getProductos(
   parametros?: ParametrosGetProductos
 ): Promise<RespuestaProductos> {
   try {
-    const respuesta = await clienteApi<RespuestaProductosServidor>({
+    const respuesta = await clienteApiSinToken<RespuestaProductosServidor>({
       url: 'productos',
       metodo: 'GET',
       datos: parametros
@@ -61,7 +61,6 @@ type RespuestasProductos<DatosEstado200> =
   | RespuestaValidacion<ParametrosObtenerTodos>
   | Respuesta<true, 200, DatosEstado200>
   | RespuestaMensajeError
-  | RespuestasComunesApi
   | RespuestasComunesApiSinToken;
 
 // Respuesta del servidor
@@ -90,7 +89,7 @@ interface DatosProductos {
  */
 export async function getProducto(id: number): Promise<RespuestaProducto> {
   try {
-    const respuesta = await clienteApi<RespuestaProductoServidor>({
+    const respuesta = await clienteApiSinToken<RespuestaProductoServidor>({
       url: `productos/${id}`,
       metodo: 'GET'
     });
@@ -114,7 +113,6 @@ export async function getProducto(id: number): Promise<RespuestaProducto> {
 type RespuestasProducto<DatosEstado200> =
   | Respuesta<true, 200, DatosEstado200>
   | RespuestaMensajeError
-  | RespuestasComunesApi
   | RespuestasComunesApiSinToken;
 
 // Respuesta del servidor

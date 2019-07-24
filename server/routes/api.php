@@ -33,6 +33,13 @@ Route::group(['prefix' => 'auth', 'middleware' => ['jwt.auth',],], function () {
     Route::post('logout', 'AuthController@logout');
 });
 
+/**
+ * Productos
+ */
+Route::apiResource('productos', 'ProductosController')
+    ->only(['index', 'show'])
+    ->parameters(['productos' => 'producto']);
+
 Route::middleware('jwt.auth')->group(function () {
     /**
      * Usuarios
@@ -171,9 +178,10 @@ Route::middleware('jwt.auth')->group(function () {
         ->name('categorias.restore');
 
     /**
-     * Producto
+     * Productos
      */
     Route::apiResource('productos', 'ProductosController')
+        ->except(['index', 'show'])
         ->parameters(['productos' => 'producto']);
 
     Route::post('productos/{producto}/restaurar', 'ProductosController@restore')
