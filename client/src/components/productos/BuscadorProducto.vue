@@ -11,6 +11,7 @@
 
       <b-input-group-append>
         <b-button
+          :disabled="esIgual"
           type="submit"
           variant="outline-primary"
           class="d-flex align-items-center"
@@ -50,6 +51,12 @@ export default Vue.extend({
     return {
       valorBuscado: ''
     };
+  },
+
+  computed: {
+    esIgual(): boolean {
+      return this.valorBuscado === this.valorBuscadoAnterior;
+    }
   },
 
   created() {
