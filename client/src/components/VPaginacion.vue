@@ -4,6 +4,7 @@
     :limit="5"
     :total-rows="total"
     :per-page="porPagina"
+    :disabled="pocosRegistros"
     label-first-page="Ir a la primera página"
     label-prev-page="Ir a la página anterior"
     label-next-page="Ir a la siguiente página"
@@ -42,6 +43,12 @@ export default Vue.extend({
       type: Number,
       required: true
     } as PropValidator<PropPorPagina>
+  },
+
+  computed: {
+    pocosRegistros(): boolean {
+      return this.total <= this.porPagina;
+    }
   },
 
   methods: {
