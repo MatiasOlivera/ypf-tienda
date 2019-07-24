@@ -26,22 +26,35 @@
           </b-col>
         </b-row>
 
-        <b-row v-if="mostrarProductos">
-          <b-col
-            v-for="producto in productos"
-            :key="producto.id"
-            sm="12"
-            md="6"
-            lg="4"
-            class="mb-4"
-          >
-            <TarjetaProducto
-              :nombre="producto.nombre"
-              :presentacion="producto.presentacion"
-              :imagen="producto.imagen"
-            ></TarjetaProducto>
-          </b-col>
-        </b-row>
+        <template v-if="mostrarProductos">
+          <b-row class="mb-5">
+            <b-col
+              v-for="producto in productos"
+              :key="producto.id"
+              sm="12"
+              md="6"
+              lg="4"
+              class="mb-4"
+            >
+              <TarjetaProducto
+                :nombre="producto.nombre"
+                :presentacion="producto.presentacion"
+                :imagen="producto.imagen"
+              ></TarjetaProducto>
+            </b-col>
+          </b-row>
+
+          <b-row v-if="paginacion">
+            <b-col class="d-flex justify-content-center">
+              <VPaginacion
+                :pagina-actual="paginacion.paginaActual"
+                :total="paginacion.total"
+                :por-pagina="paginacion.porPagina"
+                @cambio="establecerPagina"
+              ></VPaginacion>
+            </b-col>
+          </b-row>
+        </template>
 
         <b-row v-if="estadoEsProductos && !hayProductos">
           <b-col>
@@ -68,18 +81,34 @@ import VCargando from '../components/VCargando.vue';
 import VMensaje from '../components/VMensaje.vue';
 import BuscadorProducto from '../components/productos/BuscadorProducto.vue';
 import TarjetaProducto from '../components/productos/TarjetaProducto.vue';
+import VPaginacion from '../components/VPaginacion.vue';
 
 // Store
 import { MODULO_PRODUCTOS } from '../store/types/modulos';
-import { OBTENER_PRODUCTOS, ESTABLECER_BUSCAR } from '../store/types/acciones';
+import {
+  OBTENER_PRODUCTOS,
+  ESTABLECER_BUSCAR,
+  ESTABLECER_PAGINA
+} from '../store/types/acciones';
 
 export default Vue.extend({
   name: 'ProductosView',
 
-  components: { VCargando, VMensaje, BuscadorProducto, TarjetaProducto },
+  components: {
+    VCargando,
+    VMensaje,
+    BuscadorProducto,
+    TarjetaProducto,
+    VPaginacion
+  },
 
   computed: {
-    ...mapState(MODULO_PRODUCTOS, ['parametros', 'productos', 'mensaje']),
+    ...mapState(MODULO_PRODUCTOS, [
+      'parametros',
+      'productos',
+      'paginacion',
+      'mensaje'
+    ]),
     ...mapGetters(MODULO_PRODUCTOS, [
       'estadoEsPendiente',
       'estadoEsProductos',
@@ -107,7 +136,11 @@ export default Vue.extend({
   },
 
   methods: {
-    ...mapActions(MODULO_PRODUCTOS, [OBTENER_PRODUCTOS, ESTABLECER_BUSCAR])
+    ...mapActions(MODULO_PRODUCTOS, [
+      OBTENER_PRODUCTOS,
+      ESTABLECER_BUSCAR,
+      ESTABLECER_PAGINA
+    ])
   }
 });
 </script>
