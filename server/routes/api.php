@@ -40,6 +40,13 @@ Route::apiResource('productos', 'ProductosController')
     ->only(['index', 'show'])
     ->parameters(['productos' => 'producto']);
 
+/**
+ * Categorías de producto
+ */
+Route::apiResource('categorias-productos', 'CategoriaProductoController')
+    ->only(['index', 'show'])
+    ->parameters(['categorias-productos' => 'categoriaProducto']);
+
 Route::middleware('jwt.auth')->group(function () {
     /**
      * Usuarios
@@ -169,9 +176,10 @@ Route::middleware('jwt.auth')->group(function () {
     });
 
     /**
-     * Categorias producto
+     * Categorias de producto
      */
     Route::apiResource('categorias-productos', 'CategoriaProductoController')
+        ->except(['index', 'show'])
         ->parameters(['categorias-productos' => 'categoriaProducto']);
 
     Route::post('categorias-productos/{categoriaProducto}/restaurar', 'CategoriaProductoController@restore')
