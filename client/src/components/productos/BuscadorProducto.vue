@@ -4,7 +4,6 @@
       <b-form-input
         id="busqueda"
         v-model="valorBuscado"
-        :disabled="cargando"
         type="search"
         placeholder="¿Qué producto estás buscando?"
         autofocus
@@ -12,18 +11,11 @@
 
       <b-input-group-append>
         <b-button
-          :disabled="cargando"
           type="submit"
           variant="outline-primary"
           class="d-flex align-items-center"
         >
-          <template v-if="cargando">
-            <b-spinner small variant="primary" label="Cargando"></b-spinner>
-          </template>
-
-          <template v-else>
-            <feather type="search" size="1em" />
-          </template>
+          <feather type="search" size="1em" />
         </b-button>
       </b-input-group-append>
     </b-input-group>
@@ -31,14 +23,11 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable object-shorthand */
-/* eslint-disable func-names */
 import Vue from 'vue';
 import { PropValidator } from 'vue/types/options';
 
 // Props
 export type PropValorBuscadoAnterior = string;
-export type PropCargando = boolean;
 
 // Eventos
 export type EventoBuscar = string;
@@ -54,12 +43,7 @@ export default Vue.extend({
     valorBuscadoAnterior: {
       type: String,
       default: ''
-    } as PropValidator<PropValorBuscadoAnterior>,
-
-    cargando: {
-      type: Boolean,
-      default: false
-    } as PropValidator<PropCargando>
+    } as PropValidator<PropValorBuscadoAnterior>
   },
 
   data(): Data {
