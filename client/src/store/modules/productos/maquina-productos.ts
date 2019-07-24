@@ -18,11 +18,11 @@ export const maquinaProductos = Machine<Contexto, EsquemaEstados, Evento>({
     },
 
     productos: {
-      on: { CAMBIAR_PARAMETRO: 'pendiente' }
+      on: { OBTENER: 'pendiente' }
     },
 
     validacion: {
-      on: { CAMBIAR_PARAMETRO: 'pendiente' }
+      on: { OBTENER: 'pendiente' }
     },
 
     mensaje: {
