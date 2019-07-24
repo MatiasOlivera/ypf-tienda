@@ -17,6 +17,15 @@
       <b-col lg="4" tag="aside"></b-col>
 
       <b-col lg="8">
+        <b-row>
+          <b-col sm="12" md="8" offset-md="2" lg="6" offset-lg="3" class="mb-5">
+            <BuscadorProducto
+              :valor-buscado-anterior="parametros.buscar"
+              @buscar="establecerBuscar"
+            ></BuscadorProducto>
+          </b-col>
+        </b-row>
+
         <b-row v-if="mostrarProductos">
           <b-col
             v-for="producto in productos"
@@ -57,19 +66,20 @@ import isEmpty from 'lodash/isEmpty';
 // Componentes
 import VCargando from '../components/VCargando.vue';
 import VMensaje from '../components/VMensaje.vue';
+import BuscadorProducto from '../components/productos/BuscadorProducto.vue';
 import TarjetaProducto from '../components/productos/TarjetaProducto.vue';
 
 // Store
 import { MODULO_PRODUCTOS } from '../store/types/modulos';
-import { OBTENER_PRODUCTOS } from '../store/types/acciones';
+import { OBTENER_PRODUCTOS, ESTABLECER_BUSCAR } from '../store/types/acciones';
 
 export default Vue.extend({
   name: 'ProductosView',
 
-  components: { VCargando, VMensaje, TarjetaProducto },
+  components: { VCargando, VMensaje, BuscadorProducto, TarjetaProducto },
 
   computed: {
-    ...mapState(MODULO_PRODUCTOS, ['productos', 'mensaje']),
+    ...mapState(MODULO_PRODUCTOS, ['parametros', 'productos', 'mensaje']),
     ...mapGetters(MODULO_PRODUCTOS, [
       'estadoEsPendiente',
       'estadoEsProductos',
@@ -97,7 +107,7 @@ export default Vue.extend({
   },
 
   methods: {
-    ...mapActions(MODULO_PRODUCTOS, [OBTENER_PRODUCTOS])
+    ...mapActions(MODULO_PRODUCTOS, [OBTENER_PRODUCTOS, ESTABLECER_BUSCAR])
   }
 });
 </script>
