@@ -24,6 +24,9 @@ export interface EstadoParametros<
   parametros: Parametros;
 }
 
+// Acciones
+const RESETEAR_PAGINA = 'resetearPagina';
+
 // Mutaciones
 const SET_BUSCAR = 'setBuscar';
 const SET_ELIMINADOS = 'setEliminados';
@@ -43,6 +46,7 @@ function usarParametros(accionObtenerTodos: string): ModuloParametros {
     actions: {
       [ESTABLECER_BUSCAR]({ commit, dispatch }, buscar?: Buscar): void {
         commit(SET_BUSCAR, buscar);
+        dispatch(RESETEAR_PAGINA);
         dispatch(accionObtenerTodos);
       },
 
@@ -51,6 +55,7 @@ function usarParametros(accionObtenerTodos: string): ModuloParametros {
         eliminados?: Eliminados
       ): void {
         commit(SET_ELIMINADOS, eliminados);
+        dispatch(RESETEAR_PAGINA);
         dispatch(accionObtenerTodos);
       },
 
@@ -64,6 +69,7 @@ function usarParametros(accionObtenerTodos: string): ModuloParametros {
         porPagina?: PorPagina
       ): void {
         commit(SET_POR_PAGINA, porPagina);
+        dispatch(RESETEAR_PAGINA);
         dispatch(accionObtenerTodos);
       },
 
@@ -72,12 +78,23 @@ function usarParametros(accionObtenerTodos: string): ModuloParametros {
         ordenarPor?: string
       ): void {
         commit(SET_ORDENAR_POR, ordenarPor);
+        dispatch(RESETEAR_PAGINA);
         dispatch(accionObtenerTodos);
       },
 
       [ESTABLECER_ORDEN]({ commit, dispatch }, orden?: DireccionOrden): void {
         commit(SET_ORDEN, orden);
+        dispatch(RESETEAR_PAGINA);
         dispatch(accionObtenerTodos);
+      },
+
+      /**
+       * Resetear la página actual para evitar pedir la última página que
+       * visitó el usuario. Cuando un usuario cambia un parámetro, debería ver
+       * los primeros registros que cumplen con los filtros aplicados.
+       */
+      [RESETEAR_PAGINA]({ commit }): void {
+        commit(SET_PAGINA, 1);
       }
     },
 

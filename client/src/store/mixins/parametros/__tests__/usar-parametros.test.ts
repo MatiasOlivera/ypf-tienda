@@ -27,8 +27,9 @@ describe('Usar parámetros', () => {
       expect(commit).toHaveBeenCalledWith('setBuscar', 'semillas');
       expect(commit).toHaveBeenCalledTimes(1);
 
-      expect(dispatch).toHaveBeenCalledWith('getProductos');
-      expect(dispatch).toHaveBeenCalledTimes(1);
+      expect(dispatch).toHaveBeenNthCalledWith(1, 'resetearPagina');
+      expect(dispatch).toHaveBeenNthCalledWith(2, 'getProductos');
+      expect(dispatch).toHaveBeenCalledTimes(2);
     });
 
     test('ESTABLECER_ELIMINADOS', () => {
@@ -40,8 +41,9 @@ describe('Usar parámetros', () => {
       expect(commit).toHaveBeenCalledWith('setEliminados', true);
       expect(commit).toHaveBeenCalledTimes(1);
 
-      expect(dispatch).toHaveBeenCalledWith('getProductos');
-      expect(dispatch).toHaveBeenCalledTimes(1);
+      expect(dispatch).toHaveBeenNthCalledWith(1, 'resetearPagina');
+      expect(dispatch).toHaveBeenNthCalledWith(2, 'getProductos');
+      expect(dispatch).toHaveBeenCalledTimes(2);
     });
 
     test('ESTABLECER_PAGINA', () => {
@@ -66,8 +68,9 @@ describe('Usar parámetros', () => {
       expect(commit).toHaveBeenCalledWith('setPorPagina', 10);
       expect(commit).toHaveBeenCalledTimes(1);
 
-      expect(dispatch).toHaveBeenCalledWith('getProductos');
-      expect(dispatch).toHaveBeenCalledTimes(1);
+      expect(dispatch).toHaveBeenNthCalledWith(1, 'resetearPagina');
+      expect(dispatch).toHaveBeenNthCalledWith(2, 'getProductos');
+      expect(dispatch).toHaveBeenCalledTimes(2);
     });
 
     test('ESTABLECER_ORDENAR_POR', () => {
@@ -79,8 +82,9 @@ describe('Usar parámetros', () => {
       expect(commit).toHaveBeenCalledWith('setOrdenarPor', 'nombre');
       expect(commit).toHaveBeenCalledTimes(1);
 
-      expect(dispatch).toHaveBeenCalledWith('getProductos');
-      expect(dispatch).toHaveBeenCalledTimes(1);
+      expect(dispatch).toHaveBeenNthCalledWith(1, 'resetearPagina');
+      expect(dispatch).toHaveBeenNthCalledWith(2, 'getProductos');
+      expect(dispatch).toHaveBeenCalledTimes(2);
     });
 
     test('ESTABLECER_ORDEN', () => {
@@ -92,8 +96,9 @@ describe('Usar parámetros', () => {
       expect(commit).toHaveBeenCalledWith('setOrden', 'asc');
       expect(commit).toHaveBeenCalledTimes(1);
 
-      expect(dispatch).toHaveBeenCalledWith('getProductos');
-      expect(dispatch).toHaveBeenCalledTimes(1);
+      expect(dispatch).toHaveBeenNthCalledWith(1, 'resetearPagina');
+      expect(dispatch).toHaveBeenNthCalledWith(2, 'getProductos');
+      expect(dispatch).toHaveBeenCalledTimes(2);
     });
   });
 
