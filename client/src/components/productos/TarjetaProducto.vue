@@ -13,7 +13,7 @@
     </h2>
 
     <b-card-text v-if="presentacion" class="text-muted">
-      {{ presentacion }}
+      {{ presentacion | capitalizar }}
     </b-card-text>
 
     <div class="d-flex justify-content-between">
@@ -45,6 +45,9 @@
 import Vue from 'vue';
 import { PropValidator } from 'vue/types/options';
 
+// Mixins
+import filtroCapitalizarMixin from '@/mixins/string/filtro-capitalizar-mixin';
+
 // Props
 export type PropNombre = string;
 export type PropPresentacion = string;
@@ -56,6 +59,8 @@ interface Data {
 
 export default Vue.extend({
   name: 'TarjetaProducto',
+
+  mixins: [filtroCapitalizarMixin],
 
   props: {
     nombre: {
