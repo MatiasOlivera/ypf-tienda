@@ -14,7 +14,11 @@
     </VMensaje>
 
     <b-row>
-      <b-col lg="4" tag="aside"></b-col>
+      <b-col lg="4" tag="aside">
+        <h1 class="h2">
+          {{ (parametros.buscar || '') | placeholder('Productos') }}
+        </h1>
+      </b-col>
 
       <b-col lg="8">
         <b-row>
@@ -83,6 +87,9 @@ import BuscadorProducto from '../components/productos/BuscadorProducto.vue';
 import TarjetaProducto from '../components/productos/TarjetaProducto.vue';
 import VPaginacion from '../components/VPaginacion.vue';
 
+// Mixins
+import filtroPlaceholderMixin from '../mixins/string/filtro-placeholder-mixin';
+
 // Store
 import { MODULO_PRODUCTOS } from '../store/types/modulos';
 import {
@@ -101,6 +108,8 @@ export default Vue.extend({
     TarjetaProducto,
     VPaginacion
   },
+
+  mixins: [filtroPlaceholderMixin],
 
   computed: {
     ...mapState(MODULO_PRODUCTOS, [
