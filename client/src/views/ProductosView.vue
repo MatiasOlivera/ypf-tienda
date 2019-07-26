@@ -15,9 +15,17 @@
 
     <b-row>
       <b-col lg="4" tag="aside">
-        <h1 class="h2">
-          {{ (parametros.buscar || '') | placeholder('Productos') }}
-        </h1>
+        <div class="mb-5">
+          <h1 class="h2">
+            {{ (parametros.buscar || '') | placeholder('Productos') }}
+          </h1>
+          <p>
+            {{
+              (paginacion.total || 0)
+                | pluralizar(['producto', 'productos'], { incluirNumero: true })
+            }}
+          </p>
+        </div>
       </b-col>
 
       <b-col lg="8">
@@ -89,6 +97,7 @@ import VPaginacion from '../components/VPaginacion.vue';
 
 // Mixins
 import filtroPlaceholderMixin from '../mixins/string/filtro-placeholder-mixin';
+import filtroPluralizarMixin from '../mixins/string/filtro-pluralizar-mixin';
 
 // Store
 import { MODULO_PRODUCTOS } from '../store/types/modulos';
@@ -109,7 +118,7 @@ export default Vue.extend({
     VPaginacion
   },
 
-  mixins: [filtroPlaceholderMixin],
+  mixins: [filtroPlaceholderMixin, filtroPluralizarMixin],
 
   computed: {
     ...mapState(MODULO_PRODUCTOS, [
