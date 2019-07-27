@@ -137,4 +137,36 @@ class ClienteEmailControllerTest extends TestCase
                 'email' => $email
             ]);
     }
+
+    /**
+     * Debería editar un email
+     */
+    public function testDeberiaEditarUnEmail()
+    {
+        $email = $this->crearEmail();
+        $clienteId = $email['cliente_id'];
+        $id = $email['id'];
+
+        $emailModificado = array_merge($email, ['mail' => 'nuevo@gmail.com']);
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('PUT', "api/clientes/$clienteId/emails/$id", $emailModificado);
+
+        unset($emailModificado['updated_at']);
+        $estructura = $this->getEstructuraEmail();
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'email' => $emailModificado,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'ACTUALIZADO',
+                    'descripcion' => "El email nuevo@gmail.com ha sido modificado"
+                ]
+            ]);
+    }
 }
