@@ -202,4 +202,41 @@ class ClienteEmailControllerTest extends TestCase
         $deletedAt = $respuesta->getData(true)['email']['deleted_at'];
         $this->assertNotNull($deletedAt);
     }
+
+    /**
+     * Debería restaurar un email
+     */
+    public function testDeberiaRestaurarUnEmail()
+    {
+        $email = $this->crearEmail();
+        $clienteId = $email['cliente_id'];
+        $id = $email['id'];
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('DELETE', "api/clientes/$clienteId/emails/$id");
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('POST', "api/clientes/$clienteId/emails/$id/restaurar");
+
+        unset($email['updated_at']);
+        $estructura = $this->getEstructuraEmail();
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'email' => $email,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'RESTAURADO',
+                    'descripcion' => "El email {$email['mail']} ha sido dado de alta"
+                ]
+            ]);
+
+        $deletedAt = $respuesta->getData(true)['email']['deleted_at'];
+        $this->assertNull($deletedAt);
+    }
 }
