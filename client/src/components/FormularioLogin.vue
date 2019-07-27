@@ -9,14 +9,14 @@
         <b-form-input
           id="email-input"
           v-model="credenciales.email"
-          :state="validacionEstado.email"
+          :state="validacion.email.esValido"
           :disabled="cargando"
           type="email"
           required
         ></b-form-input>
 
         <b-form-invalid-feedback id="email-input-error">
-          {{ validacion.email }}
+          {{ validacion.email.error }}
         </b-form-invalid-feedback>
       </b-form-group>
 
@@ -24,14 +24,14 @@
         <b-form-input
           id="password-input"
           v-model="credenciales.password"
-          :state="validacionEstado.password"
+          :state="validacion.password.esValido"
           :disabled="cargando"
           type="password"
           required
         ></b-form-input>
 
         <b-form-invalid-feedback id="password-input-error">
-          {{ validacion.password }}
+          {{ validacion.password.error }}
         </b-form-invalid-feedback>
       </b-form-group>
 
@@ -50,14 +50,13 @@
 <script lang="ts">
 import Vue from 'vue';
 import { PropValidator } from 'vue/types/options';
-import {
-  obtenerEstadoValidacion,
-  EstadoValidacion
-} from './formulario/utilidades';
 
 // Tipos
 import { CredencialesUsuario } from '../types/tipos-auth';
-import { ErroresValidacion } from '../types/respuesta-tipos';
+import {
+  ErroresValidacion,
+  ErroresValidacionInicial
+} from '../types/respuesta-tipos';
 
 // Componentes
 import BotonSubmit from './formulario/BotonSubmit.vue';
@@ -81,9 +80,18 @@ const credencialesPorDefecto: CredencialesUsuario = {
   email: '',
   password: ''
 };
-export const validacionPorDefecto: PropValidacion = {
-  email: null,
-  password: null
+
+type ValidacionPorDefecto = ErroresValidacionInicial<CredencialesUsuario>;
+
+const validacionPorDefecto: ValidacionPorDefecto = {
+  email: {
+    esValido: null,
+    error: null
+  },
+  password: {
+    esValido: null,
+    error: null
+  }
 };
 
 export default Vue.extend({
@@ -103,19 +111,13 @@ export default Vue.extend({
     validacion: {
       type: Object,
       default: () => ({ ...validacionPorDefecto })
-    } as PropValidator<PropValidacion>
+    } as PropValidator<PropValidacion | ValidacionPorDefecto>
   },
 
   data(): Data {
     return {
       credenciales: { ...credencialesPorDefecto }
     };
-  },
-
-  computed: {
-    validacionEstado(): EstadoValidacion<CredencialesUsuario> {
-      return obtenerEstadoValidacion<CredencialesUsuario>(this.validacion);
-    }
   },
 
   methods: {
