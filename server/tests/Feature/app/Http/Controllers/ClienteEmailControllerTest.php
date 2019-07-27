@@ -37,6 +37,11 @@ class ClienteEmailControllerTest extends TestCase
         return array_merge($this->estructuraEmail, $this->estructuraMensaje);
     }
 
+    private function crearEmail()
+    {
+        return factory(ClienteMail::class, 1)->create()->toArray()[0];
+    }
+
     /**
      * No debería obtener ningún email
      */
@@ -108,6 +113,28 @@ class ClienteEmailControllerTest extends TestCase
                     'codigo' => 'GUARDADO',
                     'descripcion' => "El email {$email['mail']} ha sido creado"
                 ]
+            ]);
+    }
+
+    /**
+     * Debería obtener un email
+     */
+    public function testDeberiaObtenerUnEmail()
+    {
+        $email = $this->crearEmail();
+        $clienteId = $email['cliente_id'];
+        $id = $email['id'];
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('GET', "api/clientes/$clienteId/emails/$id");
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($this->estructuraEmail)
+            ->assertJson([
+                'email' => $email
             ]);
     }
 }
