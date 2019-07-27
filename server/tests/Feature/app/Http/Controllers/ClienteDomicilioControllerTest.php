@@ -186,4 +186,37 @@ class ClienteDomicilioControllerTest extends TestCase
                 ]
             ]);
     }
+
+    /**
+     * Debería eliminar un domicilio
+     */
+    public function testDeberiaEliminarUnDomicilio()
+    {
+        $domicilio = $this->crearDomicilio();
+        $clienteId = $domicilio['cliente_id'];
+        $id = $domicilio['id'];
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('DELETE', "api/clientes/$clienteId/domicilios/$id");
+
+        $estructura = $this->getEstructuraDomicilio();
+        unset($domicilio['updated_at']);
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'domicilio' => $domicilio,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'ELIMINADO',
+                    'descripcion' => "El domicilio {$domicilio['calle']} {$domicilio['numero']} ha sido eliminado"
+                ]
+            ]);
+
+        $deletedAt = $respuesta->getData(true)['domicilio']['deleted_at'];
+        $this->assertNotNull($deletedAt);
+    }
 }
