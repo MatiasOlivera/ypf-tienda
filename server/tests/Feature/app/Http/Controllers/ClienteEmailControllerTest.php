@@ -169,4 +169,37 @@ class ClienteEmailControllerTest extends TestCase
                 ]
             ]);
     }
+
+    /**
+     * Debería eliminar un email
+     */
+    public function testDeberiaEliminarUnEmail()
+    {
+        $email = $this->crearEmail();
+        $clienteId = $email['cliente_id'];
+        $id = $email['id'];
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('DELETE', "api/clientes/$clienteId/emails/$id");
+
+        unset($email['updated_at']);
+        $estructura = $this->getEstructuraEmail();
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'email' => $email,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'ELIMINADO',
+                    'descripcion' => "El email {$email['mail']} ha sido eliminado"
+                ]
+            ]);
+
+        $deletedAt = $respuesta->getData(true)['email']['deleted_at'];
+        $this->assertNotNull($deletedAt);
+    }
 }
