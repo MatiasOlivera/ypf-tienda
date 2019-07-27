@@ -96,13 +96,15 @@ class ClienteMailController extends Controller
      */
     public function update(ClienteMailRequest $request, Cliente $cliente, ClienteMail $mail)
     {
+        $inputs = $request->only('mail');
         $email = $request->input('mail');
+
         $nombres = [
             "exito" => "El email {$email}",
             "error" => "El email {$mail->mail}"
         ];
         $parametros = [
-            'inputs' => $email,
+            'inputs' => $inputs,
             'modelo' => $mail,
         ];
         return $this->baseController->update($parametros, $nombres);
