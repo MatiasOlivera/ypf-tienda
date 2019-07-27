@@ -219,4 +219,41 @@ class ClienteDomicilioControllerTest extends TestCase
         $deletedAt = $respuesta->getData(true)['domicilio']['deleted_at'];
         $this->assertNotNull($deletedAt);
     }
+
+    /**
+     * Debería restaurar un domicilio
+     */
+    public function testDeberiaRestaurarUnDomicilio()
+    {
+        $domicilio = $this->crearDomicilio();
+        $clienteId = $domicilio['cliente_id'];
+        $id = $domicilio['id'];
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('DELETE', "api/clientes/$clienteId/domicilios/$id");
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('POST', "api/clientes/$clienteId/domicilios/$id/restaurar");
+
+        $estructura = $this->getEstructuraDomicilio();
+        unset($domicilio['updated_at']);
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'domicilio' => $domicilio,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'RESTAURADO',
+                    'descripcion' => "El domicilio {$domicilio['calle']} {$domicilio['numero']} ha sido dado de alta"
+                ]
+            ]);
+
+        $deletedAt = $respuesta->getData(true)['domicilio']['deleted_at'];
+        $this->assertNull($deletedAt);
+    }
 }
