@@ -16,9 +16,25 @@ class ClienteEmailControllerTest extends TestCase
     use RefreshDatabase;
     use EstructuraJsonHelper;
 
+    private $estructuraEmail = [
+        'email' => [
+            'id',
+            'mail',
+            'cliente_id',
+            'created_at',
+            'updated_at',
+            'deleted_at'
+        ]
+    ];
+
     private function getEstructuraEmails()
     {
         return array_merge(['emails'], $this->estructuraPaginacion);
+    }
+
+    private function getEstructuraEmail()
+    {
+        return array_merge($this->estructuraEmail, $this->estructuraMensaje);
     }
 
     /**
@@ -64,5 +80,34 @@ class ClienteEmailControllerTest extends TestCase
             ->assertOk()
             ->assertJsonStructure($estructura)
             ->assertJson(['emails' => $emails]);
+    }
+
+    /**
+     * Debería crear un email
+     */
+    public function testDeberiaCrearUnEmail()
+    {
+        $email = factory(ClienteMail::class, 1)->make()->toArray()[0];
+        $id = $email['cliente_id'];
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('POST', "api/clientes/$id/emails", $email);
+
+        $estructura = $this->getEstructuraEmail();
+        unset($email['id']);
+
+        $respuesta
+            ->assertStatus(201)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'email' => $email,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'GUARDADO',
+                    'descripcion' => "El email {$email['mail']} ha sido creado"
+                ]
+            ]);
     }
 }
