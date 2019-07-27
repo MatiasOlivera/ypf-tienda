@@ -50,6 +50,11 @@ class ClienteDomicilioControllerTest extends TestCase
         return array_merge($this->estructuraDomicilio, $this->estructuraMensaje);
     }
 
+    private function crearDomicilio()
+    {
+        return factory(ClienteDomicilio::class, 1)->create()->toArray()[0];
+    }
+
     /**
      * No debería obtener ningún domicilio
      */
@@ -117,6 +122,28 @@ class ClienteDomicilioControllerTest extends TestCase
                     'codigo' => 'GUARDADO',
                     'descripcion' => "El domicilio {$domicilio['calle']} {$domicilio['numero']} ha sido creado"
                 ]
+            ]);
+    }
+
+    /**
+     * Debería obtener un domicilio
+     */
+    public function testDeberiaObtenerUnDomicilio()
+    {
+        $domicilio = $this->crearDomicilio();
+        $clienteId = $domicilio['cliente_id'];
+        $id = $domicilio['id'];
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('GET', "api/clientes/$clienteId/domicilios/$id");
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($this->estructuraDomicilio)
+            ->assertJson([
+                'domicilio' => $domicilio
             ]);
     }
 }
