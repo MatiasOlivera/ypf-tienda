@@ -8,11 +8,47 @@ use App\ClienteDomicilio;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Feature\Utilidades\EstructuraJsonHelper;
 
 class ClienteDomicilioControllerTest extends TestCase
 {
     use AuthHelper;
     use RefreshDatabase;
+    use EstructuraJsonHelper;
+
+    private $estructuraDomicilio = [
+        'domicilio' => [
+            'id',
+            'calle',
+            'numero',
+            'aclaracion',
+            'localidad_id',
+            'cliente_id',
+            'created_at',
+            'updated_at',
+            'deleted_at',
+            'localidad' => [
+                'id',
+                'nombre',
+                'provincia_id',
+                'created_at',
+                'updated_at',
+                'deleted_at',
+                'provincia' => [
+                    'id',
+                    'nombre',
+                    'created_at',
+                    'updated_at',
+                    'deleted_at'
+                ]
+            ]
+        ]
+    ];
+
+    private function getEstructuraDomicilio()
+    {
+        return array_merge($this->estructuraDomicilio, $this->estructuraMensaje);
+    }
 
     /**
      * No debería obtener ningún domicilio
@@ -53,5 +89,34 @@ class ClienteDomicilioControllerTest extends TestCase
         $respuesta
             ->assertOk()
             ->assertJson(['domicilios' => $domicilios]);
+    }
+
+    /**
+     * Debería crear un domicilio
+     */
+    public function testDeberiaCrearUnDomicilio()
+    {
+        $domicilio = factory(ClienteDomicilio::class, 1)->make()->toArray()[0];
+        $id = $domicilio['cliente_id'];
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('POST', "api/clientes/$id/domicilios", $domicilio);
+
+        $estructura = $this->getEstructuraDomicilio();
+        unset($domicilio['id']);
+
+        $respuesta
+            ->assertStatus(201)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'domicilio' => $domicilio,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'GUARDADO',
+                    'descripcion' => "El domicilio {$domicilio['calle']} {$domicilio['numero']} ha sido creado"
+                ]
+            ]);
     }
 }
