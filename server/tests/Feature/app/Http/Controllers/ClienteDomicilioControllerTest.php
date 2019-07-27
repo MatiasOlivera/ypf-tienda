@@ -26,28 +26,35 @@ class ClienteDomicilioControllerTest extends TestCase
             'cliente_id',
             'created_at',
             'updated_at',
-            'deleted_at',
-            'localidad' => [
-                'id',
-                'nombre',
-                'provincia_id',
-                'created_at',
-                'updated_at',
-                'deleted_at',
-                'provincia' => [
-                    'id',
-                    'nombre',
-                    'created_at',
-                    'updated_at',
-                    'deleted_at'
-                ]
-            ]
+            'deleted_at'
         ]
     ];
 
     private function getEstructuraDomicilio()
     {
         return array_merge($this->estructuraDomicilio, $this->estructuraMensaje);
+    }
+
+    private function getEstructuraDomicilioConLocalidad()
+    {
+        $estructura = $this->estructuraDomicilio;
+        $estructura['domicilio']['localidad'] = [
+            'id',
+            'nombre',
+            'provincia_id',
+            'created_at',
+            'updated_at',
+            'deleted_at',
+            'provincia' => [
+                'id',
+                'nombre',
+                'created_at',
+                'updated_at',
+                'deleted_at'
+            ]
+        ];
+
+        return array_merge($estructura, $this->estructuraMensaje);
     }
 
     private function crearDomicilio()
@@ -109,7 +116,7 @@ class ClienteDomicilioControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('POST', "api/clientes/$id/domicilios", $domicilio);
 
-        $estructura = $this->getEstructuraDomicilio();
+        $estructura = $this->getEstructuraDomicilioConLocalidad();
         unset($domicilio['id']);
 
         $respuesta
@@ -144,6 +151,39 @@ class ClienteDomicilioControllerTest extends TestCase
             ->assertJsonStructure($this->estructuraDomicilio)
             ->assertJson([
                 'domicilio' => $domicilio
+            ]);
+    }
+
+    /**
+     * Debería editar un domicilio
+     */
+    public function testDeberiaEditarUnDomicilio()
+    {
+        $domicilio = $this->crearDomicilio();
+        $clienteId = $domicilio['cliente_id'];
+        $id = $domicilio['id'];
+
+        $domicilioModificado = array_merge($domicilio, ['calle' => 'San Martín']);
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('PUT', "api/clientes/$clienteId/domicilios/$id", $domicilioModificado);
+
+        $domicilioEsperado = array_merge($domicilio, $domicilioModificado);
+        unset($domicilioEsperado['updated_at']);
+        $estructura = $this->getEstructuraDomicilio();
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'domicilio' => $domicilioEsperado,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'ACTUALIZADO',
+                    'descripcion' => "El domicilio San Martín {$domicilio['numero']} ha sido modificado"
+                ]
             ]);
     }
 }
