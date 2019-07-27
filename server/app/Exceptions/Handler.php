@@ -62,12 +62,18 @@ class Handler extends ExceptionHandler
     {
         $reglas = $exception->validator->getRules();
         foreach ($reglas as $campo => $validaciones) {
-            $errores[$campo] = null;
+            $errores[$campo] = [
+                'esValido' => true,
+                'error' => null
+            ];
         }
 
         $erroresValidacion = $exception->errors();
         foreach ($erroresValidacion as $campo => $mensaje) {
-            $errores[$campo] = $mensaje[0];
+            $errores[$campo] = [
+                'esValido' => is_null($mensaje[0]),
+                'error' => $mensaje[0]
+            ];
         }
 
         return new JsonResponse(['errores' => $errores], $exception->status);
