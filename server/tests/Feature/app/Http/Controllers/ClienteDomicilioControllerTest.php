@@ -30,6 +30,11 @@ class ClienteDomicilioControllerTest extends TestCase
         ]
     ];
 
+    private function getEstructuraDomicilios()
+    {
+        return array_merge(['domicilios'], $this->estructuraPaginacion);
+    }
+
     private function getEstructuraDomicilio()
     {
         return array_merge($this->estructuraDomicilio, $this->estructuraMensaje);
@@ -76,9 +81,12 @@ class ClienteDomicilioControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('GET', "api/clientes/$id/domicilios");
 
+        $estructura = $this->getEstructuraDomicilios();
+
         $respuesta
             ->assertOk()
-            ->assertJson(['domicilios' => []]);
+            ->assertJsonStructure($estructura)
+            ->assertExactJson(['domicilios' => []]);
     }
 
     /**
@@ -96,10 +104,12 @@ class ClienteDomicilioControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('GET', "api/clientes/$id/domicilios");
 
+        $estructura = $this->getEstructuraDomicilios();
         $domicilios = $cliente->domicilios()->get()->toArray();
 
         $respuesta
             ->assertOk()
+            ->assertJsonStructure($estructura)
             ->assertJson(['domicilios' => $domicilios]);
     }
 
