@@ -105,7 +105,7 @@ class ClienteMailController extends Controller
         ];
         $parametros = [
             'inputs' => $inputs,
-            'modelo' => $mail,
+            'instancia' => $mail,
         ];
         return $this->baseController->update($parametros, $nombres);
     }
