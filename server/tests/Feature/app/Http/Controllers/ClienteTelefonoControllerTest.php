@@ -39,6 +39,10 @@ class ClienteTelefonoControllerTest extends TestCase
     {
         return array_merge($this->estructuraTelefono, $this->estructuraMensaje);
     }
+    private function crearTelefono()
+    {
+        return factory(ClienteTelefono::class, 1)->create()->toArray()[0];
+    }
 
     /**
      * No debería obtener ningún teléfono
@@ -151,5 +155,27 @@ class ClienteTelefonoControllerTest extends TestCase
 
         $nombreContacto = $respuesta->getData(true)['telefono']['nombreContacto'];
         $this->assertNull($nombreContacto);
+    }
+
+    /**
+     * Debería obtener un teléfono
+     */
+    public function testDeberiaObtenerUnTelefono()
+    {
+        $telefono = $this->crearTelefono();
+        $clienteId = $telefono['cliente_id'];
+        $id = $telefono['id'];
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('GET', "api/clientes/$clienteId/telefonos/$id");
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($this->estructuraTelefono)
+            ->assertJson([
+                'telefono' => $telefono
+            ]);
     }
 }
