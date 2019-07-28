@@ -29,7 +29,6 @@ import { mapActions } from 'vuex';
 
 // Componentes
 import FormularioLogin, {
-  validacionPorDefecto,
   PropCargando,
   PropMensaje,
   PropValidacion,
@@ -43,7 +42,7 @@ import { LOGIN } from '../store/types/acciones';
 interface Data {
   cargando: PropCargando;
   mensaje: PropMensaje;
-  validacion: PropValidacion;
+  validacion: PropValidacion | undefined;
 }
 
 export default Vue.extend({
@@ -55,7 +54,7 @@ export default Vue.extend({
     return {
       cargando: false,
       mensaje: '',
-      validacion: { ...validacionPorDefecto }
+      validacion: undefined
     };
   },
 
@@ -70,7 +69,7 @@ export default Vue.extend({
         // @ts-ignore
         .then((respuesta) => {
           this.mensaje = '';
-          this.validacion = { ...validacionPorDefecto };
+          this.validacion = undefined;
 
           if (!respuesta.ok) {
             if (respuesta.estado === 401 || respuesta.estado === 500) {
