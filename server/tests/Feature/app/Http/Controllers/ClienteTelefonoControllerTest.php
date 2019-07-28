@@ -178,4 +178,38 @@ class ClienteTelefonoControllerTest extends TestCase
                 'telefono' => $telefono
             ]);
     }
+
+    /**
+     * Debería editar un teléfono
+     */
+    public function testDeberiaEditarUnTelefono()
+    {
+        $telefono = $this->crearTelefono();
+        $clienteId = $telefono['cliente_id'];
+        $id = $telefono['id'];
+
+        $telefonoModificado = factory(ClienteTelefono::class, 1)->make([
+            'nombreContacto' => $this->faker->firstName()
+        ])->toArray()[0];
+        unset($telefonoModificado['cliente_id']);
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('PUT', "api/clientes/$clienteId/telefonos/$id", $telefonoModificado);
+
+        $estructura = $this->getEstructuraTelefono();
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'telefono' => $telefonoModificado,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'ACTUALIZADO',
+                    'descripcion' => "El teléfono de {$telefonoModificado['nombreContacto']} ha sido modificado"
+                ]
+            ]);
+    }
 }
