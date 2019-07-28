@@ -253,4 +253,41 @@ class ClienteTelefonoControllerTest extends TestCase
         $deletedAt = $respuesta->getData(true)['telefono']['deleted_at'];
         $this->assertNotNull($deletedAt);
     }
+
+    /**
+     * Debería restaurar un teléfono
+     */
+    public function testDeberiaRestaurarUnTelefono()
+    {
+        $telefono = $this->crearTelefonoConNombre();
+        $clienteId = $telefono['cliente_id'];
+        $id = $telefono['id'];
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('DELETE', "api/clientes/$clienteId/telefonos/$id");
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('POST', "api/clientes/$clienteId/telefonos/$id/restaurar");
+
+        unset($telefono['updated_at']);
+        $estructura = $this->getEstructuraTelefono();
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'telefono' => $telefono,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'RESTAURADO',
+                    'descripcion' => "El teléfono de {$telefono['nombreContacto']} ha sido dado de alta"
+                ]
+            ]);
+
+        $deletedAt = $respuesta->getData(true)['telefono']['deleted_at'];
+        $this->assertNull($deletedAt);
+    }
 }
