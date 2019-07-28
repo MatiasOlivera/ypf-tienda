@@ -29,7 +29,6 @@ class ClienteRazonSocial extends Model
      * @var array
      */
     protected $fillable = [
-        'id',
         'denominacion',
         'cuit',
         'localidad_id',
