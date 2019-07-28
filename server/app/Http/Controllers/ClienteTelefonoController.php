@@ -58,7 +58,7 @@ class ClienteTelefonoController extends Controller
      */
     public function store(ClienteTelefonoRequest $request, Cliente $cliente)
     {
-        $inputs = $request->only('area', 'telefono');
+        $inputs = $request->only('area', 'telefono', 'nombreContacto');
         $nombreContacto = $request->input('nombreContacto', null);
 
         $telefonoMensaje = $this->setTextoMensaje($inputs['area'], $inputs['telefono'], $nombreContacto);
