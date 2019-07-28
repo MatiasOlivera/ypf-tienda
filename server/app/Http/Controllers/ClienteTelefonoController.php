@@ -73,7 +73,7 @@ class ClienteTelefonoController extends Controller
             $mensajeExito   = new MensajeExito();
             $mensajeExito->guardar($telefonoMensaje, $this->generoModelo);
 
-            return Respuesta::exito($respuesta, $mensajeExito, 200);
+            return Respuesta::exito($respuesta, $mensajeExito, 201);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
             $mensajeError->guardar($telefonoMensaje, $this->generoModelo);
