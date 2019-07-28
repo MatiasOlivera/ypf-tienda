@@ -39,9 +39,17 @@ class ClienteTelefonoControllerTest extends TestCase
     {
         return array_merge($this->estructuraTelefono, $this->estructuraMensaje);
     }
+
     private function crearTelefono()
     {
         return factory(ClienteTelefono::class, 1)->create()->toArray()[0];
+    }
+
+    private function crearTelefonoConNombre()
+    {
+        return factory(ClienteTelefono::class, 1)->create([
+            'nombreContacto' => $this->faker->firstName()
+        ])->toArray()[0];
     }
 
     /**
@@ -211,5 +219,38 @@ class ClienteTelefonoControllerTest extends TestCase
                     'descripcion' => "El teléfono de {$telefonoModificado['nombreContacto']} ha sido modificado"
                 ]
             ]);
+    }
+
+    /**
+     * Debería eliminar un teléfono
+     */
+    public function testDeberiaEliminarUnTelefono()
+    {
+        $telefono = $this->crearTelefonoConNombre();
+        $clienteId = $telefono['cliente_id'];
+        $id = $telefono['id'];
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('DELETE', "api/clientes/$clienteId/telefonos/$id");
+
+        unset($telefono['updated_at']);
+        $estructura = $this->getEstructuraTelefono();
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'telefono' => $telefono,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'ELIMINADO',
+                    'descripcion' => "El teléfono de {$telefono['nombreContacto']} ha sido eliminado"
+                ]
+            ]);
+
+        $deletedAt = $respuesta->getData(true)['telefono']['deleted_at'];
+        $this->assertNotNull($deletedAt);
     }
 }
