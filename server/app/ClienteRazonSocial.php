@@ -20,6 +20,7 @@ class ClienteRazonSocial extends Model
         'numero'        => 'altura',
         'area'          => 'area_tel',
         'telefono'      => 'tel',
+        'email'         => 'mail'
     ];
 
     /**
@@ -36,7 +37,7 @@ class ClienteRazonSocial extends Model
         'numero',
         'area',
         'telefono',
-        'mail',
+        'email',
     ];
 
     protected $appends  = ['id', 'denominacion', 'localidad_id', 'numero', 'area', 'telefono',];
@@ -50,10 +51,10 @@ class ClienteRazonSocial extends Model
         'numero',
         'area',
         'telefono',
-        'mail',
+        'email',
     ];
 
-    protected $hidden   = ['id_razon', 'nombre', 'id_loc', 'altura', 'area_tel', 'tel', 'fecha_carga', 'estado',];
+    protected $hidden   = ['id_razon', 'nombre', 'id_loc', 'altura', 'area_tel', 'tel', 'mail', 'fecha_carga', 'estado',];
 
     /**
      * The attributes that should be mutated to dates.

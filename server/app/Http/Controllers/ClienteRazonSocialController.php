@@ -61,7 +61,7 @@ class ClienteRazonSocialController extends Controller
                 'numero',
                 'area',
                 'telefono',
-                'mail'
+                'email'
             );
             $razon          = $cliente->razonesSociales()->create($inputs);
             $mensajeExito   = new MensajeExito();
@@ -114,7 +114,7 @@ class ClienteRazonSocialController extends Controller
             'numero',
             'area',
             'telefono',
-            'mail'
+            'email'
         );
         $parametros = [
             'inputs' => $inputs,
