@@ -39,6 +39,9 @@ import FormularioLogin, {
 import { MODULO_AUTENTICACION } from '../store/types/modulos';
 import { LOGIN } from '../store/types/acciones';
 
+// Router
+import { rutaProductos } from '@/router/rutas';
+
 interface Data {
   cargando: PropCargando;
   mensaje: PropMensaje;
@@ -71,7 +74,9 @@ export default Vue.extend({
           this.mensaje = '';
           this.validacion = undefined;
 
-          if (!respuesta.ok) {
+          if (respuesta.ok) {
+            this.$router.push({ name: rutaProductos });
+          } else {
             if (respuesta.estado === 401 || respuesta.estado === 500) {
               this.mensaje = respuesta.datos.mensaje.descripcion;
             }

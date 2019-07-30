@@ -12,7 +12,11 @@
             </h1>
 
             <div class="d-flex justify-content-center justify-content-md-end">
-              <b-button variant="success" size="lg" href="#">
+              <b-button
+                :to="{ name: rutas.productos }"
+                variant="success"
+                size="lg"
+              >
                 Ver productos
               </b-button>
             </div>
@@ -147,6 +151,9 @@ import GrupoListaItem from '../components/GrupoListaItem.vue';
 import { direccion, telefonos, email, Direccion } from '../config/empresa';
 import formatoTelefonoMixin from '../mixins/formato-telefono-mixin';
 
+// Router
+import { rutaProductos } from '@/router/rutas';
+
 import asesoramiento from '../static/images/categorias/asesoramiento-tecnico.jpg';
 import muestreoDeSuelo from '../static/images/categorias/muestreo-suelo.jpg';
 import canjeDeGranos from '../static/images/categorias/canje-de-granos.jpg';
@@ -211,6 +218,9 @@ export default Vue.extend({
         direccion,
         telefonos,
         email
+      },
+      rutas: {
+        productos: rutaProductos
       }
     };
   },
@@ -225,6 +235,9 @@ interface Data {
   verTodasLasCategorias: boolean;
   categorias: Array<Categoria>;
   contacto: Contacto;
+  rutas: {
+    productos: string;
+  };
 }
 
 interface Categoria {
