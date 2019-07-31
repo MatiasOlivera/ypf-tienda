@@ -91,10 +91,7 @@ class ProductosControllerTest extends TestCase
      */
     public function testNoDeberiaObtenerNingunProducto()
     {
-        $cabeceras = $this->loguearseComo('defecto');
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('GET', 'api/productos');
+        $respuesta = $this->json('GET', 'api/productos');
 
         $estructura = $this->getEstructuraProductos();
 
@@ -115,10 +112,7 @@ class ProductosControllerTest extends TestCase
             $categoria->productos()->save(factory(Producto::class)->make());
         });
 
-        $cabeceras = $this->loguearseComo('defecto');
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('GET', 'api/productos');
+        $respuesta = $this->json('GET', 'api/productos');
 
         $estructura = $this->getEstructuraProductos();
         $productos = Producto::orderBy('nombre', 'ASC')->get()->toArray();
@@ -237,9 +231,7 @@ class ProductosControllerTest extends TestCase
         $productoGuardado = $this->crearProducto($cabeceras);
         $id = $productoGuardado['id'];
 
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('GET', "api/productos/$id");
+        $respuesta = $this->json('GET', "api/productos/$id");
 
         $respuesta
             ->assertStatus(200)

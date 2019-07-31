@@ -34,6 +34,11 @@ describe('LaCabecera.vue', () => {
       expect(wrapper.emitted().clickLogotipo).toBeTruthy();
     });
 
+    test('debería emitir el evento clickProductos cuando se hace click sobre Productos', () => {
+      wrapper.find('#link-productos a').trigger('click');
+      expect(wrapper.emitted().clickProductos).toBeTruthy();
+    });
+
     test('debería emitir el evento clickLogin cuando se hace click sobre Iniciar sesión', () => {
       wrapper.find('#boton-iniciar-sesion').trigger('click');
       expect(wrapper.emitted().clickLogin).toBeTruthy();
