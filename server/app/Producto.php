@@ -61,6 +61,16 @@ class Producto extends Model
             : null;
     }
 
+    /**
+     * Obtener todos los usuarios que marcaron este producto como favorito
+     */
+    public function usuariosQueMarcaronComoFavorito()
+    {
+        return $this->belongsToMany('App\User', 'productos_favoritos', 'producto_id', 'cliente_usuario_id')
+            ->as('favorito')
+            ->withTimestamps();
+    }
+
     public function categoria()
     {
         return $this->belongsTo('App\CategoriaProducto', 'ID_CAT', 'ID_CAT_prod');
