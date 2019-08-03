@@ -105,6 +105,35 @@ class ProductosControllerTest extends TestCase
     }
 
     /**
+     * Debería obtener los productos favoritos del usuario
+     */
+    public function testDeberiaObtenerProductosFavoritos()
+    {
+        factory(Producto::class, 10)->create();
+
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $producto = Producto::inRandomOrder()->first()->toArray();
+        $producto['es_favorito'] = true;
+        $id = $producto['id'];
+
+        $this
+            ->withHeaders($cabeceras)
+            ->json('POST', "api/productos/$id/favorito");
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('GET', 'api/productos?soloFavoritos=true');
+
+        $estructura = $this->getEstructuraProductos();
+
+        $respuesta
+            ->assertOk()
+            ->assertJsonStructure($estructura)
+            ->assertJson(['productos' => [$producto]]);
+    }
+
+    /**
      * Debería crear un producto sin imagen
      */
     public function testDeberiaCrearUnProductoSinImagen()
