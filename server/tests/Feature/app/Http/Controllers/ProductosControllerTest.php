@@ -9,6 +9,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\Feature\Utilidades\EstructuraProducto;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
 
@@ -16,32 +17,12 @@ class ProductosControllerTest extends TestCase
 {
     use AuthHelper;
     use EstructuraJsonHelper;
+    use EstructuraProducto;
     use RefreshDatabase;
-
-    private $estructuraProducto = [
-        'producto' => [
-            'id',
-            'codigo',
-            'nombre',
-            'presentacion',
-            'precio_por_mayor',
-            'consumidor_final',
-            'imagen',
-            'id_categoria',
-            'created_at',
-            'updated_at',
-            'deleted_at'
-        ]
-    ];
 
     private function getEstructuraProductos(): array
     {
         return array_merge(['productos'], $this->estructuraPaginacion);
-    }
-
-    private function getEstructuraProducto(): array
-    {
-        return array_merge($this->estructuraProducto, $this->estructuraMensaje);
     }
 
     private function crearProducto($cabeceras)
