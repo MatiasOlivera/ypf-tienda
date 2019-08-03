@@ -30,9 +30,9 @@ class ProductoResource extends JsonResource
             // usuario logueado es un cliente
             'es_favorito' => $this->esFavorito,
             'id_categoria' => $this->id_categoria,
-            'created_at' => (string) $this->created_at,
-            'updated_at' => (string) $this->updated_at,
-            'deleted_at' => $this->deleted_at ? (string) $this->deleted_at : null
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'deleted_at' => $this->deleted_at
         ];
     }
 }
