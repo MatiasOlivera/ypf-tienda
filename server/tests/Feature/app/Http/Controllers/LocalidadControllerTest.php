@@ -261,7 +261,7 @@ class LocalidadControllerTest extends TestCase
             ->json('DELETE', "api/localidades/$id");
 
         $respuesta = $this->withHeaders($cabeceras)
-            ->json('POST', "api/provincias/localidades/$id/restaurar");
+            ->json('POST', "api/localidades/$id/restaurar");
 
         $localidadDB = $this->getLocalidad($id);
         $estructura = $this->getEstructuraLocalidad();
