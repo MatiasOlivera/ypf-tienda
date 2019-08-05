@@ -6,6 +6,7 @@ use App\Provincia;
 use Illuminate\Http\Request;
 use App\Http\controllers\BaseController;
 use App\Auxiliares\{Respuesta, MensajeError};
+use App\Http\Requests\Provincia\CrearProvinciaRequest;
 
 class ProvinciaController extends Controller
 {
@@ -45,10 +46,10 @@ class ProvinciaController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\CrearProvinciaRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CrearProvinciaRequest $request)
     {
         $inputs = $request->only('nombre');
         $nombre = "La provincia {$request->input('nombre')}";
