@@ -164,8 +164,6 @@ Route::middleware('jwt.auth')->group(function () {
     Route::group(['prefix' => '/provincias',], function () {
         Route::get('/{provincia}/localidades', 'LocalidadController@index')->name('Localidad.index');
 
-        Route::put('/localidades/{localidad}', 'LocalidadController@update')->name('Localidad.update');
-
         Route::delete('/localidades/{localidad}', 'LocalidadController@destroy')->name('Localidad.destroy');
 
         Route::post('/localidades/{localidad}/restaurar/', 'LocalidadController@restore')->name('Localidad.restore');
@@ -175,6 +173,8 @@ Route::middleware('jwt.auth')->group(function () {
         Route::post('/', 'LocalidadController@store')->name('Localidad.store');
 
         Route::get('/{localidad}', 'LocalidadController@show')->name('Localidad.show');
+
+        Route::put('/{localidad}', 'LocalidadController@update')->name('Localidad.update');
     });
 
     /**

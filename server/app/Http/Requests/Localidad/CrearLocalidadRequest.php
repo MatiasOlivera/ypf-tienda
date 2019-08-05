@@ -2,20 +2,8 @@
 
 namespace App\Http\Requests\Localidad;
 
-use Illuminate\Foundation\Http\FormRequest;
-
-class CrearLocalidadRequest extends FormRequest
+class CrearLocalidadRequest extends LocalidadRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -23,16 +11,9 @@ class CrearLocalidadRequest extends FormRequest
      */
     public function rules()
     {
-        $nombre = $this->getReglaNombre();
+        $reglas = parent::rules();
         $provinciaId = $this->getReglaProvinciaId();
-        return array_merge($nombre, $provinciaId);
-    }
-
-    protected function getReglaNombre(): array
-    {
-        return [
-            'nombre' => ['bail', 'required', 'string', 'max:60']
-        ];
+        return array_merge($reglas, $provinciaId);
     }
 
     protected function getReglaProvinciaId(): array

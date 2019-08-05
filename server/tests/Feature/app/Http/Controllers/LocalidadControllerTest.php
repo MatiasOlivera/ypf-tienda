@@ -194,7 +194,7 @@ class LocalidadControllerTest extends TestCase
         $localidadModificada = ['nombre' => 'Curuzú Cuatía'];
         $respuesta = $this
             ->withHeaders($cabeceras)
-            ->json('PUT', "api/provincias/localidades/$id", $localidadModificada);
+            ->json('PUT', "api/localidades/$id", $localidadModificada);
 
         $localidadEsperada = array_merge($localidadGuardada, $localidadModificada);
         unset($localidadEsperada['updated_at']);

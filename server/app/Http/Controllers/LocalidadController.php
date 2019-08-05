@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\{Localidad, Provincia};
 use Illuminate\Http\Request;
-use App\Http\Requests\Localidad\CrearLocalidadRequest;
+use App\{Localidad, Provincia};
 use App\Http\controllers\BaseController;
+use App\Http\Requests\Localidad\CrearLocalidadRequest;
 use App\Auxiliares\{Respuesta, MensajeExito, MensajeError};
+use App\Http\Requests\Localidad\ActualizarLocalidadRequest;
 
 
 class LocalidadController extends Controller
@@ -97,11 +98,11 @@ class LocalidadController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  App\Http\Requests\Request  $request
+     * @param  App\Http\Requests\ActualizarLocalidadRequest  $request
      * @param  \App\Localidad  $localidad
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Localidad $localidad)
+    public function update(ActualizarLocalidadRequest $request, Localidad $localidad)
     {
         $provincia = $localidad->provincia;
         $inputs = $request->only('nombre');
