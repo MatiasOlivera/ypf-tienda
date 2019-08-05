@@ -171,7 +171,7 @@ class LocalidadControllerTest extends TestCase
 
         $respuesta = $this
             ->withHeaders($cabeceras)
-            ->json('GET', "api/provincias/localidades/$id");
+            ->json('GET', "api/localidades/$id");
 
         $respuesta
             ->assertStatus(200)
