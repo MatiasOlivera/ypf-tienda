@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\{ Cliente, ClienteRazonSocial };
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
+use App\{ Cliente, ClienteRazonSocial };
+use App\Http\Resources\ClienteRazonSocialCollection;
+use App\Auxiliares\{ Respuesta, MensajeExito, MensajeError };
 use App\Http\Requests\Cliente\RazonSocial\ClienteRazonSocialRequest;
 use App\Http\Requests\Cliente\RazonSocial\ClienteRazonSocialUpdateRequest;
-use App\Auxiliares\{ Respuesta, MensajeExito, MensajeError };
 
 class ClienteRazonSocialController extends Controller
 {
@@ -33,9 +34,8 @@ class ClienteRazonSocialController extends Controller
     public function index(Request $request, Cliente $cliente)
     {
         try {
-            $razones        = $cliente->razonesSociales;
-            $respuesta      = [$this->modeloPlural => $razones];
-            return Respuesta::exito($respuesta, null, 200);
+            $razones = $cliente->razonesSociales;
+            return new ClienteRazonSocialCollection($razones);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
             $mensajeError->obtenerTodos('razones sociales');
