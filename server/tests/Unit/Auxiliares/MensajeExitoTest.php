@@ -10,7 +10,7 @@ class MensajeExitoTest extends TestCase
     public function testDeberiaCrearUnaInstanciaDeMensajeExito()
     {
         $mensaje = new MensajeExito('Operación completada!', 'COMPLETADO');
-        $actual = $mensaje->getObjeto();
+        $actual = $mensaje->toJson();
 
         $esperado = [
             'tipo' => 'exito',
@@ -25,7 +25,7 @@ class MensajeExitoTest extends TestCase
     {
         $mensaje = new MensajeExito();
         $mensaje->guardar('El producto Elaion F50', 'masculino');
-        $actual = $mensaje->getObjeto();
+        $actual = $mensaje->toJson();
 
         $esperado = [
             'tipo' => 'exito',
@@ -40,7 +40,7 @@ class MensajeExitoTest extends TestCase
     {
         $mensaje = new MensajeExito();
         $mensaje->guardar('La cotización', 'femenino');
-        $actual = $mensaje->getObjeto();
+        $actual = $mensaje->toJson();
 
         $esperado = [
             'tipo' => 'exito',
@@ -55,7 +55,7 @@ class MensajeExitoTest extends TestCase
     {
         $mensaje = new MensajeExito();
         $mensaje->actualizar('El producto Elaion F50', 'masculino');
-        $actual = $mensaje->getObjeto();
+        $actual = $mensaje->toJson();
 
         $esperado = [
             'tipo' => 'exito',
@@ -70,7 +70,7 @@ class MensajeExitoTest extends TestCase
     {
         $mensaje = new MensajeExito();
         $mensaje->actualizar('La cotización', 'femenino');
-        $actual = $mensaje->getObjeto();
+        $actual = $mensaje->toJson();
 
         $esperado = [
             'tipo' => 'exito',
@@ -85,7 +85,7 @@ class MensajeExitoTest extends TestCase
     {
         $mensaje = new MensajeExito();
         $mensaje->eliminar('El producto Elaion F50', 'masculino');
-        $actual = $mensaje->getObjeto();
+        $actual = $mensaje->toJson();
 
         $esperado = [
             'tipo' => 'exito',
@@ -100,7 +100,7 @@ class MensajeExitoTest extends TestCase
     {
         $mensaje = new MensajeExito();
         $mensaje->eliminar('La cotización', 'femenino');
-        $actual = $mensaje->getObjeto();
+        $actual = $mensaje->toJson();
 
         $esperado = [
             'tipo' => 'exito',
@@ -115,7 +115,7 @@ class MensajeExitoTest extends TestCase
     {
         $mensaje = new MensajeExito();
         $mensaje->restaurar('El producto Elaion F50', 'masculino');
-        $actual = $mensaje->getObjeto();
+        $actual = $mensaje->toJson();
 
         $esperado = [
             'tipo' => 'exito',
@@ -131,7 +131,7 @@ class MensajeExitoTest extends TestCase
     {
         $mensaje = new MensajeExito();
         $mensaje->restaurar('La cotización', 'femenino');
-        $actual = $mensaje->getObjeto();
+        $actual = $mensaje->toJson();
 
         $esperado = [
             'tipo' => 'exito',

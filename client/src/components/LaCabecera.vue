@@ -15,7 +15,7 @@
 
       <b-collapse id="nav_collapse" is-nav>
         <b-navbar-nav>
-          <b-nav-item href="#">
+          <b-nav-item id="link-productos" @click="clickProductos">
             Productos
           </b-nav-item>
 
@@ -91,6 +91,10 @@ export default Vue.extend({
   methods: {
     clickLogotipo(): void {
       this.$emit('clickLogotipo');
+    },
+
+    clickProductos(): void {
+      this.$emit('clickProductos');
     },
 
     clickLogin(): void {

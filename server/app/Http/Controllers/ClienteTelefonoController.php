@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\{Cliente, ClienteTelefono};
 use Illuminate\Http\Request;
+use App\{Cliente, ClienteTelefono};
 use App\Http\Controllers\BaseController;
-use App\Http\Requests\Cliente\Telefono\ClienteTelefonoRequest;
+use App\Http\Resources\ClienteTelefonoCollection;
 use App\Auxiliares\{Respuesta, MensajeExito, MensajeError};
+use App\Http\Requests\Cliente\Telefono\ClienteTelefonoRequest;
 
 class ClienteTelefonoController extends Controller
 {
@@ -37,11 +38,8 @@ class ClienteTelefonoController extends Controller
     public function index(Request $request, Cliente $cliente)
     {
         try {
-            $porPagina      = $request->input('porPagina');
-            $telefonos      = $cliente->telefonos()->paginate($porPagina);
-            $respuesta      = [$this->modeloPlural => $telefonos];
-
-            return Respuesta::exito($respuesta, null, 200);
+            $telefonos = $cliente->telefonos;
+            return new ClienteTelefonoCollection($telefonos);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
             $mensajeError->obtenerTodos("teléfonos del cliente");

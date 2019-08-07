@@ -71,7 +71,7 @@ class Handler extends ExceptionHandler
         $erroresValidacion = $exception->errors();
         foreach ($erroresValidacion as $campo => $mensaje) {
             $errores[$campo] = [
-                'esValido' => is_null($mensaje[0]),
+                'esValido' => false,
                 'error' => $mensaje[0]
             ];
         }

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Auxiliares\Respuesta;
 use App\Auxiliares\MensajeError;
 use App\Auxiliares\MensajeExito;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Producto\ProductosRequest;
 use App\Http\Requests\Producto\CrearProductoRequest;
@@ -33,13 +34,22 @@ class ProductosController extends Controller
     public function index(ProductosRequest $request)
     {
         try {
+            $soloFavoritos = (bool) $request->query('soloFavoritos', false);
+
+            if (Auth::check() && $soloFavoritos === true) {
+                $consulta = Auth::user()->productosFavoritos();
+            } else {
+                $consulta = 'Producto';
+            }
+
             $parametros = [
-                'modelo' => 'Producto',
+                'modelo' => $consulta,
                 'campos' => [
                     'id',
                     'codigo',
                     'nombre',
                     'presentacion',
+                    'imagen_ruta',
                     'precio_por_mayor',
                     'consumidor_final',
                     'id_categoria',
@@ -49,9 +59,9 @@ class ProductosController extends Controller
                 ],
                 'relaciones' => null,
                 'buscar' => $request->input('buscar', null),
-                'eliminados' => $request->input('eliminados', false),
+                'eliminados' => (bool) $request->input('eliminados', false),
                 'paginado' => [
-                    'porPagina' => $request->input('porPagina', 10),
+                    'porPagina' => (int) $request->input('porPagina', 10),
                     'ordenarPor' => $request->input('ordenarPor', 'nombre'),
                     'orden' => $request->input('orden', 'ASC'),
                 ]

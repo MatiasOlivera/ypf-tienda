@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Sofa\Eloquence\{Eloquence, Mappable};
@@ -22,7 +23,15 @@ class Producto extends Model
         'consumidor_final' => 'cons_fin'
     ];
 
-    protected $appends = ['codigo', 'nombre', 'id_categoria', 'precio_por_mayor', 'consumidor_final', 'imagen'];
+    protected $appends = [
+        'codigo',
+        'nombre',
+        'id_categoria',
+        'precio_por_mayor',
+        'consumidor_final',
+        'imagen',
+        'es_favorito'
+    ];
 
     protected $hidden = [
         'codigo_prod',
@@ -59,6 +68,33 @@ class Producto extends Model
         return $this->imagen_ruta
             ? Storage::disk('productos')->url($this->imagen_ruta)
             : null;
+    }
+
+    /**
+     * Obtener todos los usuarios que marcaron este producto como favorito
+     */
+    public function usuariosQueMarcaronComoFavorito()
+    {
+        return $this->belongsToMany('App\User', 'productos_favoritos', 'producto_id', 'cliente_usuario_id')
+            ->as('favorito')
+            ->withTimestamps();
+    }
+
+    /**
+     * Obtener si el usuario marco este producto como favorito
+     */
+    public function getEsFavoritoAttribute(): bool
+    {
+        if (Auth::check() === false) {
+            return false;
+        }
+
+        $esFavorito = $this->usuariosQueMarcaronComoFavorito()
+            ->wherePivot('cliente_usuario_id', Auth::user()->id)
+            ->get()
+            ->toArray();
+
+        return !empty($esFavorito);
     }
 
     public function categoria()
