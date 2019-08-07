@@ -33,6 +33,20 @@ Route::group(['prefix' => 'auth', 'middleware' => ['jwt.auth',],], function () {
     Route::post('logout', 'AuthController@logout');
 });
 
+/**
+ * Productos
+ */
+Route::apiResource('productos', 'ProductosController')
+    ->only(['index', 'show'])
+    ->parameters(['productos' => 'producto']);
+
+/**
+ * Categorías de producto
+ */
+Route::apiResource('categorias-productos', 'CategoriaProductoController')
+    ->only(['index', 'show'])
+    ->parameters(['categorias-productos' => 'categoriaProducto']);
+
 Route::middleware('jwt.auth')->group(function () {
     /**
      * Usuarios
@@ -162,20 +176,31 @@ Route::middleware('jwt.auth')->group(function () {
     });
 
     /**
-     * Categorias producto
+     * Categorias de producto
      */
     Route::apiResource('categorias-productos', 'CategoriaProductoController')
+        ->except(['index', 'show'])
         ->parameters(['categorias-productos' => 'categoriaProducto']);
 
     Route::post('categorias-productos/{categoriaProducto}/restaurar', 'CategoriaProductoController@restore')
         ->name('categorias.restore');
 
     /**
-     * Producto
+     * Productos
      */
     Route::apiResource('productos', 'ProductosController')
+        ->except(['index', 'show'])
         ->parameters(['productos' => 'producto']);
 
     Route::post('productos/{producto}/restaurar', 'ProductosController@restore')
         ->name('productos.restore');
+
+    /**
+     * Productos favoritos
+     */
+    Route::post('productos/{producto}/favorito', 'ProductosFavoritosController@asociar')
+        ->name('productos.es_favorito');
+
+    Route::delete('productos/{producto}/favorito', 'ProductosFavoritosController@desasociar')
+        ->name('productos.no_es_favorito');
 });

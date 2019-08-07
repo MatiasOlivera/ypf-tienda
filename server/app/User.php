@@ -60,6 +60,16 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
+     * Obtener los productos favoritos del usuario
+     */
+    public function productosFavoritos()
+    {
+        return $this->belongsToMany('App\Producto', 'productos_favoritos', 'cliente_usuario_id', 'producto_id')
+            ->as('favorito')
+            ->withTimestamps();
+    }
+
+    /**
      * Return a key value array, containing any custom claims to be added to the JWT.
      *
      * @return array
