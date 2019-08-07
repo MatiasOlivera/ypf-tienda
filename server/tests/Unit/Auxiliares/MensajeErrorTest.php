@@ -10,7 +10,7 @@ class MensajeErrorTest extends TestCase
     public function testDeberiaCrearUnaInstanciaDeMensajeError()
     {
         $mensaje = new MensajeError('Oops, operación fallida!', 'FALLO');
-        $actual = $mensaje->getObjeto();
+        $actual = $mensaje->toJson();
 
         $esperado = [
             'tipo' => 'error',
@@ -25,7 +25,7 @@ class MensajeErrorTest extends TestCase
     {
         $mensaje = new MensajeError();
         $mensaje->guardar('El producto Elaion F50', 'masculino');
-        $actual = $mensaje->getObjeto();
+        $actual = $mensaje->toJson();
 
         $esperado = [
             'tipo' => 'error',
@@ -40,7 +40,7 @@ class MensajeErrorTest extends TestCase
     {
         $mensaje = new MensajeError();
         $mensaje->guardar('El producto Elaion F50', 'masculino');
-        $actual = $mensaje->getObjeto();
+        $actual = $mensaje->toJson();
 
         $esperado = [
             'tipo' => 'error',
@@ -55,7 +55,7 @@ class MensajeErrorTest extends TestCase
     {
         $mensaje = new MensajeError();
         $mensaje->actualizar('La cotización', 'femenino');
-        $actual = $mensaje->getObjeto();
+        $actual = $mensaje->toJson();
 
         $esperado = [
             'tipo' => 'error',
@@ -70,7 +70,7 @@ class MensajeErrorTest extends TestCase
     {
         $mensaje = new MensajeError();
         $mensaje->eliminar('El producto Elaion F50', 'masculino');
-        $actual = $mensaje->getObjeto();
+        $actual = $mensaje->toJson();
 
         $esperado = [
             'tipo' => 'error',
@@ -85,7 +85,7 @@ class MensajeErrorTest extends TestCase
     {
         $mensaje = new MensajeError();
         $mensaje->eliminar('La cotización', 'femenino');
-        $actual = $mensaje->getObjeto();
+        $actual = $mensaje->toJson();
 
         $esperado = [
             'tipo' => 'error',
@@ -100,7 +100,7 @@ class MensajeErrorTest extends TestCase
     {
         $mensaje = new MensajeError();
         $mensaje->restaurar('El producto Elaion F50', 'masculino');
-        $actual = $mensaje->getObjeto();
+        $actual = $mensaje->toJson();
 
         $esperado = [
             'tipo' => 'error',
@@ -115,7 +115,7 @@ class MensajeErrorTest extends TestCase
     {
         $mensaje = new MensajeError();
         $mensaje->restaurar('La cotización', 'femenino');
-        $actual = $mensaje->getObjeto();
+        $actual = $mensaje->toJson();
 
         $esperado = [
             'tipo' => 'error',
@@ -130,7 +130,7 @@ class MensajeErrorTest extends TestCase
     {
         $mensaje = new MensajeError();
         $mensaje->obtener('del producto Elaion F50');
-        $actual = $mensaje->getObjeto();
+        $actual = $mensaje->toJson();
 
         $esperado = [
             'tipo' => 'error',
@@ -145,7 +145,7 @@ class MensajeErrorTest extends TestCase
     {
         $mensaje = new MensajeError();
         $mensaje->obtenerTodos('productos');
-        $actual = $mensaje->getObjeto();
+        $actual = $mensaje->toJson();
 
         $esperado = [
             'tipo' => 'error',
@@ -160,7 +160,7 @@ class MensajeErrorTest extends TestCase
     {
         $mensaje = new MensajeError();
         $mensaje->relacion('los productos del pedido');
-        $actual = $mensaje->getObjeto();
+        $actual = $mensaje->toJson();
 
         $esperado = [
             'tipo' => 'error',

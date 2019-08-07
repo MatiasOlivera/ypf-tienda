@@ -1,11 +1,12 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\{ClienteDomicilio,Cliente};
 use Illuminate\Http\Request;
-use App\Http\Requests\Cliente\Domicilio\ClienteDomicilioRequest;
+use App\{ClienteDomicilio,Cliente};
 use App\Http\Controllers\BaseController;
+use App\Http\Resources\ClienteDomicilioCollection;
 use App\Auxiliares\{Respuesta, MensajeExito, MensajeError};
+use App\Http\Requests\Cliente\Domicilio\ClienteDomicilioRequest;
 
 class ClienteDomicilioController extends Controller
 {
@@ -32,8 +33,7 @@ class ClienteDomicilioController extends Controller
     {
         try {
             $domicilios = $cliente->domicilios;
-            $respuesta = [$this->modeloPlural => $domicilios];
-            return Respuesta::exito($respuesta, null, 200);
+            return new ClienteDomicilioCollection($domicilios);
         } catch (\Throwable $th) {
             $mensajeError = new MensajeError();
             $mensajeError->obtenerTodos($this->modeloPlural);

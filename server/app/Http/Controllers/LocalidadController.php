@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\{Localidad, Provincia};
 use App\Http\controllers\BaseController;
+use App\Http\Resources\LocalidadCollection;
 use App\Http\Requests\Localidad\CrearLocalidadRequest;
 use App\Auxiliares\{Respuesta, MensajeExito, MensajeError};
 use App\Http\Requests\Localidad\ActualizarLocalidadRequest;
@@ -39,9 +40,8 @@ class LocalidadController extends Controller
     {
         try {
             $porPagina  = $request->only('porPagina');
-            $provincias = $provincia->localidades()->paginate($porPagina);
-            $respuesta  = [$this->modeloPlural => $provincias];
-            return Respuesta::exito($respuesta, null, 200);
+            $localidades = $provincia->localidades()->paginate($porPagina, ['*'], 'pagina');
+            return new LocalidadCollection($localidades);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
             $mensajeError->obtenerTodos($this->modeloPlural);

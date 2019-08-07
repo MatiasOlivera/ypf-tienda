@@ -34,6 +34,13 @@ class LocalidadControllerTest extends TestCase
         ]
     ];
 
+    private function getEstructuraLocalidades()
+    {
+        $paginacion = $this->estructuraPaginacion;
+        unset($paginacion['paginacion']['rutas']);
+        return array_merge(['localidades'], $paginacion);
+    }
+
     private function getEstructuraLocalidad()
     {
         return array_merge($this->estructuraLocalidad, $this->estructuraMensaje);
@@ -91,13 +98,12 @@ class LocalidadControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('GET', "api/provincias/$id/localidades");
 
+        $estructura = $this->getEstructuraLocalidades();
+
         $respuesta
             ->assertOk()
-            ->assertJson([
-                'localidades' => [
-                    'data' => []
-                ]
-            ]);
+            ->assertJsonStructure($estructura)
+            ->assertJson(['localidades' => []]);
     }
 
     /**
@@ -115,15 +121,13 @@ class LocalidadControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('GET', "api/provincias/$id/localidades");
 
+        $estructura = $this->getEstructuraLocalidades();
         $localidades = $provincia->localidades()->get()->toArray();
 
         $respuesta
             ->assertOk()
-            ->assertJson([
-                'localidades' => [
-                    'data' => $localidades
-                ]
-            ]);
+            ->assertJsonStructure($estructura)
+            ->assertJson(['localidades' => $localidades]);
     }
 
     /**
