@@ -29,7 +29,7 @@ class ClienteEmailControllerTest extends TestCase
 
     private function getEstructuraEmails()
     {
-        return array_merge(['emails'], $this->estructuraPaginacion);
+        return array_merge(['emails']);
     }
 
     private function getEstructuraEmail()
