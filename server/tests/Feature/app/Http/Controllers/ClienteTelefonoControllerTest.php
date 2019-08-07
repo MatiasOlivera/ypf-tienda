@@ -32,7 +32,7 @@ class ClienteTelefonoControllerTest extends TestCase
 
     private function getEstructuraTelefonos()
     {
-        return array_merge(['telefonos'], $this->estructuraPaginacion);
+        return array_merge(['telefonos']);
     }
 
     private function getEstructuraTelefono()
