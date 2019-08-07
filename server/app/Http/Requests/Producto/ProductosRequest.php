@@ -3,10 +3,15 @@
 namespace App\Http\Requests\Producto;
 
 use Illuminate\Validation\Rule;
+use App\Http\Requests\CastingDeTipos;
 use App\Http\Requests\PaginacionRequest;
 
 class ProductosRequest extends PaginacionRequest
 {
+    use CastingDeTipos;
+
+    protected $soloFavoritos = ['bail', 'nullable', 'boolean'];
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -41,6 +46,26 @@ class ProductosRequest extends PaginacionRequest
     public function rules()
     {
         $this->setOrdenarPor();
-        return parent::rules();
+        $reglas = parent::rules();
+
+        // Solo favoritos
+        $reglas['soloFavoritos'] = $this->soloFavoritos;
+
+        return $reglas;
+    }
+
+    /**
+     * Casting de los parámetros de la ruta (query string)
+     * @return array
+     */
+    public function all($claves = null)
+    {
+        $parametros = parent::all();
+
+        // Solo favoritos
+        $soloFavoritos = $this->query('soloFavoritos');
+        $parametros['soloFavoritos'] = $this->getBooleano($soloFavoritos);
+
+        return $parametros;
     }
 }

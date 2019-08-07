@@ -9,6 +9,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\Feature\Utilidades\EstructuraProducto;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
 
@@ -16,32 +17,12 @@ class ProductosControllerTest extends TestCase
 {
     use AuthHelper;
     use EstructuraJsonHelper;
+    use EstructuraProducto;
     use RefreshDatabase;
-
-    private $estructuraProducto = [
-        'producto' => [
-            'id',
-            'codigo',
-            'nombre',
-            'presentacion',
-            'precio_por_mayor',
-            'consumidor_final',
-            'imagen',
-            'id_categoria',
-            'created_at',
-            'updated_at',
-            'deleted_at'
-        ]
-    ];
 
     private function getEstructuraProductos(): array
     {
         return array_merge(['productos'], $this->estructuraPaginacion);
-    }
-
-    private function getEstructuraProducto(): array
-    {
-        return array_merge($this->estructuraProducto, $this->estructuraMensaje);
     }
 
     private function crearProducto($cabeceras)
@@ -91,10 +72,7 @@ class ProductosControllerTest extends TestCase
      */
     public function testNoDeberiaObtenerNingunProducto()
     {
-        $cabeceras = $this->loguearseComo('defecto');
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('GET', 'api/productos');
+        $respuesta = $this->json('GET', 'api/productos');
 
         $estructura = $this->getEstructuraProductos();
 
@@ -115,10 +93,7 @@ class ProductosControllerTest extends TestCase
             $categoria->productos()->save(factory(Producto::class)->make());
         });
 
-        $cabeceras = $this->loguearseComo('defecto');
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('GET', 'api/productos');
+        $respuesta = $this->json('GET', 'api/productos');
 
         $estructura = $this->getEstructuraProductos();
         $productos = Producto::orderBy('nombre', 'ASC')->get()->toArray();
@@ -127,6 +102,35 @@ class ProductosControllerTest extends TestCase
             ->assertOk()
             ->assertJsonStructure($estructura)
             ->assertJson(['productos' => $productos]);
+    }
+
+    /**
+     * Debería obtener los productos favoritos del usuario
+     */
+    public function testDeberiaObtenerProductosFavoritos()
+    {
+        factory(Producto::class, 10)->create();
+
+        $cabeceras = $this->loguearseComo('defecto');
+
+        $producto = Producto::inRandomOrder()->first()->toArray();
+        $producto['es_favorito'] = true;
+        $id = $producto['id'];
+
+        $this
+            ->withHeaders($cabeceras)
+            ->json('POST', "api/productos/$id/favorito");
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('GET', 'api/productos?soloFavoritos=true');
+
+        $estructura = $this->getEstructuraProductos();
+
+        $respuesta
+            ->assertOk()
+            ->assertJsonStructure($estructura)
+            ->assertJson(['productos' => [$producto]]);
     }
 
     /**
@@ -237,9 +241,7 @@ class ProductosControllerTest extends TestCase
         $productoGuardado = $this->crearProducto($cabeceras);
         $id = $productoGuardado['id'];
 
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('GET', "api/productos/$id");
+        $respuesta = $this->json('GET', "api/productos/$id");
 
         $respuesta
             ->assertStatus(200)

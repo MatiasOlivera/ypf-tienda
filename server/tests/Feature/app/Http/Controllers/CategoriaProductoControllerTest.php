@@ -55,10 +55,7 @@ class CategoriaProductoControllerTest extends TestCase
      */
     public function testNoDeberiaObtenerNingunaCategoria()
     {
-        $cabeceras = $this->loguearseComo('defecto');
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('GET', 'api/categorias-productos');
+        $respuesta = $this->json('GET', 'api/categorias-productos');
 
         $estructura = $this->getEstructuraCategorias();
 
@@ -77,10 +74,7 @@ class CategoriaProductoControllerTest extends TestCase
     {
         factory(CategoriaProducto::class, 10)->create();
 
-        $cabeceras = $this->loguearseComo('defecto');
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('GET', 'api/categorias-productos');
+        $respuesta = $this->json('GET', 'api/categorias-productos');
 
         $estructura = $this->getEstructuraCategorias();
         $categorias = CategoriaProducto::orderBy('descripcion', 'ASC')->get()->toArray();
@@ -128,9 +122,7 @@ class CategoriaProductoControllerTest extends TestCase
         $categoriaGuardada = $this->crearCategoria($cabeceras);
         $id = $categoriaGuardada['id'];
 
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('GET', "api/categorias-productos/$id");
+        $respuesta = $this->json('GET', "api/categorias-productos/$id");
 
         $respuesta
             ->assertStatus(200)

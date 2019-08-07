@@ -1,15 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Provincia;
 
 use Illuminate\Foundation\Http\FormRequest;
 
 class ProvinciaRequest extends FormRequest
 {
-    protected $reglas = [
-        'provincia'          => ['bail', 'required', 'string', 'max:30'],
-    ];
-
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -27,6 +23,13 @@ class ProvinciaRequest extends FormRequest
      */
     public function rules()
     {
-        return $this->reglas;
+        return [
+            'nombre' => $this->getReglaNombre()
+        ];
+    }
+
+    protected function getReglaNombre(): array
+    {
+        return ['bail', 'required', 'string', 'max:30'];
     }
 }
