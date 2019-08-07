@@ -32,7 +32,7 @@ class ClienteDomicilioControllerTest extends TestCase
 
     private function getEstructuraDomicilios()
     {
-        return array_merge(['domicilios'], $this->estructuraPaginacion);
+        return array_merge(['domicilios']);
     }
 
     private function getEstructuraDomicilio()
