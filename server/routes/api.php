@@ -194,4 +194,13 @@ Route::middleware('jwt.auth')->group(function () {
 
     Route::post('productos/{producto}/restaurar', 'ProductosController@restore')
         ->name('productos.restore');
+
+    /**
+     * Productos favoritos
+     */
+    Route::post('productos/{producto}/favorito', 'ProductosFavoritosController@asociar')
+        ->name('productos.es_favorito');
+
+    Route::delete('productos/{producto}/favorito', 'ProductosFavoritosController@desasociar')
+        ->name('productos.no_es_favorito');
 });
