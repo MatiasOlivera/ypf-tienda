@@ -18,7 +18,7 @@ class ClienteRazonSocialControllerTest extends TestCase
 
     private function getEstructuraRazones()
     {
-        return array_merge(['razonesSociales'], $this->estructuraPaginacion);
+        return array_merge(['razonesSociales']);
     }
 
     /**
