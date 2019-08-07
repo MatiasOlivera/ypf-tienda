@@ -3,8 +3,9 @@
 namespace App\Auxiliares;
 
 use Exception;
+use Illuminate\Contracts\Support\Jsonable;
 
-abstract class Mensaje
+abstract class Mensaje implements Jsonable
 {
     protected $tipo;
     private $codigo;
@@ -16,7 +17,7 @@ abstract class Mensaje
         $this->codigo = $codigo;
     }
 
-    final public function getObjeto(): array
+    public function toJson($options = 0)
     {
         return [
             'tipo' => $this->tipo,

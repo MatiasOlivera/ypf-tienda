@@ -28,7 +28,7 @@ final class Respuesta
 
     private static function getRespuesta(array $datos, ?Mensaje $mensaje, $codigoEstado)
     {
-        $objetoMensaje = $mensaje ? [ 'mensaje' => $mensaje->getObjeto() ] : [];
+        $objetoMensaje = $mensaje ? [ 'mensaje' => $mensaje->toJson() ] : [];
         $respuesta = array_merge($datos, $objetoMensaje);
 
         return response()->json($respuesta, $codigoEstado);

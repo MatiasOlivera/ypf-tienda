@@ -1,11 +1,9 @@
-import { ID, Modelo } from './tipos-modelo';
+import { Modelo } from './tipos-modelo';
 
-interface ModeloUsuario {
+// eslint-disable-next-line import/prefer-default-export
+export interface Usuario extends Modelo {
   name: string;
   email: string;
   // eslint-disable-next-line camelcase
-  id_cliente: ID;
+  id_cliente: number;
 }
-
-// eslint-disable-next-line import/prefer-default-export
-export type Usuario = Modelo & ModeloUsuario;

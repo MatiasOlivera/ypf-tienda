@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\{ Cliente, ClienteMail };
 use Illuminate\Http\Request;
+use App\{ Cliente, ClienteMail };
 use App\Http\Controllers\BaseController;
+use App\Http\Resources\ClienteMailCollection;
 use App\Http\Requests\Cliente\Mail\ClienteMailRequest;
 use App\Auxiliares\{ Respuesta, MensajeExito, MensajeError };
 
@@ -32,10 +33,8 @@ class ClienteMailController extends Controller
     public function index(Request $request, Cliente $cliente)
     {
         try {
-            $porPagina      = $request->only('porPagina');
-            $mails          = $cliente->mails()->paginate($porPagina);
-            $respuesta      = [$this->modeloPlural => $mails];
-            return Respuesta::exito($respuesta, null, 200);
+            $mails = $cliente->mails;
+            return new ClienteMailCollection($mails);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
             $mensajeError->obtenerTodos($this->modeloPlural);
