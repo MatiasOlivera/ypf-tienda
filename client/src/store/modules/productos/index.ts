@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import {
   getProductos,
-  RespuestaProductos,
+  RespuestaProductosNoAutenticado,
   ParametrosGetProductos
 } from '@/services/api/productos/productos-api';
 import { EstadoBase } from '@/store/tipos-store';
@@ -72,7 +72,7 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
       commit,
       getters,
       state
-    }): Promise<RespuestaProductos | undefined> {
+    }): Promise<RespuestaProductosNoAutenticado | undefined> {
       try {
         if (getters.estadoEsPendiente) {
           return;

@@ -1,7 +1,6 @@
 /* eslint-disable camelcase */
 import { Respuesta } from '../../cliente-http';
 import {
-  RespuestasComunesApi,
   RespuestasComunesApiSinToken,
   Paginacion,
   ParametrosObtenerTodos,
@@ -17,9 +16,11 @@ import { MensajeError } from '@/types/mensaje-tipos';
  */
 export async function getProductos(
   parametros?: ParametrosGetProductos
-): Promise<RespuestaProductos> {
+): Promise<RespuestaProductosNoAutenticado> {
   try {
-    const respuesta = await clienteApiSinToken<RespuestaProductosServidor>({
+    const respuesta = await clienteApiSinToken<
+      RespuestaProductosServidorNoAutenticado
+    >({
       url: 'productos',
       metodo: 'GET',
       datos: parametros
@@ -60,11 +61,14 @@ export type CamposOrdenamiento =
 type RespuestasProductos<DatosEstado200> =
   | RespuestaValidacion<ParametrosObtenerTodos>
   | Respuesta<true, 200, DatosEstado200>
-  | RespuestaMensajeError
-  | RespuestasComunesApiSinToken;
+  | RespuestaMensajeError;
 
 // Respuesta del servidor
 type RespuestaProductosServidor = RespuestasProductos<DatosGetProductos>;
+
+type RespuestaProductosServidorNoAutenticado =
+  | RespuestaProductosServidor
+  | RespuestasComunesApiSinToken;
 
 interface DatosGetProductos {
   productos: Array<ProductoServidor>;
@@ -79,6 +83,10 @@ interface ProductoServidor extends ProductoBase {
 // Respuesta del cliente
 export type RespuestaProductos = RespuestasProductos<DatosProductos>;
 
+export type RespuestaProductosNoAutenticado =
+  | RespuestaProductos
+  | RespuestasComunesApiSinToken;
+
 interface DatosProductos {
   productos: Array<Producto>;
   paginacion: Paginacion;
@@ -87,9 +95,13 @@ interface DatosProductos {
 /**
  * Debería obtener un producto
  */
-export async function getProducto(id: number): Promise<RespuestaProducto> {
+export async function getProducto(
+  id: number
+): Promise<RespuestaProductoNoAutenticado> {
   try {
-    const respuesta = await clienteApiSinToken<RespuestaProductoServidor>({
+    const respuesta = await clienteApiSinToken<
+      RespuestaProductoServidorNoAutenticado
+    >({
       url: `productos/${id}`,
       metodo: 'GET'
     });
@@ -112,11 +124,14 @@ export async function getProducto(id: number): Promise<RespuestaProducto> {
 
 type RespuestasProducto<DatosEstado200> =
   | Respuesta<true, 200, DatosEstado200>
-  | RespuestaMensajeError
-  | RespuestasComunesApiSinToken;
+  | RespuestaMensajeError;
 
 // Respuesta del servidor
 type RespuestaProductoServidor = RespuestasProducto<DatosGetProducto>;
+
+type RespuestaProductoServidorNoAutenticado =
+  | RespuestaProductoServidor
+  | RespuestasComunesApiSinToken;
 
 interface DatosGetProducto {
   producto: ProductoServidor;
@@ -124,6 +139,10 @@ interface DatosGetProducto {
 
 // Respuesta del cliente
 export type RespuestaProducto = RespuestasProducto<{ producto: Producto }>;
+
+type RespuestaProductoNoAutenticado =
+  | RespuestaProducto
+  | RespuestasComunesApiSinToken;
 
 /**
  * Convierte los precios del producto de string a número
