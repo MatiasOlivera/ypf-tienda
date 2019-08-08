@@ -122,23 +122,19 @@ export async function getProducto(
   }
 }
 
-type RespuestasProducto<DatosEstado200> =
-  | Respuesta<true, 200, DatosEstado200>
+type RespuestasProducto<TipoProducto> =
+  | Respuesta<true, 200, { producto: TipoProducto }>
   | RespuestaMensajeError;
 
 // Respuesta del servidor
-type RespuestaProductoServidor = RespuestasProducto<DatosGetProducto>;
+type RespuestaProductoServidor = RespuestasProducto<ProductoServidor>;
 
 type RespuestaProductoServidorNoAutenticado =
   | RespuestaProductoServidor
   | RespuestasComunesApiSinToken;
 
-interface DatosGetProducto {
-  producto: ProductoServidor;
-}
-
 // Respuesta del cliente
-export type RespuestaProducto = RespuestasProducto<{ producto: Producto }>;
+export type RespuestaProducto = RespuestasProducto<Producto>;
 
 type RespuestaProductoNoAutenticado =
   | RespuestaProducto
