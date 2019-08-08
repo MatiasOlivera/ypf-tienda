@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { Respuesta } from '../cliente-http';
+import { Respuesta } from '../../cliente-http';
 import {
   RespuestasComunesApi,
   RespuestasComunesApiSinToken,
@@ -9,7 +9,7 @@ import {
   RespuestaMensajeError
 } from '@/types/respuesta-tipos';
 import { Producto, ProductoBase } from '@/types/tipos-producto';
-import { clienteApiSinToken } from '../cliente-api';
+import { clienteApiSinToken } from '../../cliente-api';
 import { MensajeError } from '@/types/mensaje-tipos';
 
 /**

@@ -3,7 +3,7 @@ import {
   getProductos,
   RespuestaProductos,
   ParametrosGetProductos
-} from '@/services/api/productos-api';
+} from '@/services/api/productos/productos-api';
 import { EstadoBase } from '@/store/tipos-store';
 import { Producto } from '@/types/tipos-producto';
 import { Module } from 'vuex';
