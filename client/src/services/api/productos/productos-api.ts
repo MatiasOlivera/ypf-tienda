@@ -122,7 +122,7 @@ export async function getProducto(
   }
 }
 
-type RespuestasProducto<TipoProducto> =
+export type RespuestasProducto<TipoProducto> =
   | Respuesta<true, 200, { producto: TipoProducto }>
   | RespuestaMensajeError;
 
