@@ -10,6 +10,7 @@ use App\Auxiliares\MensajeError;
 use App\Auxiliares\MensajeExito;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\ProductoCollection;
 use App\Http\Requests\Producto\ProductosRequest;
 use App\Http\Requests\Producto\CrearProductoRequest;
 use App\Http\Requests\Producto\ActualizarProductoRequest;
@@ -68,16 +69,9 @@ class ProductosController extends Controller
             ];
 
             $consulta = new Consulta();
-            $resultado = $consulta->ejecutarconsulta($parametros);
+            $productos = $consulta->ejecutarConsulta($parametros);
 
-            $respuesta = [
-                $this->modeloPlural => $resultado['datos'],
-                'paginacion' => $resultado['paginacion']
-            ];
-
-            if ($resultado) {
-                return Respuesta::exito($respuesta, null, 200);
-            }
+            return new ProductoCollection($productos);
         } catch (\Throwable $th) {
             $mensajeError = new MensajeError();
             $mensajeError->obtenerTodos('los productos');
