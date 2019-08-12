@@ -60,15 +60,17 @@ class LocalidadControllerTest extends TestCase
     private function crearLocalidad($cabeceras, $localidad = null)
     {
         $provincia = $this->crearProvincia($cabeceras);
-        $id = $provincia['id'];
 
         if ($localidad === null) {
-            $localidad = ['nombre' => 'Mercedes'];
+            $localidad = [
+                'nombre' => 'Mercedes',
+                'provincia_id' => $provincia['id']
+            ];
         }
 
         $respuesta = $this
             ->withHeaders($cabeceras)
-            ->json('POST', "api/provincias/$id/localidades", $localidad);
+            ->json('POST', "api/localidades", $localidad);
 
         return $respuesta->getData(true)['localidad'];
     }
@@ -136,13 +138,15 @@ class LocalidadControllerTest extends TestCase
         $cabeceras = $this->loguearseComo('defecto');
 
         $provincia = $this->crearProvincia($cabeceras);
-        $idProvincia = $provincia['id'];
 
-        $localidad = ['nombre' => 'Mercedes'];
+        $localidad = [
+            'nombre' => 'Mercedes',
+            'provincia_id' => $provincia['id']
+        ];
 
         $respuesta = $this
             ->withHeaders($cabeceras)
-            ->json('POST', "api/provincias/$idProvincia/localidades", $localidad);
+            ->json('POST', "api/localidades", $localidad);
 
         $estructura = $this->getEstructuraLocalidad();
 
@@ -171,7 +175,7 @@ class LocalidadControllerTest extends TestCase
 
         $respuesta = $this
             ->withHeaders($cabeceras)
-            ->json('GET', "api/provincias/localidades/$id");
+            ->json('GET', "api/localidades/$id");
 
         $respuesta
             ->assertStatus(200)
@@ -194,7 +198,7 @@ class LocalidadControllerTest extends TestCase
         $localidadModificada = ['nombre' => 'Curuzú Cuatía'];
         $respuesta = $this
             ->withHeaders($cabeceras)
-            ->json('PUT', "api/provincias/localidades/$id", $localidadModificada);
+            ->json('PUT', "api/localidades/$id", $localidadModificada);
 
         $localidadEsperada = array_merge($localidadGuardada, $localidadModificada);
         unset($localidadEsperada['updated_at']);
@@ -226,7 +230,7 @@ class LocalidadControllerTest extends TestCase
 
         $respuesta = $this
             ->withHeaders($cabeceras)
-            ->json('DELETE', "api/provincias/localidades/$id");
+            ->json('DELETE', "api/localidades/$id");
 
         $localidadDB = $this->getLocalidad($id);
         $estructura = $this->getEstructuraLocalidad();
@@ -258,10 +262,10 @@ class LocalidadControllerTest extends TestCase
         $id = $localidadGuardada['id'];
 
         $this->withHeaders($cabeceras)
-            ->json('DELETE', "api/provincias/localidades/$id");
+            ->json('DELETE', "api/localidades/$id");
 
         $respuesta = $this->withHeaders($cabeceras)
-            ->json('POST', "api/provincias/localidades/$id/restaurar");
+            ->json('POST', "api/localidades/$id/restaurar");
 
         $localidadDB = $this->getLocalidad($id);
         $estructura = $this->getEstructuraLocalidad();
