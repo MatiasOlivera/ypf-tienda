@@ -3,6 +3,7 @@
 namespace App\Auxiliares;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class Consulta
 {
@@ -32,7 +33,7 @@ class Consulta
         $this->modelo = null;
     }
 
-    public function ejecutarConsulta(array $parametros): array
+    public function ejecutarConsulta(array $parametros): LengthAwarePaginator
     {
         $this->setParametros($parametros);
 
@@ -60,32 +61,7 @@ class Consulta
             $consulta = $consulta->orderBy($this->ordenarPor, $this->orden);
         }
 
-        $resultado = $consulta->paginate($this->paginado, ['*'], 'pagina');
-
-        if ($resultado) {
-            $datos = $resultado->items();
-
-            $paginacion = [
-                "total" => $resultado->total(),
-                "porPagina" => $resultado->perPage(),
-                "paginaActual" => $resultado->currentPage(),
-                "ultimaPagina" => $resultado->lastPage(),
-                "desde" => $resultado->firstItem(),
-                "hasta" => $resultado->lastItem(),
-                "rutas" => [
-                    "primeraPagina" => $resultado->toArray()['first_page_url'],
-                    "ultimaPagina" => $resultado->toArray()['last_page_url'],
-                    "siguientePagina" => $resultado->nextPageUrl(),
-                    "paginaAnterior" => $resultado->previousPageUrl(),
-                    "base" => $resultado->resolveCurrentPath(),
-                ]
-            ];
-
-            return [
-                'datos' => $datos,
-                'paginacion' => $paginacion
-            ];
-        }
+        return $consulta->paginate($this->paginado, ['*'], 'pagina');
     }
 
     private function setParametros(array $parametros): void
