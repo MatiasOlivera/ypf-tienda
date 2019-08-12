@@ -58,22 +58,22 @@ export type CamposOrdenamiento =
   | 'updated_at'
   | 'deleted_at';
 
-type RespuestasProductos<DatosEstado200> =
+interface DatosProductos<TipoProducto> {
+  productos: Array<TipoProducto>;
+  paginacion: Paginacion;
+}
+
+type RespuestasProductos<TipoProducto> =
   | RespuestaValidacion<ParametrosObtenerTodos>
-  | Respuesta<true, 200, DatosEstado200>
+  | Respuesta<true, 200, DatosProductos<TipoProducto>>
   | RespuestaMensajeError;
 
 // Respuesta del servidor
-type RespuestaProductosServidor = RespuestasProductos<DatosGetProductos>;
+type RespuestaProductosServidor = RespuestasProductos<ProductoServidor>;
 
 type RespuestaProductosServidorNoAutenticado =
   | RespuestaProductosServidor
   | RespuestasComunesApiSinToken;
-
-interface DatosGetProductos {
-  productos: Array<ProductoServidor>;
-  paginacion: Paginacion;
-}
 
 interface ProductoServidor extends ProductoBase {
   precio_por_mayor: string;
@@ -81,16 +81,11 @@ interface ProductoServidor extends ProductoBase {
 }
 
 // Respuesta del cliente
-export type RespuestaProductos = RespuestasProductos<DatosProductos>;
+export type RespuestaProductos = RespuestasProductos<Producto>;
 
 export type RespuestaProductosNoAutenticado =
   | RespuestaProductos
   | RespuestasComunesApiSinToken;
-
-interface DatosProductos {
-  productos: Array<Producto>;
-  paginacion: Paginacion;
-}
 
 /**
  * Debería obtener un producto
