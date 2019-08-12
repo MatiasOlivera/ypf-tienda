@@ -36,13 +36,11 @@ class BaseController
             $resultado = $consulta->ejecutarconsulta($parametros);
 
             $respuesta = [
-                $this->modeloPlural => $resultado['datos'],
-                'paginacion' => $resultado['paginacion']
+                $this->modeloPlural => $resultado->items(),
+                'paginacion' => $this->getPaginacion($resultado)
             ];
 
-            if ($resultado) {
-                return Respuesta::exito($respuesta, null, 200);
-            }
+            return Respuesta::exito($respuesta, null, 200);
         } catch (\Throwable $th) {
             $mensajeError = new MensajeError();
             $mensajeError->obtenerTodos($nombre);
@@ -177,6 +175,31 @@ class BaseController
 
             return Respuesta::error($mensajeError, 500);
         }
+    }
+
+    /**
+     * Obtener el objeto paginación
+     *
+     * @param $resultado
+     * @return array
+     */
+    private function getPaginacion($resultado): array
+    {
+        return [
+            "total" => $resultado->total(),
+            "porPagina" => $resultado->perPage(),
+            "paginaActual" => $resultado->currentPage(),
+            "ultimaPagina" => $resultado->lastPage(),
+            "desde" => $resultado->firstItem(),
+            "hasta" => $resultado->lastItem(),
+            "rutas" => [
+                "primeraPagina" => $resultado->toArray()['first_page_url'],
+                "ultimaPagina" => $resultado->toArray()['last_page_url'],
+                "siguientePagina" => $resultado->nextPageUrl(),
+                "paginaAnterior" => $resultado->previousPageUrl(),
+                "base" => $resultado->resolveCurrentPath(),
+            ]
+        ];
     }
 
     /**
