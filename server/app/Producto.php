@@ -29,8 +29,7 @@ class Producto extends Model
         'id_categoria',
         'precio_por_mayor',
         'consumidor_final',
-        'imagen',
-        'es_favorito'
+        'imagen'
     ];
 
     protected $hidden = [
@@ -78,23 +77,6 @@ class Producto extends Model
         return $this->belongsToMany('App\User', 'productos_favoritos', 'producto_id', 'cliente_usuario_id')
             ->as('favorito')
             ->withTimestamps();
-    }
-
-    /**
-     * Obtener si el usuario marco este producto como favorito
-     */
-    public function getEsFavoritoAttribute(): bool
-    {
-        if (Auth::check() === false) {
-            return false;
-        }
-
-        $esFavorito = $this->usuariosQueMarcaronComoFavorito()
-            ->wherePivot('cliente_usuario_id', Auth::user()->id)
-            ->get()
-            ->toArray();
-
-        return !empty($esFavorito);
     }
 
     public function categoria()
