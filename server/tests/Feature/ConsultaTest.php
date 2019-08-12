@@ -35,47 +35,6 @@ class ConsultaTest extends TestCase
     }
 
     /**
-     * Debería obtener una respuesta con datos y con paginación
-     *
-     * @return void
-     */
-    public function comprobarRespuesta($respuesta)
-    {
-        $this->assertIsArray($respuesta);
-        $this->assertArrayHasKey('datos', $respuesta);
-        $this->assertArrayHasKey('paginacion', $respuesta);
-
-        $this->assertIsArray($respuesta['datos']);
-        $this->assertIsArray($respuesta['paginacion']);
-
-        $claves = [
-            'total',
-            'porPagina',
-            'paginaActual',
-            'ultimaPagina',
-            'rutas',
-            'desde',
-            'hasta'
-        ];
-
-        foreach ($claves as $clave) {
-            $this->assertArrayHasKey($clave, $respuesta['paginacion']);
-        }
-
-        $clavesRutas = [
-            'primeraPagina',
-            'ultimaPagina',
-            'siguientePagina',
-            'paginaAnterior',
-            'base'
-        ];
-
-        foreach ($clavesRutas as $clave) {
-            $this->assertArrayHasKey($clave, $respuesta['paginacion']['rutas']);
-        }
-    }
-
-    /**
      * Debería obtener un listado vacío
      *
      * @return void
@@ -83,9 +42,7 @@ class ConsultaTest extends TestCase
     public function testDeberiaObtenerUnListadoVacio()
     {
         $respuesta = $this->consultar($this->parametrosPorDefecto);
-
-        $this->comprobarRespuesta($respuesta);
-        $this->assertEquals([], $respuesta['datos']);
+        $this->assertEquals([], $respuesta->items());
     }
 
     /**
@@ -99,27 +56,11 @@ class ConsultaTest extends TestCase
         $seeder->run();
 
         $respuesta = $this->consultar($this->parametrosPorDefecto);
-        $this->comprobarRespuesta($respuesta);
 
-        $usuarios = User::paginate(10)->items();
-        $paginacion =  [
-            "total" => 20,
-            "porPagina" => 10,
-            "paginaActual" => 1,
-            "ultimaPagina" => 2,
-            "rutas" => [
-                "primeraPagina" => "http://localhost?pagina=1",
-                "ultimaPagina" => "http://localhost?pagina=2",
-                "siguientePagina" => "http://localhost?pagina=2",
-                "paginaAnterior" => null,
-                "base" => "http://localhost"
-            ],
-            "desde" => 1,
-            "hasta" => 10
-        ];
+        $respuestaEsperada = User::paginate(10, ['*'], 'pagina')
+            ->toArray();
 
-        $this->assertEquals($usuarios, $respuesta['datos']);
-        $this->assertEquals($paginacion, $respuesta['paginacion']);
+        $this->assertEquals($respuestaEsperada, $respuesta->toArray());
     }
 
     /**
@@ -137,27 +78,12 @@ class ConsultaTest extends TestCase
             ['campos' => ['id', 'name', 'email']]
         );
         $respuesta = $this->consultar($parametros);
-        $this->comprobarRespuesta($respuesta);
 
-        $usuarios = User::select(['id', 'name', 'email'])->paginate(10);
-        $paginacion =  [
-            "total" => 20,
-            "porPagina" => 10,
-            "paginaActual" => 1,
-            "ultimaPagina" => 2,
-            "rutas" => [
-                "primeraPagina" => "http://localhost?pagina=1",
-                "ultimaPagina" => "http://localhost?pagina=2",
-                "siguientePagina" => "http://localhost?pagina=2",
-                "paginaAnterior" => null,
-                "base" => "http://localhost"
-            ],
-            "desde" => 1,
-            "hasta" => 10
-        ];
+        $respuestaEsperada = User::select(['id', 'name', 'email'])
+            ->paginate(10, ['*'], 'pagina')
+            ->toArray();
 
-        $this->assertEquals($usuarios->items(), $respuesta['datos']);
-        $this->assertEquals($paginacion, $respuesta['paginacion']);
+        $this->assertEquals($respuestaEsperada, $respuesta->toArray());
     }
 
     /**
@@ -175,27 +101,12 @@ class ConsultaTest extends TestCase
             ['relaciones' => ['cliente']]
         );
         $respuesta = $this->consultar($parametros);
-        $this->comprobarRespuesta($respuesta);
 
-        $usuarios = User::with('cliente')->paginate(10);
-        $paginacion =  [
-            "total" => 20,
-            "porPagina" => 10,
-            "paginaActual" => 1,
-            "ultimaPagina" => 2,
-            "rutas" => [
-                "primeraPagina" => "http://localhost?pagina=1",
-                "ultimaPagina" => "http://localhost?pagina=2",
-                "siguientePagina" => "http://localhost?pagina=2",
-                "paginaAnterior" => null,
-                "base" => "http://localhost"
-            ],
-            "desde" => 1,
-            "hasta" => 10
-        ];
+        $respuestaEsperada = User::with('cliente')
+            ->paginate(10, ['*'], 'pagina')
+            ->toArray();
 
-        $this->assertEquals($usuarios->items(), $respuesta['datos']);
-        $this->assertEquals($paginacion, $respuesta['paginacion']);
+        $this->assertEquals($respuestaEsperada, $respuesta->toArray());
     }
 
      /**
@@ -214,31 +125,14 @@ class ConsultaTest extends TestCase
             $usuario->delete();
         }
 
-        $usuariosEliminados = User::onlyTrashed()->paginate(10)->items();
+        $respuestaEsperada = User::onlyTrashed()
+            ->paginate(10, ['*'], 'pagina')
+            ->toArray();
 
         $parametros = array_replace($this->parametrosPorDefecto, ['eliminados' => true]);
         $respuesta = $this->consultar($parametros);
-        $this->comprobarRespuesta($respuesta);
 
-
-        $paginacion =  [
-            "total" => 10,
-            "porPagina" => 10,
-            "paginaActual" => 1,
-            "ultimaPagina" => 1,
-            "rutas" => [
-                "primeraPagina" => "http://localhost?pagina=1",
-                "ultimaPagina" => "http://localhost?pagina=1",
-                "siguientePagina" => null,
-                "paginaAnterior" => null,
-                "base" => "http://localhost"
-            ],
-            "desde" => 1,
-            "hasta" => 10
-        ];
-
-        $this->assertEquals($usuariosEliminados, $respuesta['datos']);
-        $this->assertEquals($paginacion, $respuesta['paginacion']);
+        $this->assertEquals($respuestaEsperada, $respuesta->toArray());
     }
 
     /**
@@ -257,29 +151,12 @@ class ConsultaTest extends TestCase
         );
         $respuesta = $this->consultar($parametros);
 
-        $usuarios = User::select(['id', 'name'])
+        $respuestaEsperada = User::select(['id', 'name'])
                     ->where('name', 'like', '%Valen%')
-                    ->paginate(10)
-                    ->items();
+                    ->paginate(10, ['*'], 'pagina')
+                    ->toArray();
 
-        $paginacion =  [
-            "total" => 2,
-            "porPagina" => 10,
-            "paginaActual" => 1,
-            "ultimaPagina" => 1,
-            "rutas" => [
-                "primeraPagina" => "http://localhost?pagina=1",
-                "ultimaPagina" => "http://localhost?pagina=1",
-                "siguientePagina" => null,
-                "paginaAnterior" => null,
-                "base" => "http://localhost"
-            ],
-            "desde" => 1,
-            "hasta" => 2
-        ];
-
-        $this->assertEquals($usuarios, $respuesta['datos']);
-        $this->assertEquals($paginacion, $respuesta['paginacion']);
+        $this->assertEquals($respuestaEsperada, $respuesta->toArray());
     }
 
     /**
@@ -298,25 +175,9 @@ class ConsultaTest extends TestCase
         );
         $respuesta = $this->consultar($parametros);
 
-        $usuarios = User::paginate(5)->items();
-        $paginacion =  [
-            "total" => 20,
-            "porPagina" => 5,
-            "paginaActual" => 1,
-            "ultimaPagina" => 4,
-            "rutas" => [
-                "primeraPagina" => "http://localhost?pagina=1",
-                "ultimaPagina" => "http://localhost?pagina=4",
-                "siguientePagina" => "http://localhost?pagina=2",
-                "paginaAnterior" => null,
-                "base" => "http://localhost"
-            ],
-            "desde" => 1,
-            "hasta" => 5
-        ];
+        $respuestaEsperada = User::paginate(5, ['*'], 'pagina')->toArray();
 
-        $this->assertEquals($usuarios, $respuesta['datos']);
-        $this->assertEquals($paginacion, $respuesta['paginacion']);
+        $this->assertEquals($respuestaEsperada, $respuesta->toArray());
     }
 
     /**
@@ -335,25 +196,11 @@ class ConsultaTest extends TestCase
         );
         $respuesta = $this->consultar($parametros);
 
-        $usuarios = User::orderBy('name', 'DESC')->paginate(10)->items();
-        $paginacion =  [
-            "total" => 20,
-            "porPagina" => 10,
-            "paginaActual" => 1,
-            "ultimaPagina" => 2,
-            "rutas" => [
-                "primeraPagina" => "http://localhost?pagina=1",
-                "ultimaPagina" => "http://localhost?pagina=2",
-                "siguientePagina" => "http://localhost?pagina=2",
-                "paginaAnterior" => null,
-                "base" => "http://localhost"
-            ],
-            "desde" => 1,
-            "hasta" => 10
-        ];
+        $respuestaEsperada = User::orderBy('name', 'DESC')
+            ->paginate(10, ['*'], 'pagina')
+            ->toArray();
 
-        $this->assertEquals($usuarios, $respuesta['datos']);
-        $this->assertEquals($paginacion, $respuesta['paginacion']);
+        $this->assertEquals($respuestaEsperada, $respuesta->toArray());
     }
 
     public function tearDown(): void

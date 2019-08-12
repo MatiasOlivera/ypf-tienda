@@ -64,7 +64,7 @@ class ClienteMailController extends Controller
             $mensajeExito->guardar($nombre, $this->generoModelo);
 
             $respuesta      = [$this->modeloSingular => $emailGuardado];
-            return Respuesta::exito($respuesta, $mensajeExito, 200);
+            return Respuesta::exito($respuesta, $mensajeExito, 201);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
             $mensajeError->guardar($nombre, $this->generoModelo);
@@ -95,14 +95,16 @@ class ClienteMailController extends Controller
      */
     public function update(ClienteMailRequest $request, Cliente $cliente, ClienteMail $mail)
     {
+        $inputs = $request->only('mail');
         $email = $request->input('mail');
+
         $nombres = [
             "exito" => "El email {$email}",
             "error" => "El email {$mail->mail}"
         ];
         $parametros = [
-            'inputs' => $email,
-            'modelo' => $mail,
+            'inputs' => $inputs,
+            'instancia' => $mail,
         ];
         return $this->baseController->update($parametros, $nombres);
     }
