@@ -7,12 +7,15 @@ import {
 import { EstadoBase } from '@/store/tipos-store';
 import { Producto } from '@/types/tipos-producto';
 import { Module } from 'vuex';
-import { OBTENER_PRODUCTOS } from '@/store/types/acciones';
+import { OBTENER_PRODUCTOS, ACTUALIZAR_PRODUCTO } from '@/store/types/acciones';
 import { Paginacion, ValidacionObtenerTodos } from '@/types/respuesta-tipos';
 import usarParametros, { EstadoParametros } from '@/store/mixins/parametros';
 import { MensajeError } from '@/types/mensaje-tipos';
 import { maquinaProductos, Estado, Evento } from './maquina-productos';
 import { OmniEvent } from 'xstate/lib/types';
+import moduloProductosFavoritos from './favoritos';
+import { MODULO_PRODUCTOS_FAVORITOS } from '@/store/types/modulos';
+import Vue from 'vue';
 
 interface EstadoProductos extends EstadoParametros<ParametrosGetProductos> {
   estadoActual: Estado;
@@ -28,6 +31,7 @@ const SET_PRODUCTOS = 'setProductos';
 const SET_PAGINACION = 'setPaginacion';
 const SET_VALIDACION = 'setValidacion';
 const SET_MENSAJE = 'setMensaje';
+const SET_PRODUCTO = 'setProducto';
 
 const parametros = usarParametros(OBTENER_PRODUCTOS);
 
@@ -124,6 +128,10 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
         }
         throw error;
       }
+    },
+
+    [ACTUALIZAR_PRODUCTO]({ commit }, producto: Producto): void {
+      commit(SET_PRODUCTO, producto as Producto);
     }
   },
 
@@ -139,6 +147,14 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
       estado.productos = productos;
     },
 
+    [SET_PRODUCTO](estado, producto: Producto): void {
+      const indice: number = estado.productos.findIndex(
+        (productoActual) => productoActual.id === producto.id
+      );
+
+      Vue.set(estado.productos, indice, producto);
+    },
+
     [SET_PAGINACION](estado, paginacion: Paginacion | null): void {
       estado.paginacion = paginacion;
     },
@@ -150,6 +166,10 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
     [SET_MENSAJE](estado, mensaje: MensajeError | null): void {
       estado.mensaje = mensaje;
     }
+  },
+
+  modules: {
+    [MODULO_PRODUCTOS_FAVORITOS]: moduloProductosFavoritos
   }
 };
 

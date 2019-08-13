@@ -26,3 +26,10 @@ export const ESTABLECER_ORDEN = 'establecerOrden';
  * Productos
  */
 export const OBTENER_PRODUCTOS = 'obtenerProductos';
+export const ACTUALIZAR_PRODUCTO = 'actualizarProducto';
+
+/**
+ * Productos favoritos
+ */
+export const AGREGAR_A_FAVORITOS = 'agregarAFavoritos';
+export const QUITAR_DE_FAVORITOS = 'quitarDeFavoritos';
