@@ -13,3 +13,7 @@ export interface Producto extends ProductoBase {
   precio_por_mayor: number;
   consumidor_final: number;
 }
+
+export interface ProductoCliente extends ProductoBase {
+  es_favorito: boolean;
+}
