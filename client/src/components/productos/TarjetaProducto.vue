@@ -18,20 +18,34 @@
 
     <div class="d-flex justify-content-between">
       <b-button
+        v-if="esFavorito"
+        id="quitar-favorito"
+        title="Quitar de favoritos"
+        pill
+        variant="light"
+        class="d-flex align-items-center"
+        @click="clickQuitarFavorito"
+      >
+        <feather type="heart" size="1em" stroke="none" fill="#dc3545" />
+      </b-button>
+
+      <b-button
+        v-else
         id="agregar-favorito"
         title="Agregar a favoritos"
-        variant="outline-secondary"
+        pill
+        variant="light"
         class="d-flex align-items-center"
-        :class="[hover ? 'mostrar-icono' : 'ocultar-icono']"
         @click="clickAgregarFavorito"
       >
-        <feather type="heart" size="1em" />
+        <feather type="heart" size="1em" stroke="#dc3545" />
       </b-button>
 
       <b-button
         id="agregar-carrito"
         title="Agregar al carrito"
-        variant="outline-primary"
+        pill
+        variant="light"
         class="d-flex align-items-center"
         @click="clickAgregarCarrito"
       >
@@ -52,6 +66,7 @@ import filtroCapitalizarMixin from '@/mixins/string/filtro-capitalizar-mixin';
 export type PropNombre = string;
 export type PropPresentacion = string;
 export type PropImagen = string;
+export type PropEsFavorito = boolean;
 
 interface Data {
   hover: boolean;
@@ -76,7 +91,12 @@ export default Vue.extend({
     imagen: {
       type: String,
       default: ''
-    } as PropValidator<PropImagen>
+    } as PropValidator<PropImagen>,
+
+    esFavorito: {
+      type: Boolean,
+      default: false
+    } as PropValidator<PropEsFavorito>
   },
 
   data(): Data {
@@ -96,6 +116,10 @@ export default Vue.extend({
 
     clickAgregarFavorito(): void {
       this.$emit('clickAgregarFavorito');
+    },
+
+    clickQuitarFavorito(): void {
+      this.$emit('clickQuitarFavorito');
     },
 
     clickAgregarCarrito(): void {
