@@ -52,6 +52,9 @@
                 :nombre="producto.nombre"
                 :presentacion="producto.presentacion"
                 :imagen="producto.imagen"
+                :es-favorito="producto.es_favorito"
+                @clickAgregarFavorito="agregarAFavoritos(producto.id)"
+                @clickQuitarFavorito="quitarDeFavoritos(producto.id)"
               ></TarjetaProducto>
             </b-col>
           </b-row>
@@ -100,11 +103,16 @@ import filtroPlaceholderMixin from '../mixins/string/filtro-placeholder-mixin';
 import filtroPluralizarMixin from '../mixins/string/filtro-pluralizar-mixin';
 
 // Store
-import { MODULO_PRODUCTOS } from '../store/types/modulos';
+import {
+  MODULO_PRODUCTOS,
+  PRODUCTOS_PRODUCTOS_FAVORITOS
+} from '../store/types/modulos';
 import {
   OBTENER_PRODUCTOS,
   ESTABLECER_BUSCAR,
-  ESTABLECER_PAGINA
+  ESTABLECER_PAGINA,
+  AGREGAR_A_FAVORITOS,
+  QUITAR_DE_FAVORITOS
 } from '../store/types/acciones';
 
 export default Vue.extend({
@@ -158,6 +166,11 @@ export default Vue.extend({
       OBTENER_PRODUCTOS,
       ESTABLECER_BUSCAR,
       ESTABLECER_PAGINA
+    ]),
+
+    ...mapActions(PRODUCTOS_PRODUCTOS_FAVORITOS, [
+      AGREGAR_A_FAVORITOS,
+      QUITAR_DE_FAVORITOS
     ])
   }
 });
