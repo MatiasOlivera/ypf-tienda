@@ -33,17 +33,11 @@ class ProductosController extends Controller
             $soloFavoritosOriginal = $request->query('soloFavoritos', false);
             $soloFavoritos = $soloFavoritosOriginal === 'true' ? true : false;
 
-            if (Auth::check()) {
-                if ($soloFavoritos === true) {
-                    $modelo = Producto::with('usuariosQueMarcaronComoFavorito')
-                        ->whereHas('usuariosQueMarcaronComoFavorito', function (Builder $consulta) {
-                            $consulta->where('cliente_usuario_id', Auth::id());
-                        });
-                } else {
-                    $modelo = Producto::with(['usuariosQueMarcaronComoFavorito' => function ($consulta) {
+            if (Auth::check() && $soloFavoritos === true) {
+                $modelo = Producto::with('usuariosQueMarcaronComoFavorito')
+                    ->whereHas('usuariosQueMarcaronComoFavorito', function (Builder $consulta) {
                         $consulta->where('cliente_usuario_id', Auth::id());
-                    }]);
-                }
+                    });
             } else {
                 $modelo = 'Producto';
             }
