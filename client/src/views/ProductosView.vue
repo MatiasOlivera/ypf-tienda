@@ -52,6 +52,7 @@
                 :nombre="producto.nombre"
                 :presentacion="producto.presentacion"
                 :imagen="producto.imagen"
+                :esta-autenticado="estaLogueado"
                 :es-favorito="producto.es_favorito"
                 @clickAgregarFavorito="agregarAFavoritos(producto.id)"
                 @clickQuitarFavorito="quitarDeFavoritos(producto.id)"
@@ -104,6 +105,7 @@ import filtroPluralizarMixin from '../mixins/string/filtro-pluralizar-mixin';
 
 // Store
 import {
+  MODULO_AUTENTICACION,
   MODULO_PRODUCTOS,
   PRODUCTOS_PRODUCTOS_FAVORITOS
 } from '../store/types/modulos';
@@ -129,6 +131,8 @@ export default Vue.extend({
   mixins: [filtroPlaceholderMixin, filtroPluralizarMixin],
 
   computed: {
+    ...mapState(MODULO_AUTENTICACION, ['estaLogueado']),
+
     ...mapState(MODULO_PRODUCTOS, [
       'parametros',
       'productos',

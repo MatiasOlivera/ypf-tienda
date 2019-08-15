@@ -16,30 +16,37 @@
       {{ presentacion | capitalizar }}
     </b-card-text>
 
-    <div class="d-flex justify-content-between">
-      <b-button
-        v-if="esFavorito"
-        id="quitar-favorito"
-        title="Quitar de favoritos"
-        pill
-        variant="light"
-        class="d-flex align-items-center"
-        @click="clickQuitarFavorito"
-      >
-        <feather type="heart" size="1em" stroke="none" fill="#dc3545" />
-      </b-button>
+    <div
+      class="d-flex"
+      :class="[
+        estaAutenticado ? 'justify-content-between' : 'justify-content-end'
+      ]"
+    >
+      <template v-if="estaAutenticado">
+        <b-button
+          v-if="esFavorito"
+          id="quitar-favorito"
+          title="Quitar de favoritos"
+          pill
+          variant="light"
+          class="d-flex align-items-center"
+          @click="clickQuitarFavorito"
+        >
+          <feather type="heart" size="1em" stroke="none" fill="#dc3545" />
+        </b-button>
 
-      <b-button
-        v-else
-        id="agregar-favorito"
-        title="Agregar a favoritos"
-        pill
-        variant="light"
-        class="d-flex align-items-center"
-        @click="clickAgregarFavorito"
-      >
-        <feather type="heart" size="1em" stroke="#dc3545" />
-      </b-button>
+        <b-button
+          v-else
+          id="agregar-favorito"
+          title="Agregar a favoritos"
+          pill
+          variant="light"
+          class="d-flex align-items-center"
+          @click="clickAgregarFavorito"
+        >
+          <feather type="heart" size="1em" stroke="#dc3545" />
+        </b-button>
+      </template>
 
       <b-button
         id="agregar-carrito"
@@ -66,6 +73,7 @@ import filtroCapitalizarMixin from '@/mixins/string/filtro-capitalizar-mixin';
 export type PropNombre = string;
 export type PropPresentacion = string;
 export type PropImagen = string;
+export type PropEstaAutenticado = boolean;
 export type PropEsFavorito = boolean;
 
 interface Data {
@@ -92,6 +100,11 @@ export default Vue.extend({
       type: String,
       default: ''
     } as PropValidator<PropImagen>,
+
+    estaAutenticado: {
+      type: Boolean,
+      default: false
+    } as PropValidator<PropEstaAutenticado>,
 
     esFavorito: {
       type: Boolean,
