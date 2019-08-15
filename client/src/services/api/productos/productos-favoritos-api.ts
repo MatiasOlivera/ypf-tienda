@@ -4,7 +4,7 @@ import { clienteApi } from '@/services/cliente-api';
 import { MensajeError } from '@/types/mensaje-tipos';
 import { RespuestasComunesApi } from '@/types/respuesta-tipos';
 import { ProductoCliente } from '@/types/tipos-producto';
-import { RespuestasProducto } from './productos-api';
+import { RespuestasProducto } from './producto/producto-tipo';
 
 export type RespuestaProductoFavorito =
   | RespuestasProducto<ProductoCliente>

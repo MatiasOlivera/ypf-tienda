@@ -1,9 +1,5 @@
 /* eslint-disable no-param-reassign */
-import {
-  getProductos,
-  RespuestaProductosNoAutenticado,
-  ParametrosGetProductos
-} from '@/services/api/productos/productos-api';
+import { getProductos } from '@/services/api/productos';
 import { EstadoBase } from '@/store/tipos-store';
 import { Producto } from '@/types/tipos-producto';
 import { Module } from 'vuex';
@@ -16,6 +12,10 @@ import { OmniEvent } from 'xstate/lib/types';
 import moduloProductosFavoritos from './favoritos';
 import { MODULO_PRODUCTOS_FAVORITOS } from '@/store/types/modulos';
 import Vue from 'vue';
+import {
+  ParametrosGetProductos,
+  RespuestaProductosNoAutenticado
+} from '@/services/api/productos/productos/productos-tipos';
 
 interface EstadoProductos extends EstadoParametros<ParametrosGetProductos> {
   estadoActual: Estado;
