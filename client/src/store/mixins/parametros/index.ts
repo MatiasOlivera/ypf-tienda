@@ -25,7 +25,7 @@ export interface EstadoParametros<
 }
 
 // Acciones
-const RESETEAR_PAGINA = 'resetearPagina';
+export const RESETEAR_PAGINA = 'resetearPagina';
 
 // Mutaciones
 const SET_BUSCAR = 'setBuscar';

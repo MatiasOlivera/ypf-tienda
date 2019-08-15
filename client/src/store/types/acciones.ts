@@ -25,6 +25,7 @@ export const ESTABLECER_ORDEN = 'establecerOrden';
 /**
  * Productos
  */
+export const ESTABLECER_SOLO_FAVORITOS = 'establecerSoloFavoritos';
 export const OBTENER_PRODUCTOS = 'obtenerProductos';
 export const ACTUALIZAR_PRODUCTO = 'actualizarProducto';
 

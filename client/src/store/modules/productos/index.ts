@@ -6,9 +6,16 @@ import {
 import { EstadoBase } from '@/store/tipos-store';
 import { Producto } from '@/types/tipos-producto';
 import { Module } from 'vuex';
-import { OBTENER_PRODUCTOS, ACTUALIZAR_PRODUCTO } from '@/store/types/acciones';
+import {
+  OBTENER_PRODUCTOS,
+  ACTUALIZAR_PRODUCTO,
+  ESTABLECER_SOLO_FAVORITOS
+} from '@/store/types/acciones';
 import { Paginacion, ValidacionObtenerTodos } from '@/types/respuesta-tipos';
-import usarParametros, { EstadoParametros } from '@/store/mixins/parametros';
+import usarParametros, {
+  EstadoParametros,
+  RESETEAR_PAGINA
+} from '@/store/mixins/parametros';
 import { MensajeError } from '@/types/mensaje-tipos';
 import { maquinaProductos, Estado, Evento } from './maquina-productos';
 import { OmniEvent } from 'xstate/lib/types';
@@ -19,7 +26,8 @@ import {
   ParametrosGetProductosNoAutenticado,
   RespuestaProductosNoAutenticado,
   ParametrosGetProductosAutenticado,
-  RespuestaProductosAutenticado
+  RespuestaProductosAutenticado,
+  SoloFavoritos
 } from '@/services/api/productos/productos/productos-tipos';
 
 export type ParametrosObtenerProductos =
@@ -43,6 +51,7 @@ interface EstadoProductos extends EstadoParametros<ParametrosObtenerProductos> {
 }
 
 // Mutaciones
+const SET_SOLO_FAVORITOS = 'setSoloFavoritos';
 const MAQUINA_EVENTO = 'maquinaEvento';
 const SET_PRODUCTOS = 'setProductos';
 const SET_PAGINACION = 'setPaginacion';
@@ -88,6 +97,15 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
 
   actions: {
     ...parametros.actions,
+
+    [ESTABLECER_SOLO_FAVORITOS](
+      { commit, dispatch },
+      soloFavoritos: SoloFavoritos
+    ): void {
+      commit(SET_SOLO_FAVORITOS, soloFavoritos);
+      dispatch(RESETEAR_PAGINA);
+      dispatch(OBTENER_PRODUCTOS);
+    },
 
     async [OBTENER_PRODUCTOS]({
       commit,
@@ -163,6 +181,11 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
 
   mutations: {
     ...parametros.mutations,
+
+    [SET_SOLO_FAVORITOS](estado, soloFavoritos: SoloFavoritos): void {
+      // @ts-ignore
+      estado.parametros.soloFavoritos = soloFavoritos;
+    },
 
     [MAQUINA_EVENTO](estado, evento: OmniEvent<Evento>): void {
       const { estadoActual } = estado;

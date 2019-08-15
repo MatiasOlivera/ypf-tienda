@@ -24,9 +24,12 @@ export type CamposOrdenamientoNoAutenticado =
   | 'updated_at'
   | 'deleted_at';
 
+export type SoloFavoritos = boolean;
+
 export interface ParametrosGetProductosAutenticado
   extends ParametrosObtenerTodos<CamposOrdenamientoAutenticado> {
   soloEliminados?: boolean;
+  soloFavoritos?: SoloFavoritos;
 }
 
 export type CamposOrdenamientoAutenticado =

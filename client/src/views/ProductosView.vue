@@ -26,6 +26,12 @@
             }}
           </p>
         </div>
+
+        <div v-if="estaLogueado" class="mb-5">
+          <b-form-checkbox v-model="soloFavoritos" switch name="solo-favoritos">
+            Solo favoritos
+          </b-form-checkbox>
+        </div>
       </b-col>
 
       <b-col lg="8">
@@ -113,9 +119,15 @@ import {
   OBTENER_PRODUCTOS,
   ESTABLECER_BUSCAR,
   ESTABLECER_PAGINA,
+  ESTABLECER_SOLO_FAVORITOS,
   AGREGAR_A_FAVORITOS,
   QUITAR_DE_FAVORITOS
 } from '../store/types/acciones';
+import { SoloFavoritos } from '../services/api/productos/productos/productos-tipos';
+
+interface Data {
+  soloFavoritos: SoloFavoritos;
+}
 
 export default Vue.extend({
   name: 'ProductosView',
@@ -129,6 +141,12 @@ export default Vue.extend({
   },
 
   mixins: [filtroPlaceholderMixin, filtroPluralizarMixin],
+
+  data(): Data {
+    return {
+      soloFavoritos: false
+    };
+  },
 
   computed: {
     ...mapState(MODULO_AUTENTICACION, ['estaLogueado']),
@@ -159,6 +177,12 @@ export default Vue.extend({
     }
   },
 
+  watch: {
+    soloFavoritos: function(valor) {
+      this.establecerSoloFavoritos(valor);
+    }
+  },
+
   created() {
     if (!this.hayProductos) {
       this.obtenerProductos().catch(() => {});
@@ -169,7 +193,8 @@ export default Vue.extend({
     ...mapActions(MODULO_PRODUCTOS, [
       OBTENER_PRODUCTOS,
       ESTABLECER_BUSCAR,
-      ESTABLECER_PAGINA
+      ESTABLECER_PAGINA,
+      ESTABLECER_SOLO_FAVORITOS
     ]),
 
     ...mapActions(PRODUCTOS_PRODUCTOS_FAVORITOS, [
