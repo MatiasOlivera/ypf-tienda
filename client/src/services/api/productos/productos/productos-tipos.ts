@@ -4,22 +4,35 @@ import {
   Paginacion,
   RespuestaValidacion,
   RespuestaMensajeError,
-  RespuestasComunesApiSinToken
+  RespuestasComunesApiSinToken,
+  RespuestasComunesApi
 } from '@/types/respuesta-tipos';
 import { Respuesta } from '@/services/cliente-http';
-import { Producto } from '@/types/tipos-producto';
+import { Producto, ProductoCliente } from '@/types/tipos-producto';
 import { ProductoServidor } from '../producto/producto-tipo';
+import { Omitir } from '@/types/utilidades';
 
-export type ParametrosGetProductos = ParametrosObtenerTodos<CamposOrdenamiento>;
+export type ParametrosGetProductosNoAutenticado = Omitir<
+  ParametrosObtenerTodos<CamposOrdenamientoNoAutenticado>,
+  'eliminados'
+>;
 
-export type CamposOrdenamiento =
+export type CamposOrdenamientoNoAutenticado =
   | 'codigo'
   | 'nombre'
-  | 'precio_por_mayor'
-  | 'consumidor_final'
   | 'created_at'
   | 'updated_at'
   | 'deleted_at';
+
+export interface ParametrosGetProductosAutenticado
+  extends ParametrosObtenerTodos<CamposOrdenamientoAutenticado> {
+  soloEliminados?: boolean;
+}
+
+export type CamposOrdenamientoAutenticado =
+  | CamposOrdenamientoNoAutenticado
+  | 'precio_por_mayor'
+  | 'consumidor_final';
 
 interface DatosProductos<TipoProducto> {
   productos: Array<TipoProducto>;
@@ -44,3 +57,7 @@ export type RespuestaProductos = RespuestasProductos<Producto>;
 export type RespuestaProductosNoAutenticado =
   | RespuestaProductos
   | RespuestasComunesApiSinToken;
+
+export type RespuestaProductosAutenticado =
+  | RespuestasProductos<ProductoCliente>
+  | RespuestasComunesApi;

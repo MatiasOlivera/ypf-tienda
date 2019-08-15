@@ -1,7 +1,7 @@
 import { MensajeError } from '@/types/mensaje-tipos';
 import { convertirPreciosANumero } from '../transformar-producto';
 import {
-  ParametrosGetProductos,
+  ParametrosGetProductosNoAutenticado,
   RespuestaProductosNoAutenticado,
   RespuestaProductosServidorNoAutenticado
 } from './productos-tipos';
@@ -11,7 +11,7 @@ import { clienteApiSinToken } from '@/services/cliente-api';
  * Debería obtener un listado de productos
  */
 export async function getProductos(
-  parametros?: ParametrosGetProductos
+  parametros?: ParametrosGetProductosNoAutenticado
 ): Promise<RespuestaProductosNoAutenticado> {
   try {
     const respuesta = await clienteApiSinToken<

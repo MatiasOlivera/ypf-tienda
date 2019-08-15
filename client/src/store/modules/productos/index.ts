@@ -1,5 +1,8 @@
 /* eslint-disable no-param-reassign */
-import { getProductos } from '@/services/api/productos';
+import {
+  getProductos,
+  getProductosAutenticado
+} from '@/services/api/productos';
 import { EstadoBase } from '@/store/tipos-store';
 import { Producto } from '@/types/tipos-producto';
 import { Module } from 'vuex';
@@ -13,11 +16,25 @@ import moduloProductosFavoritos from './favoritos';
 import { MODULO_PRODUCTOS_FAVORITOS } from '@/store/types/modulos';
 import Vue from 'vue';
 import {
-  ParametrosGetProductos,
-  RespuestaProductosNoAutenticado
+  ParametrosGetProductosNoAutenticado,
+  RespuestaProductosNoAutenticado,
+  ParametrosGetProductosAutenticado,
+  RespuestaProductosAutenticado
 } from '@/services/api/productos/productos/productos-tipos';
 
-interface EstadoProductos extends EstadoParametros<ParametrosGetProductos> {
+export type ParametrosObtenerProductos =
+  | ParametrosGetProductosNoAutenticado
+  | ParametrosGetProductosAutenticado;
+
+type RespuestaGetProductos =
+  | RespuestaProductosAutenticado
+  | RespuestaProductosNoAutenticado;
+
+export type RespuestaObtenerProductos = Promise<
+  RespuestaGetProductos | undefined
+>;
+
+interface EstadoProductos extends EstadoParametros<ParametrosObtenerProductos> {
   estadoActual: Estado;
   productos: Array<Producto>;
   paginacion: Paginacion | null;
@@ -75,8 +92,9 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
     async [OBTENER_PRODUCTOS]({
       commit,
       getters,
-      state
-    }): Promise<RespuestaProductosNoAutenticado | undefined> {
+      state,
+      rootState
+    }): RespuestaObtenerProductos {
       try {
         if (getters.estadoEsPendiente) {
           return;
@@ -84,7 +102,15 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
 
         commit(MAQUINA_EVENTO, 'OBTENER');
 
-        const respuesta = await getProductos(state.parametros);
+        let respuesta: RespuestaGetProductos;
+
+        // @ts-ignore
+        if (rootState.autenticacion.estaLogueado) {
+          respuesta = await getProductosAutenticado(state.parametros);
+        } else {
+          // @ts-ignore
+          respuesta = await getProductos(state.parametros);
+        }
         if (respuesta.ok) {
           commit(MAQUINA_EVENTO, 'OBTUVO_PRODUCTOS');
 
