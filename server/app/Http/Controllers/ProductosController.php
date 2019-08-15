@@ -30,7 +30,8 @@ class ProductosController extends Controller
     public function index(ProductosRequest $request)
     {
         try {
-            $soloFavoritos = (bool) $request->query('soloFavoritos', false);
+            $soloFavoritosOriginal = $request->query('soloFavoritos', false);
+            $soloFavoritos = $soloFavoritosOriginal === 'true' ? true : false;
 
             if (Auth::check()) {
                 if ($soloFavoritos === true) {
