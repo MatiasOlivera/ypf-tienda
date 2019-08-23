@@ -19,9 +19,9 @@
           <h1 class="h2">
             {{ (parametros.buscar || '') | placeholder('Productos') }}
           </h1>
-          <p>
+          <p v-if="paginacion && paginacion.total">
             {{
-              (paginacion.total || 0)
+              paginacion.total
                 | pluralizar(['producto', 'productos'], { incluirNumero: true })
             }}
           </p>
