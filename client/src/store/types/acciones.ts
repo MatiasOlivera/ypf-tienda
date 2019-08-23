@@ -32,5 +32,6 @@ export const ACTUALIZAR_PRODUCTO = 'actualizarProducto';
 /**
  * Productos favoritos
  */
+export const ESTABLECER_FAVORITOS = 'establecerFavoritos';
 export const AGREGAR_A_FAVORITOS = 'agregarAFavoritos';
 export const QUITAR_DE_FAVORITOS = 'quitarDeFavoritos';

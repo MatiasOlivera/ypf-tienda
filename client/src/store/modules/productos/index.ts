@@ -4,12 +4,17 @@ import {
   getProductosAutenticado
 } from '@/services/api/productos';
 import { EstadoBase } from '@/store/tipos-store';
-import { Producto } from '@/types/tipos-producto';
+import {
+  Producto,
+  TipoProductos,
+  ProductoFavorito
+} from '@/types/tipos-producto';
 import { Module } from 'vuex';
 import {
   OBTENER_PRODUCTOS,
   ACTUALIZAR_PRODUCTO,
-  ESTABLECER_SOLO_FAVORITOS
+  ESTABLECER_SOLO_FAVORITOS,
+  ESTABLECER_FAVORITOS
 } from '@/store/types/acciones';
 import { Paginacion, ValidacionObtenerTodos } from '@/types/respuesta-tipos';
 import usarParametros, {
@@ -20,7 +25,10 @@ import { MensajeError } from '@/types/mensaje-tipos';
 import { maquinaProductos, Estado, Evento } from './maquina-productos';
 import { OmniEvent } from 'xstate/lib/types';
 import moduloProductosFavoritos from './favoritos';
-import { MODULO_PRODUCTOS_FAVORITOS } from '@/store/types/modulos';
+import {
+  MODULO_PRODUCTOS_FAVORITOS,
+  obtenerEspacioDeNombres
+} from '@/store/types/modulos';
 import Vue from 'vue';
 import {
   ParametrosGetProductosNoAutenticado,
@@ -44,11 +52,16 @@ export type RespuestaObtenerProductos = Promise<
 
 interface EstadoProductos extends EstadoParametros<ParametrosObtenerProductos> {
   estadoActual: Estado;
-  productos: Array<Producto>;
+  productos: TipoProductos;
   paginacion: Paginacion | null;
   validacion: ValidacionObtenerTodos;
   mensaje: MensajeError | null;
 }
+
+const establecerFavoritos = obtenerEspacioDeNombres([
+  MODULO_PRODUCTOS_FAVORITOS,
+  ESTABLECER_FAVORITOS
+]);
 
 // Mutaciones
 const SET_SOLO_FAVORITOS = 'setSoloFavoritos';
@@ -109,6 +122,7 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
 
     async [OBTENER_PRODUCTOS]({
       commit,
+      dispatch,
       getters,
       state,
       rootState
@@ -133,8 +147,11 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
           commit(MAQUINA_EVENTO, 'OBTUVO_PRODUCTOS');
 
           if (getters.estadoEsProductos) {
-            commit(SET_PRODUCTOS, respuesta.datos.productos);
-            commit(SET_PAGINACION, respuesta.datos.paginacion);
+            const { productos, paginacion } = respuesta.datos;
+
+            commit(SET_PRODUCTOS, productos);
+            await dispatch(establecerFavoritos, productos);
+            commit(SET_PAGINACION, paginacion);
           }
         } else {
           switch (respuesta.estado) {
@@ -201,7 +218,9 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
         (productoActual) => productoActual.id === producto.id
       );
 
-      Vue.set(estado.productos, indice, producto);
+      if (indice >= 0) {
+        Vue.set(estado.productos, indice, producto);
+      }
     },
 
     [SET_PAGINACION](estado, paginacion: Paginacion | null): void {
