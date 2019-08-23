@@ -26,6 +26,7 @@
         <b-button
           v-if="esFavorito"
           id="quitar-favorito"
+          :disabled="estadoEsPendiente"
           title="Quitar de favoritos"
           pill
           variant="light"
@@ -38,6 +39,7 @@
         <b-button
           v-else
           id="agregar-favorito"
+          :disabled="estadoEsPendiente"
           title="Agregar a favoritos"
           pill
           variant="light"
@@ -68,6 +70,7 @@ import { PropValidator } from 'vue/types/options';
 
 // Mixins
 import filtroCapitalizarMixin from '@/mixins/string/filtro-capitalizar-mixin';
+import { EstadoFavoritoCadena } from '../../store/modules/productos/favoritos/maquina-favoritos';
 
 // Props
 export type PropNombre = string;
@@ -75,6 +78,7 @@ export type PropPresentacion = string;
 export type PropImagen = string;
 export type PropEstaAutenticado = boolean;
 export type PropEsFavorito = boolean;
+export type PropEstadoFavorito = EstadoFavoritoCadena;
 
 interface Data {
   hover: boolean;
@@ -109,13 +113,24 @@ export default Vue.extend({
     esFavorito: {
       type: Boolean,
       default: false
-    } as PropValidator<PropEsFavorito>
+    } as PropValidator<PropEsFavorito>,
+
+    estadoFavorito: {
+      type: String,
+      default: 'noEsFavorito'
+    } as PropValidator<PropEstadoFavorito>
   },
 
   data(): Data {
     return {
       hover: false
     };
+  },
+
+  computed: {
+    estadoEsPendiente(): boolean {
+      return this.estadoFavorito === 'pendiente';
+    }
   },
 
   methods: {

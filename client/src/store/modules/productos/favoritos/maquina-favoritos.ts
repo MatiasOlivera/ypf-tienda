@@ -84,6 +84,12 @@ export type EventoFavorito =
   | { type: 'INVERTIDO' }
   | { type: 'NO_INVERTIDO' };
 
+export type EstadoFavoritoCadena =
+  | 'desconocido'
+  | 'noEsFavorito'
+  | 'pendiente'
+  | 'esFavorito';
+
 export type EstadoFavorito = State<ContextoFavorito, EventoFavorito>;
 
 export default maquinaProductoFavorito;

@@ -47,7 +47,7 @@
         <template v-if="mostrarProductos">
           <b-row class="mb-5">
             <b-col
-              v-for="producto in productos"
+              v-for="producto in productosConRelaciones"
               :key="producto.id"
               sm="12"
               md="6"
@@ -59,9 +59,10 @@
                 :presentacion="producto.presentacion"
                 :imagen="producto.imagen"
                 :esta-autenticado="estaLogueado"
-                :es-favorito="producto.es_favorito"
-                @clickAgregarFavorito="agregarAFavoritos(producto.id)"
-                @clickQuitarFavorito="quitarDeFavoritos(producto.id)"
+                :es-favorito="producto.esFavorito.valor"
+                :estado-favorito="producto.esFavorito.estadoActual"
+                @clickAgregarFavorito="agregarAFavoritos(producto.esFavorito)"
+                @clickQuitarFavorito="quitarDeFavoritos(producto.esFavorito)"
               ></TarjetaProducto>
             </b-col>
           </b-row>
@@ -151,17 +152,13 @@ export default Vue.extend({
   computed: {
     ...mapState(MODULO_AUTENTICACION, ['estaLogueado']),
 
-    ...mapState(MODULO_PRODUCTOS, [
-      'parametros',
-      'productos',
-      'paginacion',
-      'mensaje'
-    ]),
+    ...mapState(MODULO_PRODUCTOS, ['parametros', 'paginacion', 'mensaje']),
     ...mapGetters(MODULO_PRODUCTOS, [
       'estadoEsPendiente',
       'estadoEsProductos',
       'estadoEsValidacion',
-      'estadoEsMensaje'
+      'estadoEsMensaje',
+      'productosConRelaciones'
     ]),
 
     mostrarProductos(): boolean {
@@ -173,7 +170,7 @@ export default Vue.extend({
     },
 
     hayProductos(): boolean {
-      return !isEmpty(this.productos);
+      return !isEmpty(this.productosConRelaciones);
     }
   },
 
