@@ -25,5 +25,9 @@ export interface ProductoFavorito {
   estadoActual: StateValue;
 }
 
+export interface ProductoConRelaciones extends ProductoBase {
+  esFavorito: ProductoFavorito;
+}
+
 export type TipoProducto = ProductoBase | ProductoCliente;
 export type TipoProductos = Array<ProductoBase | ProductoCliente>;

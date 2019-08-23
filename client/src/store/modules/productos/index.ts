@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+import isEmpty from 'lodash/isEmpty';
 import {
   getProductos,
   getProductosAutenticado
@@ -7,6 +8,7 @@ import { EstadoBase } from '@/store/tipos-store';
 import {
   Producto,
   TipoProductos,
+  ProductoConRelaciones,
   ProductoFavorito
 } from '@/types/tipos-producto';
 import { Module } from 'vuex';
@@ -105,6 +107,39 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
 
     estadoEsMensaje(estado): boolean {
       return estado.estadoActual.matches('mensaje');
+    },
+
+    productosConRelaciones(estado, getters): Array<ProductoConRelaciones> {
+      if (isEmpty(estado.productos)) {
+        return [];
+      }
+
+      const favoritos: Array<ProductoFavorito> =
+        getters['favoritos/obtenerFavoritos'];
+
+      if (isEmpty(favoritos)) {
+        return [];
+      }
+
+      return estado.productos.map((producto) => {
+        const favorito = favoritos.find((actual) => actual.id === producto.id);
+
+        if (!favorito) {
+          return {
+            ...producto,
+            esFavorito: {
+              id: producto.id,
+              valor: false,
+              estadoActual: 'noEsFavorito'
+            }
+          };
+        }
+
+        return {
+          ...producto,
+          esFavorito: { ...favorito }
+        };
+      });
     }
   },
 
