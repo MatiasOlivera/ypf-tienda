@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Cotizacion;
 use App\EmpleadoCargo;
 use Sofa\Eloquence\Mappable;
 use Sofa\Eloquence\Eloquence;
@@ -56,5 +57,10 @@ class Empleado extends Model
     public function cargo()
     {
         return $this->belongsTo(EmpleadoCargo::class, 'id_cargo');
+    }
+
+    public function cotizaciones()
+    {
+        return $this->hasMany(Cotizacion::class, 'id_cot');
     }
 }

@@ -3,6 +3,7 @@
 namespace Tests\Feature\app;
 
 use App\Empleado;
+use App\Cotizacion;
 use Tests\TestCase;
 use App\EmpleadoCargo;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -45,5 +46,21 @@ class EmpleadoTest extends TestCase
 
         $this->assertInstanceOf(EmpleadoCargo::class, $cargo);
         $this->assertEquals($empleado->cargo_id, $cargo->id);
+    }
+
+    public function test_deberia_acceder_a_la_relacion_cotizaciones()
+    {
+        $empleado = factory(Empleado::class)->create();
+
+        $nuevaCotizacion = factory(Cotizacion::class)->make([
+            'empleado_id' => $empleado->id
+        ]);
+
+        $empleado->cotizaciones()->save($nuevaCotizacion);
+
+        $cotizacion = $empleado->cotizaciones()->first();
+
+        $this->assertInstanceOf(Cotizacion::class, $cotizacion);
+        $this->assertEquals($cotizacion->empleado_id, $empleado->id);
     }
 }
