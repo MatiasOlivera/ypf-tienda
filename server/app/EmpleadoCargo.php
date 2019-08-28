@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Empleado;
 use Sofa\Eloquence\Mappable;
 use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
@@ -24,4 +25,9 @@ class EmpleadoCargo extends Model
     protected $fillable = ['nombre'];
 
     public $timestamps = false;
+
+    public function empleados()
+    {
+        return $this->hasMany(Empleado::class, 'id_cargo');
+    }
 }
