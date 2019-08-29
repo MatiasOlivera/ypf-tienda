@@ -4,6 +4,7 @@ namespace App;
 
 use App\Cliente;
 use App\Empleado;
+use App\Cotizacion;
 use App\Observacion;
 use App\PedidoEstado;
 use App\ClienteTelefono;
@@ -116,5 +117,10 @@ class Pedido extends Model
     public function observacion()
     {
         return $this->hasOne(Observacion::class, 'id', 'id_observacion');
+    }
+
+    public function cotizacion()
+    {
+        return $this->belongsTo(Cotizacion::class, 'id_pedido', 'id_pedido');
     }
 }

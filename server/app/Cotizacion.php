@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Pedido;
 use App\Observacion;
 use App\ClienteTelefono;
 use App\ClienteDomicilio;
@@ -107,5 +108,10 @@ class Cotizacion extends Model
     public function observacion()
     {
         return $this->hasOne(Observacion::class, 'id', 'id_observacion');
+    }
+
+    public function pedido()
+    {
+        return $this->hasOne(Pedido::class, 'id_pedido', 'id_pedido');
     }
 }

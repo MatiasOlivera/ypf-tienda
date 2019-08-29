@@ -1,5 +1,6 @@
 <?php
 
+use App\Pedido;
 use App\Cliente;
 use App\Empleado;
 use App\Cotizacion;
@@ -43,6 +44,13 @@ $factory->define(Cotizacion::class, function (Faker $faker) {
         },
         'domicilio_id' => function () {
             return factory(ClienteDomicilio::class)->create()->id;
+        },
+
+        /**
+        * Pedido
+        */
+        'pedido_id' => function () {
+            return factory(Pedido::class)->create()->id;
         }
     ];
 });
