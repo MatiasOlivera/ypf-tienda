@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\app;
 
+use App\Pedido;
 use App\Cotizacion;
 use Tests\TestCase;
 use App\Observacion;
@@ -44,5 +45,14 @@ class ObservacionTest extends TestCase
 
         $this->assertInstanceOf(Cotizacion::class, $observacion->cotizacion);
         $this->assertEquals($cotizacion->observacion_id, $observacion->id);
+    }
+
+    public function test_deberia_acceder_a_la_relacion_pedido()
+    {
+        $pedido = factory(Pedido::class)->create();
+        $observacion = $pedido->observacion;
+
+        $this->assertInstanceOf(Pedido::class, $observacion->pedido);
+        $this->assertEquals($pedido->observacion_id, $observacion->id);
     }
 }

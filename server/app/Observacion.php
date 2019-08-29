@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Pedido;
 use App\Cotizacion;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,5 +20,10 @@ class Observacion extends Model
     public function cotizacion()
     {
         return $this->belongsTo(Cotizacion::class, 'id', 'id_observacion');
+    }
+
+    public function pedido()
+    {
+        return $this->belongsTo(Pedido::class, 'id', 'id_observacion');
     }
 }
