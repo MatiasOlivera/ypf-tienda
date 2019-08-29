@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Cotizacion;
 use Sofa\Eloquence\Mappable;
 use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
@@ -31,4 +32,9 @@ class CotizacionEstado extends Model
     protected $fillable = ['descripcion'];
 
     public $timestamps = false;
+
+    public function cotizaciones()
+    {
+        return $this->hasMany(Cotizacion::class, 'id_cot');
+    }
 }

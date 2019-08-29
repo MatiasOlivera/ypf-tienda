@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\app;
 
+use App\Cotizacion;
 use Tests\TestCase;
 use App\CotizacionEstado;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -35,5 +36,21 @@ class CotizacionEstadoTest extends TestCase
 
         unset($entrada['id']);
         $this->assertArraySubset($entrada, $estado->toArray());
+    }
+
+    public function test_deberia_acceder_a_la_relacion_cotizaciones()
+    {
+        $estado = factory(CotizacionEstado::class)->create();
+
+        $nuevaCotizacion = factory(Cotizacion::class)->make([
+            'estado_id' => $estado->id
+        ]);
+
+        $estado->cotizaciones()->save($nuevaCotizacion);
+
+        $cotizacion = $estado->cotizaciones()->first();
+
+        $this->assertInstanceOf(Cotizacion::class, $cotizacion);
+        $this->assertEquals($cotizacion->estado_id, $estado->id);
     }
 }
