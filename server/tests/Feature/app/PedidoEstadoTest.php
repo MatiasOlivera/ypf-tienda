@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\app;
 
+use App\Pedido;
 use Tests\TestCase;
 use App\PedidoEstado;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -35,5 +36,15 @@ class PedidoEstadoTest extends TestCase
 
         unset($entrada['id']);
         $this->assertArraySubset($entrada, $estado->toArray());
+    }
+
+    public function test_deberia_acceder_a_la_relacion_pedidos()
+    {
+        $nuevoPedido = factory(Pedido::class)->create();
+        $estado = $nuevoPedido->pedidoEstado;
+        $pedido = $estado->pedidos()->get()->first();
+
+        $this->assertInstanceOf(Pedido::class, $pedido);
+        $this->assertEquals($estado->id, $pedido->pedido_estado_id);
     }
 }

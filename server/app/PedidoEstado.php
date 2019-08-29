@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Pedido;
 use Sofa\Eloquence\Mappable;
 use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
@@ -31,4 +32,9 @@ class PedidoEstado extends Model
     protected $fillable = ['descripcion'];
 
     public $timestamps = false;
+
+    public function pedidos()
+    {
+        return $this->hasMany(Pedido::class, 'est_entrega', 'id_estado');
+    }
 }
