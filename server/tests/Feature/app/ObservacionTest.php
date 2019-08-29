@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\app;
 
+use App\Cotizacion;
 use Tests\TestCase;
 use App\Observacion;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -34,5 +35,14 @@ class ObservacionTest extends TestCase
 
         $this->assertTrue($guardado);
         $this->assertDatabaseHas('observacion', $entrada);
+    }
+
+    public function test_deberia_acceder_a_la_relacion_cotizacion()
+    {
+        $cotizacion = factory(Cotizacion::class)->create();
+        $observacion = $cotizacion->observacion;
+
+        $this->assertInstanceOf(Cotizacion::class, $observacion->cotizacion);
+        $this->assertEquals($cotizacion->observacion_id, $observacion->id);
     }
 }
