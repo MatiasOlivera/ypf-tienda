@@ -25,6 +25,11 @@ class ClienteRazonSocialControllerTest extends TestCase
 
     private function getEstructuraRazonSocial()
     {
+        return ['razonSocial' => $this->atributosClienteRazonSocial];
+    }
+
+    private function getEstructuraRazonSocialConMensaje()
+    {
         return array_merge(
             ['razonSocial' => $this->atributosClienteRazonSocial],
             $this->estructuraMensaje
@@ -86,7 +91,7 @@ class ClienteRazonSocialControllerTest extends TestCase
             ->withHeaders($cabeceras)
             ->json('POST', "api/clientes/$id/razones", $razonSocial);
 
-        $estructura = $this->getEstructuraRazonSocial();
+        $estructura = $this->getEstructuraRazonSocialConMensaje();
         unset($razonSocial['id']);
 
         $respuesta
@@ -100,5 +105,28 @@ class ClienteRazonSocialControllerTest extends TestCase
                     'descripcion' => "La razón social {$razonSocial['denominacion']} ha sido creada"
                 ]
             ]);
+    }
+
+    public function test_deberia_obtener_una_razon_social()
+    {
+        $cliente = factory(Cliente::class)->create();
+        $razonSocial = factory(ClienteRazonSocial::class)->create();
+        $cliente->razonesSociales()->attach($razonSocial);
+        $cliente->save();
+
+        $clienteId = $cliente->id;
+        $id = $razonSocial->id;
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('GET', "api/clientes/$clienteId/razones/$id");
+
+        $estructura = $this->getEstructuraRazonSocial();
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson(['razonSocial' => $razonSocial->toArray()]);
     }
 }
