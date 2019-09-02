@@ -26,8 +26,8 @@ class ClienteRazonSocialControllerTest extends TestCase
      */
     public function testNoDeberiaObtenerNingunaRazonSocial()
     {
-        $cliente = factory(Cliente::class, 1)->create()->toArray()[0];
-        $id = $cliente['id'];
+        $cliente = factory(Cliente::class)->create();
+        $id = $cliente->id;
 
         $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
