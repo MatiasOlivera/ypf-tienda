@@ -11,7 +11,7 @@ class ClienteRazonSocialRequest extends FormRequest
         'cuit'          => ['bail', 'required', 'string', 'unique:razones_sociales,cuit', 'size:13',],
         'localidad_id'  => ['bail', 'required', 'integer', 'exists:localidades,id_localidad'],
         'calle'         => ['bail', 'string', 'min:3', 'max:70',],
-        'altura'        => ['bail', 'integer', 'digits_between:1,4'],
+        'numero'        => ['bail', 'integer', 'digits_between:1,4'],
         'email'         => ['bail', 'email', 'max:150',],
         'area'          => ['bail', 'integer', 'digits_between:2,5'],
         'telefono'      => ['bail', 'integer', 'digits_between:6,10'],

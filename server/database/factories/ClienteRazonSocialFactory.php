@@ -23,7 +23,7 @@ $factory->define(ClienteRazonSocial::class, function (Faker $faker) {
 
         // Domicilio
         'calle' => $faker->streetName(),
-        'altura' => $faker->randomNumber(4),
+        'numero' => $faker->randomNumber(4),
         'localidad_id'=> function () {
             return factory(Localidad::class)->create()->id;
         }
