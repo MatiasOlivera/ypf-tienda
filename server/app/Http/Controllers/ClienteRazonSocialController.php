@@ -71,7 +71,7 @@ class ClienteRazonSocialController extends Controller
 
             $mensajeExito->guardar($nombre, $this->generoModelo);
             $respuesta      = [$this->modeloSingular => $razonGuardada];
-            return Respuesta::exito($respuesta, null, 200);
+            return Respuesta::exito($respuesta, null, 201);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
             $mensajeError->guardar($nombre, $this->generoModelo);
