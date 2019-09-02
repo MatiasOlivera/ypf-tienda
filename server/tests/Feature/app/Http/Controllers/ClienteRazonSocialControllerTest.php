@@ -197,4 +197,43 @@ class ClienteRazonSocialControllerTest extends TestCase
         $deletedAt = $respuesta->getData(true)['razonSocial']['deleted_at'];
         $this->assertNotNull($deletedAt);
     }
+
+    public function test_deberia_restaurar_una_razon_social()
+    {
+        $cliente = factory(Cliente::class)->create();
+        $razonSocial = factory(ClienteRazonSocial::class)->create();
+        $cliente->razonesSociales()->attach($razonSocial);
+        $cliente->save();
+
+        $clienteId = $cliente->id;
+        $id = $razonSocial->id;
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('DELETE', "api/clientes/$clienteId/razones/$id");
+
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('POST', "api/clientes/$clienteId/razones/$id/restaurar");
+
+        $estructura = $this->getEstructuraRazonSocialConMensaje();
+        $razonSocialArray = $razonSocial->toArray();
+        unset($razonSocialArray['updated_at']);
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'razonSocial' => $razonSocialArray,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'RESTAURADO',
+                    'descripcion' => "La razón social {$razonSocialArray['denominacion']} ha sido dada de alta"
+                ]
+            ]);
+
+        $deletedAt = $respuesta->getData(true)['razonSocial']['deleted_at'];
+        $this->assertNull($deletedAt);
+    }
 }
