@@ -162,4 +162,39 @@ class ClienteRazonSocialControllerTest extends TestCase
                 ]
             ]);
     }
+
+    public function test_deberia_eliminar_una_razon_social()
+    {
+        $cliente = factory(Cliente::class)->create();
+        $razonSocial = factory(ClienteRazonSocial::class)->create();
+        $cliente->razonesSociales()->attach($razonSocial);
+        $cliente->save();
+
+        $clienteId = $cliente->id;
+        $id = $razonSocial->id;
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('DELETE', "api/clientes/$clienteId/razones/$id");
+
+        $estructura = $this->getEstructuraRazonSocialConMensaje();
+        $razonSocialArray = $razonSocial->toArray();
+        unset($razonSocialArray['updated_at']);
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'razonSocial' => $razonSocialArray,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'ELIMINADO',
+                    'descripcion' => "La razón social {$razonSocialArray['denominacion']} ha sido eliminada"
+                ]
+            ]);
+
+        $deletedAt = $respuesta->getData(true)['razonSocial']['deleted_at'];
+        $this->assertNotNull($deletedAt);
+    }
 }
