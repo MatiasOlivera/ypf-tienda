@@ -157,7 +157,7 @@ class ClienteRazonSocialController extends Controller
      */
     public function asociar(Cliente $cliente, ClienteRazonSocial $razonSocial)
     {
-        $exito = "Se asocio con éxito la razón social {$razonSocial->denominacion} al cliente {$cliente->nombre}";
+        $exito = "Se asoció con éxito la razón social {$razonSocial->denominacion} al cliente {$cliente->nombre}";
         $error = "No se pudo asociar la razón social {$razonSocial->denominacion} al cliente {$cliente->nombre}";
 
         try {
