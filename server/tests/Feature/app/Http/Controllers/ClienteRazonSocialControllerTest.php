@@ -236,4 +236,34 @@ class ClienteRazonSocialControllerTest extends TestCase
         $deletedAt = $respuesta->getData(true)['razonSocial']['deleted_at'];
         $this->assertNull($deletedAt);
     }
+
+    public function test_deberia_asociar_cliente_con_razon_social()
+    {
+        $cliente = factory(Cliente::class)->create();
+        $razonSocial = factory(ClienteRazonSocial::class)->create();
+
+        $clienteId = $cliente->id;
+        $id = $razonSocial->id;
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('POST', "api/clientes/$clienteId/razones/$id/asociar");
+
+        $estructura = $this->getEstructuraRazonSocialConMensaje();
+        $razonSocialArray = $razonSocial->toArray();
+        unset($razonSocialArray['updated_at']);
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'razonSocial' => $razonSocialArray,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'ASOCIADOS',
+                    'descripcion' => "Se asoció con éxito la razón social {$razonSocial->denominacion} al cliente {$cliente->nombre}"
+                ]
+            ]);
+    }
 }
