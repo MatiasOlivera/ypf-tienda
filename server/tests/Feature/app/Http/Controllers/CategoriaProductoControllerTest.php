@@ -6,6 +6,7 @@ use Tests\TestCase;
 use App\CategoriaProducto;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
 
@@ -13,6 +14,7 @@ class CategoriaProductoControllerTest extends TestCase
 {
     use AuthHelper;
     use RefreshDatabase;
+    use EloquenceSolucion;
     use EstructuraJsonHelper;
 
     private $estructuraCategoria = [

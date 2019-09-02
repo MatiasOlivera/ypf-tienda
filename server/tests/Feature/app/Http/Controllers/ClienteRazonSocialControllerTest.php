@@ -7,6 +7,7 @@ use Tests\TestCase;
 use App\ClienteRazonSocial;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
 use Tests\Feature\Utilidades\AtributosClienteRazonSocial;
@@ -15,6 +16,7 @@ class ClienteRazonSocialControllerTest extends TestCase
 {
     use AuthHelper;
     use RefreshDatabase;
+    use EloquenceSolucion;
     use EstructuraJsonHelper;
     use AtributosClienteRazonSocial;
 

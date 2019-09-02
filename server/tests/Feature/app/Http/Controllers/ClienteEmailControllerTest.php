@@ -7,6 +7,7 @@ use Tests\TestCase;
 use App\ClienteMail;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
 
@@ -14,6 +15,7 @@ class ClienteEmailControllerTest extends TestCase
 {
     use AuthHelper;
     use RefreshDatabase;
+    use EloquenceSolucion;
     use EstructuraJsonHelper;
 
     private $estructuraEmail = [
