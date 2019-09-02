@@ -64,14 +64,14 @@ class ClienteRazonSocialController extends Controller
                 'email'
             );
             $razon          = $cliente->razonesSociales()->create($inputs);
-            $mensajeExito   = new MensajeExito();
 
             $razonGuardada = ClienteRazonSocial::findOrFail($razon->id);
             $razonGuardada->localidad;
 
+            $mensajeExito = new MensajeExito();
             $mensajeExito->guardar($nombre, $this->generoModelo);
-            $respuesta      = [$this->modeloSingular => $razonGuardada];
-            return Respuesta::exito($respuesta, null, 201);
+            $respuesta = [$this->modeloSingular => $razonGuardada];
+            return Respuesta::exito($respuesta, $mensajeExito, 201);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
             $mensajeError->guardar($nombre, $this->generoModelo);
