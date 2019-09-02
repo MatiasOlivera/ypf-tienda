@@ -47,9 +47,7 @@ class ClienteRazonSocialControllerTest extends TestCase
      */
     public function testDeberiaObtenerRazonesSociales()
     {
-        factory(ClienteRazonSocial::class, 2)->create();
-
-        $cliente = Cliente::inRandomOrder()->first();
+        $cliente = factory(Cliente::class)->states('razonesSociales')->create();
         $id = $cliente->id;
 
         $cabeceras = $this->loguearseComo('defecto');
