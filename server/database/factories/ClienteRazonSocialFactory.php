@@ -7,7 +7,7 @@ use Faker\Generator as Faker;
 
 $factory->define(ClienteRazonSocial::class, function (Faker $faker) {
     // CUIT
-    $tipo = $faker->randomNumber(2);
+    $tipo = $faker->numberBetween(10, 99);
     $numero = $faker->numberBetween(10000000, 99999999);
     $digitoVerificador = $faker->randomDigit();
     $cuit = "$tipo-$numero-$digitoVerificador";
