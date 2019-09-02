@@ -8,7 +8,7 @@ $factory->define(Cliente::class, function (Faker $faker) {
     return [
         'nombre' => $faker->name(),
         'documento' => $faker->randomNumber(8, true),
-        'observacion' => null
+        'observacion' => $faker->sentence()
     ];
 });
 

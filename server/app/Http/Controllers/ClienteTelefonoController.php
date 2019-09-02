@@ -56,7 +56,7 @@ class ClienteTelefonoController extends Controller
      */
     public function store(ClienteTelefonoRequest $request, Cliente $cliente)
     {
-        $inputs = $request->only('area', 'telefono');
+        $inputs = $request->only('area', 'telefono', 'nombreContacto');
         $nombreContacto = $request->input('nombreContacto', null);
 
         $telefonoMensaje = $this->setTextoMensaje($inputs['area'], $inputs['telefono'], $nombreContacto);
@@ -71,7 +71,7 @@ class ClienteTelefonoController extends Controller
             $mensajeExito   = new MensajeExito();
             $mensajeExito->guardar($telefonoMensaje, $this->generoModelo);
 
-            return Respuesta::exito($respuesta, $mensajeExito, 200);
+            return Respuesta::exito($respuesta, $mensajeExito, 201);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
             $mensajeError->guardar($telefonoMensaje, $this->generoModelo);

@@ -1,15 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Localidad;
 
 use Illuminate\Foundation\Http\FormRequest;
 
 class LocalidadRequest extends FormRequest
 {
-    protected $reglas = [
-        'nombre' => ['bail', 'required', 'string', 'max:60'],
-    ];
-
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -27,6 +23,13 @@ class LocalidadRequest extends FormRequest
      */
     public function rules()
     {
-        return $this->reglas;
+        return $this->getReglaNombre();
+    }
+
+    protected function getReglaNombre(): array
+    {
+        return [
+            'nombre' => ['bail', 'required', 'string', 'max:60']
+        ];
     }
 }

@@ -22,7 +22,9 @@ class ProductosControllerTest extends TestCase
 
     private function getEstructuraProductos(): array
     {
-        return array_merge(['productos'], $this->estructuraPaginacion);
+        $paginacion = $this->estructuraPaginacion;
+        unset($paginacion['paginacion']['rutas']);
+        return array_merge(['productos'], $paginacion);
     }
 
     private function crearProducto($cabeceras)
