@@ -129,4 +129,37 @@ class ClienteRazonSocialControllerTest extends TestCase
             ->assertJsonStructure($estructura)
             ->assertJson(['razonSocial' => $razonSocial->toArray()]);
     }
+
+    public function test_deberia_editar_una_razon_social()
+    {
+        $cliente = factory(Cliente::class)->create();
+        $razonSocial = factory(ClienteRazonSocial::class)->create();
+        $cliente->razonesSociales()->attach($razonSocial);
+        $cliente->save();
+
+        $clienteId = $cliente->id;
+        $id = $razonSocial->id;
+
+        $razonSocialModificada = array_merge($razonSocial->toArray(), ['denominacion' => 'AppLab']);
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('PUT', "api/clientes/$clienteId/razones/$id", $razonSocialModificada);
+
+        $estructura = $this->getEstructuraRazonSocialConMensaje();
+        unset($razonSocialModificada['updated_at']);
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'razonSocial' => $razonSocialModificada,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'ACTUALIZADO',
+                    'descripcion' => "La razón social AppLab ha sido modificada"
+                ]
+            ]);
+    }
 }
