@@ -266,4 +266,34 @@ class ClienteRazonSocialControllerTest extends TestCase
                 ]
             ]);
     }
+
+    public function test_deberia_desasociar_cliente_de_razon_social()
+    {
+        $cliente = factory(Cliente::class)->create();
+        $razonSocial = factory(ClienteRazonSocial::class)->create();
+
+        $clienteId = $cliente->id;
+        $id = $razonSocial->id;
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('DELETE', "api/clientes/$clienteId/razones/$id/desasociar");
+
+        $estructura = $this->getEstructuraRazonSocialConMensaje();
+        $razonSocialArray = $razonSocial->toArray();
+        unset($razonSocialArray['updated_at']);
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJsonStructure($estructura)
+            ->assertJson([
+                'razonSocial' => $razonSocialArray,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'DESASOCIADOS',
+                    'descripcion' => "Se ha desasociado la razón social {$razonSocial->denominacion} del cliente {$cliente->nombre}"
+                ]
+            ]);
+    }
 }
