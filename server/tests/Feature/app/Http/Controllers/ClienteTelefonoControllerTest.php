@@ -7,6 +7,7 @@ use Tests\TestCase;
 use App\ClienteTelefono;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
 
@@ -15,6 +16,7 @@ class ClienteTelefonoControllerTest extends TestCase
     use AuthHelper;
     use WithFaker;
     use RefreshDatabase;
+    use EloquenceSolucion;
     use EstructuraJsonHelper;
 
     private $estructuraTelefono = [
