@@ -61,17 +61,17 @@ class ClienteRazonSocialController extends Controller
                 'numero',
                 'area',
                 'telefono',
-                'mail'
+                'email'
             );
             $razon          = $cliente->razonesSociales()->create($inputs);
-            $mensajeExito   = new MensajeExito();
 
             $razonGuardada = ClienteRazonSocial::findOrFail($razon->id);
             $razonGuardada->localidad;
 
+            $mensajeExito = new MensajeExito();
             $mensajeExito->guardar($nombre, $this->generoModelo);
-            $respuesta      = [$this->modeloSingular => $razonGuardada];
-            return Respuesta::exito($respuesta, null, 200);
+            $respuesta = [$this->modeloSingular => $razonGuardada];
+            return Respuesta::exito($respuesta, $mensajeExito, 201);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
             $mensajeError->guardar($nombre, $this->generoModelo);
@@ -114,7 +114,7 @@ class ClienteRazonSocialController extends Controller
             'numero',
             'area',
             'telefono',
-            'mail'
+            'email'
         );
         $parametros = [
             'inputs' => $inputs,
@@ -157,7 +157,7 @@ class ClienteRazonSocialController extends Controller
      */
     public function asociar(Cliente $cliente, ClienteRazonSocial $razonSocial)
     {
-        $exito = "Se asocio con éxito la razón social {$razonSocial->denominacion} al cliente {$cliente->nombre}";
+        $exito = "Se asoció con éxito la razón social {$razonSocial->denominacion} al cliente {$cliente->nombre}";
         $error = "No se pudo asociar la razón social {$razonSocial->denominacion} al cliente {$cliente->nombre}";
 
         try {
