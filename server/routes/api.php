@@ -205,4 +205,10 @@ Route::middleware('jwt.auth')->group(function () {
 
     Route::delete('productos/{producto}/favorito', 'ProductosFavoritosController@desasociar')
         ->name('productos.no_es_favorito');
+
+    /**
+     * Cotizaciones
+     */
+    Route::apiResource('cotizaciones', 'CotizacionController')
+        ->parameters(['cotizaciones' => 'cotizacion']);
 });
