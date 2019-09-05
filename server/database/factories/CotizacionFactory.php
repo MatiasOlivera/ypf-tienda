@@ -9,6 +9,7 @@ use App\ClienteTelefono;
 use App\ClienteDomicilio;
 use App\CotizacionEstado;
 use App\ClienteRazonSocial;
+use App\CotizacionProducto;
 use Faker\Generator as Faker;
 
 $factory->define(Cotizacion::class, function (Faker $faker) {
@@ -53,4 +54,10 @@ $factory->define(Cotizacion::class, function (Faker $faker) {
             return factory(Pedido::class)->create()->id;
         }
     ];
+});
+
+$factory->afterCreatingState(Cotizacion::class, 'productos', function ($cotizacion, $faker) {
+    $productos = factory(CotizacionProducto::class, 5)->make();
+    $cotizacion->productos()->saveMany($productos);
+    $cotizacion->save();
 });
