@@ -13,7 +13,13 @@ $factory->define(App\Producto::class, function (Faker $faker) {
 
         // Categoría
         'ID_CAT' => function () {
-            return factory(CategoriaProducto::class)->create()->id;
+            $categoria = CategoriaProducto::inRandomOrder()->first();
+
+            if ($categoria === null) {
+                throw new Exception("Debes usar el seeder CategoriaProductoSeeder");
+            }
+
+            return $categoria->id;
         }
     ];
 });

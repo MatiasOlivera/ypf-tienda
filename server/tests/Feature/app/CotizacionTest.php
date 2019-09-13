@@ -13,6 +13,7 @@ use App\ClienteDomicilio;
 use App\CotizacionEstado;
 use App\ClienteRazonSocial;
 use App\CotizacionProducto;
+use CategoriaProductoSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraCotizacion;
@@ -21,6 +22,12 @@ class CotizacionTest extends TestCase
 {
     use RefreshDatabase;
     use EstructuraCotizacion;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(CategoriaProductoSeeder::class);
+    }
 
     public function test_deberia_crear_una_cotizacion()
     {

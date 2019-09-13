@@ -7,6 +7,7 @@ use Tests\TestCase;
 use App\CotizacionEstado;
 use App\CotizacionProducto;
 use CotizacionEstadoSeeder;
+use CategoriaProductoSeeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,6 +22,7 @@ class CotizacionProductoTest extends TestCase
     {
         parent::setUp();
         $this->seed(CotizacionEstadoSeeder::class);
+        $this->seed(CategoriaProductoSeeder::class);
     }
 
     protected function tearDown(): void

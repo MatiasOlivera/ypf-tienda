@@ -5,6 +5,7 @@ namespace Tests\Feature\Http\Controllers;
 use App\Producto;
 use Tests\TestCase;
 use App\CategoriaProducto;
+use CategoriaProductoSeeder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\Feature\Utilidades\AuthHelper;
@@ -21,6 +22,12 @@ class ProductosControllerTest extends TestCase
     use EloquenceSolucion;
     use EstructuraProducto;
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(CategoriaProductoSeeder::class);
+    }
 
     private function getEstructuraProductos(): array
     {
