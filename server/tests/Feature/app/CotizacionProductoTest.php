@@ -4,11 +4,9 @@ namespace Tests\Feature\app;
 
 use App\Cotizacion;
 use Tests\TestCase;
-use App\CotizacionEstado;
 use App\CotizacionProducto;
 use CotizacionEstadoSeeder;
 use CategoriaProductoSeeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraCotizacionProducto;
@@ -23,14 +21,6 @@ class CotizacionProductoTest extends TestCase
         parent::setUp();
         $this->seed(CotizacionEstadoSeeder::class);
         $this->seed(CategoriaProductoSeeder::class);
-    }
-
-    protected function tearDown(): void
-    {
-        DB::statement("SET foreign_key_checks=0");
-        CotizacionEstado::truncate();
-        DB::statement("SET foreign_key_checks=1");
-        parent::tearDown();
     }
 
     public function test_deberia_crear_un_producto()
