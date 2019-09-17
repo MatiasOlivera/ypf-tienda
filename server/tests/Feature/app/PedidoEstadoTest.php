@@ -6,12 +6,14 @@ use App\Pedido;
 use Tests\TestCase;
 use App\PedidoEstado;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraPedidoEstado;
 
 class PedidoEstadoTest extends TestCase
 {
     use RefreshDatabase;
+    use EloquenceSolucion;
     use EstructuraPedidoEstado;
 
     public function test_deberia_crear_un_estado()

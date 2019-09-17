@@ -15,12 +15,14 @@ use App\CotizacionEstado;
 use App\ClienteRazonSocial;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\Utilidades\EstructuraPedido;
+use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class PedidoTest extends TestCase
 {
     use RefreshDatabase;
     use EstructuraPedido;
+    use EloquenceSolucion;
 
     public function test_deberia_crear_un_pedido()
     {

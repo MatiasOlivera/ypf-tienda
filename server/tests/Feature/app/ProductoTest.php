@@ -8,12 +8,14 @@ use Tests\TestCase;
 use App\CotizacionProducto;
 use CategoriaProductoSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\Feature\Utilidades\EloquenceSolucion;
 use Tests\Feature\Utilidades\EstructuraProducto;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProductoTest extends TestCase
 {
     use RefreshDatabase;
+    use EloquenceSolucion;
     use EstructuraProducto;
 
     protected function setUp(): void

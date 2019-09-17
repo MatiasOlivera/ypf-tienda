@@ -9,12 +9,14 @@ use App\CotizacionProducto;
 use CotizacionEstadoSeeder;
 use CategoriaProductoSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraCotizacionProducto;
 
 class CotizacionProductoTest extends TestCase
 {
     use RefreshDatabase;
+    use EloquenceSolucion;
     use EstructuraCotizacionProducto;
 
     protected function setUp(): void

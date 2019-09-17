@@ -6,12 +6,14 @@ use App\Cotizacion;
 use Tests\TestCase;
 use App\CotizacionEstado;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraCotizacionEstado;
 
 class CotizacionEstadoTest extends TestCase
 {
     use RefreshDatabase;
+    use EloquenceSolucion;
     use EstructuraCotizacionEstado;
 
     public function test_deberia_crear_un_estado()

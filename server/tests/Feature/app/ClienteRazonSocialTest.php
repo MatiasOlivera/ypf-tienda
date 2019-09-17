@@ -6,11 +6,13 @@ use App\Cotizacion;
 use Tests\TestCase;
 use App\ClienteRazonSocial;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ClienteRazonSocialTest extends TestCase
 {
     use RefreshDatabase;
+    use EloquenceSolucion;
 
     public function test_deberia_acceder_a_la_relacion_cotizaciones()
     {

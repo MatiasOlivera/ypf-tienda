@@ -7,12 +7,14 @@ use App\Cotizacion;
 use Tests\TestCase;
 use App\EmpleadoCargo;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\Feature\Utilidades\EloquenceSolucion;
 use Tests\Feature\Utilidades\EstructuraEmpleado;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class EmpleadoTest extends TestCase
 {
     use RefreshDatabase;
+    use EloquenceSolucion;
     use EstructuraEmpleado;
 
     public function test_deberia_crear_un_empleado()

@@ -6,12 +6,14 @@ use App\Empleado;
 use Tests\TestCase;
 use App\EmpleadoCargo;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraEmpleadoCargo;
 
 class EmpleadoCargoTest extends TestCase
 {
     use RefreshDatabase;
+    use EloquenceSolucion;
     use EstructuraEmpleadoCargo;
 
     public function test_deberia_crear_un_cargo()

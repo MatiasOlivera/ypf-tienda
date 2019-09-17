@@ -15,12 +15,14 @@ use App\ClienteRazonSocial;
 use App\CotizacionProducto;
 use CategoriaProductoSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraCotizacion;
 
 class CotizacionTest extends TestCase
 {
     use RefreshDatabase;
+    use EloquenceSolucion;
     use EstructuraCotizacion;
 
     protected function setUp(): void
