@@ -3,7 +3,9 @@
 namespace Tests\Feature\app;
 
 use App\Producto;
+use App\Cotizacion;
 use Tests\TestCase;
+use App\CotizacionProducto;
 use CategoriaProductoSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\Utilidades\EstructuraProducto;
@@ -39,5 +41,15 @@ class ProductoTest extends TestCase
         $guardado = $producto->save();
 
         $this->assertTrue($guardado);
+    }
+
+    public function test_deberia_acceder_a_la_relacion_cotizacion()
+    {
+        $cotizacion = factory(Cotizacion::class)->states('productos')->create();
+        $cotizacionProducto = $cotizacion->productos()->first();
+        $producto = $cotizacionProducto->producto;
+        
+        $this->assertInstanceOf(CotizacionProducto::class, $producto->cotizacion);
+        $this->assertEquals($cotizacionProducto->codigo, $producto->codigo);
     }
 }

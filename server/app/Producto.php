@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\CotizacionProducto;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -95,6 +96,11 @@ class Producto extends Model
             ->toArray();
 
         return !empty($esFavorito);
+    }
+
+    public function cotizacion()
+    {
+        return $this->belongsTo(CotizacionProducto::class, 'codigo_prod', 'codigo_p');
     }
 
     public function categoria()
