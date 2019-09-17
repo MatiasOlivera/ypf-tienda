@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\app;
 
+use App\Producto;
 use App\Cotizacion;
 use Tests\TestCase;
 use App\CotizacionProducto;
@@ -61,5 +62,18 @@ class CotizacionProductoTest extends TestCase
 
         $this->assertInstanceOf(Cotizacion::class, $cotizacion);
         $this->assertEquals($cotizacion->id, $producto->cotizacion_id);
+    }
+
+    public function test_deberia_acceder_a_la_relacion_producto()
+    {
+        $cotizacionId = factory(Cotizacion::class)->create()->id;
+        $cotizacionProducto = factory(CotizacionProducto::class)->create([
+            'cotizacion_id' => $cotizacionId
+        ]);
+
+        $producto = $cotizacionProducto->producto;
+
+        $this->assertInstanceOf(Producto::class, $producto);
+        $this->assertEquals($producto->codigo, $cotizacionProducto->codigo);
     }
 }

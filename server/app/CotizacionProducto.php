@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Producto;
 use App\Cotizacion;
 use Sofa\Eloquence\Mappable;
 use Sofa\Eloquence\Eloquence;
@@ -51,5 +52,10 @@ class CotizacionProducto extends Model
     public function cotizacion()
     {
         return $this->belongsTo(Cotizacion::class, 'id_cot', 'id_cot');
+    }
+
+    public function producto()
+    {
+        return $this->hasOne(Producto::class, 'codigo_prod', 'codigo_p');
     }
 }
