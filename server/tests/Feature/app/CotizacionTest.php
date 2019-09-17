@@ -12,6 +12,7 @@ use App\ClienteTelefono;
 use App\ClienteDomicilio;
 use App\CotizacionEstado;
 use App\ClienteRazonSocial;
+use App\CotizacionProducto;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraCotizacion;
@@ -115,5 +116,16 @@ class CotizacionTest extends TestCase
 
         $this->assertInstanceOf(Pedido::class, $pedido);
         $this->assertEquals($cotizacion->pedido_id, $pedido->id);
+    }
+
+    public function test_deberia_acceder_a_la_relacion_productos()
+    {
+        $cotizacion = factory(Cotizacion::class)->states('productos')->create();
+        $productos = $cotizacion->productos;
+
+        foreach ($productos as $producto) {
+            $this->assertInstanceOf(CotizacionProducto::class, $producto);
+            $this->assertEquals($cotizacion->id, $producto->cotizacion_id);
+        }
     }
 }

@@ -8,6 +8,7 @@ use App\ClienteTelefono;
 use App\ClienteDomicilio;
 use App\CotizacionEstado;
 use App\ClienteRazonSocial;
+use App\CotizacionProducto;
 use Sofa\Eloquence\Mappable;
 use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
@@ -74,6 +75,11 @@ class Cotizacion extends Model
         'pedido_id',
         'observacion_id'
     ];
+
+    public function productos()
+    {
+        return $this->hasMany(CotizacionProducto::class, 'id_cot', 'id_cot');
+    }
 
     public function empleado()
     {
