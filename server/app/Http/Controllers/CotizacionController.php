@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Producto;
 use App\Cotizacion;
+use App\CotizacionEstado;
 use App\Auxiliares\Consulta;
 use Illuminate\Http\Request;
 use App\Auxiliares\Respuesta;
 use App\Auxiliares\MensajeError;
+use App\Auxiliares\MensajeExito;
 use App\Http\Requests\Cotizacion\CotizacionesRequest;
+use App\Http\Resources\Cotizacion\CotizacionResource;
 use App\Http\Resources\Cotizacion\CotizacionCollection;
+use App\Http\Requests\Cotizacion\CrearCotizacionRequest;
 
 class CotizacionController extends Controller
 {
@@ -83,12 +88,72 @@ class CotizacionController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\CrearCotizacionRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CrearCotizacionRequest $request)
     {
-        //
+        $inputs = $request->only($request->getCampos());
+        $nombre = "La cotización";
+
+        try {
+            $atributos = array_merge($inputs, ['observacion_id' => null]);
+            $estadoPendiente = CotizacionEstado::where('descripcion', 'Pendiente')->first();
+
+            $cotizacion = new Cotizacion();
+            $cotizacion->fill($atributos);
+            $cotizacion->cotizacionEstado()->associate($estadoPendiente);
+            $guardada = $cotizacion->save();
+
+            if ($guardada) {
+                // Guardar la observación
+                $observacion = $request->input('observacion');
+
+                if ($observacion) {
+                    $cotizacion->observacion()->create(['descripcion' => $observacion]);
+                }
+
+                // Guardar los productos
+                $productos = $request->input('productos');
+                
+                foreach ($productos as $producto) {
+                    $productoDB = Producto::select('codigo')->findOrFail($producto['id']);
+
+                    $inputProductos[] = [
+                        'codigo' => $productoDB->codigo,
+                        'cantidad' => $producto['cantidad'],
+                        'precio' => $producto['precio']
+                    ];
+                }
+
+                $cotizacion->productos()->createMany($inputProductos);
+
+                // Crear la respuesta
+                $cotizacionGuardada = Cotizacion::with([
+                    'empleado',
+                    'cliente',
+                    'razonSocial',
+                    'cotizacionEstado',
+                    'telefono',
+                    'domicilio',
+                    'observacion',
+                    'pedido',
+                    'productos.producto'
+                ])->findOrFail($cotizacion->id);
+
+                $mensajeExito = new MensajeExito();
+                $mensajeExito->guardar($nombre, $this->generoModelo);
+
+                return (new CotizacionResource($cotizacionGuardada))
+                    ->additional(['mensaje' => $mensajeExito->toJson()])
+                    ->response()
+                    ->setStatusCode(201);
+            }
+        } catch (\Throwable $th) {
+            $mensajeError = new MensajeError();
+            $mensajeError->guardar($nombre, $this->generoModelo);
+            return Respuesta::error($mensajeError, 500);
+        }
     }
 
     /**
