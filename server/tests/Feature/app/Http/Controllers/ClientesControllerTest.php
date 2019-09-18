@@ -7,6 +7,7 @@ use Tests\TestCase;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\Utilidades\EloquenceSolucion;
+use Tests\Feature\Utilidades\EstructuraCliente;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
 
@@ -14,20 +15,9 @@ class ClientesControllerTest extends TestCase
 {
     use AuthHelper;
     use RefreshDatabase;
+    use EstructuraCliente;
     use EloquenceSolucion;
     use EstructuraJsonHelper;
-
-    private $estructuraCliente = [
-        'cliente' => [
-            'id',
-            'nombre',
-            'documento',
-            'observacion',
-            'created_at',
-            'updated_at',
-            'deleted_at'
-        ]
-    ];
 
     private function getEstructuraClientes()
     {
@@ -36,7 +26,7 @@ class ClientesControllerTest extends TestCase
 
     private function getEstructuraCliente()
     {
-        return array_merge($this->estructuraCliente, $this->estructuraMensaje);
+        return array_merge(['cliente' => $this->atributosCliente], $this->estructuraMensaje);
     }
 
     private function crearCliente($cabeceras, $cliente = null)
@@ -140,7 +130,7 @@ class ClientesControllerTest extends TestCase
 
         $respuesta
             ->assertStatus(200)
-            ->assertJsonStructure($this->estructuraCliente)
+            ->assertJsonStructure(['cliente' => $this->atributosCliente])
             ->assertJson([
                 'cliente' => $clienteGuardado
             ]);
