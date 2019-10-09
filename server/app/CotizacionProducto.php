@@ -7,10 +7,11 @@ use App\Cotizacion;
 use Sofa\Eloquence\Mappable;
 use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CotizacionProducto extends Model
 {
-    use Eloquence, Mappable;
+    use SoftDeletes, Eloquence, Mappable;
 
     protected $table = 'detalle_cot';
     protected $primaryKey = 'id_det';
