@@ -158,7 +158,8 @@ class CotizacionController extends Controller
      */
     public function show(Cotizacion $cotizacion)
     {
-        //
+        $cotizacionConRelaciones = $this->obtenerCotizacion($cotizacion->id);
+        return new CotizacionResource($cotizacionConRelaciones);
     }
 
     /**

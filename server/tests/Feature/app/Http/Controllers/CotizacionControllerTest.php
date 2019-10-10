@@ -154,6 +154,25 @@ class CotizacionControllerTest extends TestCase
             ]);
     }
 
+    public function test_deberia_obtener_una_cotizacion()
+    {
+        $cotizacionGuardada = $this->crearCotizacion();
+        $id = $cotizacionGuardada['id'];
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('GET', "api/cotizaciones/$id");
+
+        $cotizacionRespuesta = $this->getCotizacion($id);
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertExactJson([
+                'cotizacion' => $cotizacionRespuesta
+            ]);
+    }
+
     public function test_deberia_actualizar_una_cotizacion()
     {
         $cotizacion = $this->crearCotizacion();
