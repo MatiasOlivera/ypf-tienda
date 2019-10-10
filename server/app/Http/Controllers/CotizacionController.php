@@ -133,17 +133,7 @@ class CotizacionController extends Controller
                 $cotizacion->productos()->createMany($inputProductos);
 
                 // Crear la respuesta
-                $cotizacionGuardada = Cotizacion::with([
-                    'empleado',
-                    'cliente',
-                    'razonSocial',
-                    'cotizacionEstado',
-                    'telefono',
-                    'domicilio',
-                    'observacion',
-                    'pedido',
-                    'productos.producto'
-                ])->findOrFail($cotizacion->id);
+                $cotizacionGuardada = $this->obtenerCotizacion($cotizacion->id);
 
                 $mensajeExito = new MensajeExito();
                 $mensajeExito->guardar($nombre, $this->generoModelo);
@@ -203,17 +193,7 @@ class CotizacionController extends Controller
                 $this->actualizarProductos($cotizacion, $inputProductos);
 
                 // Crear la respuesta
-                $cotizacionActualizada = Cotizacion::with([
-                    'empleado',
-                    'cliente',
-                    'razonSocial',
-                    'cotizacionEstado',
-                    'telefono',
-                    'domicilio',
-                    'observacion',
-                    'pedido',
-                    'productos.producto'
-                ])->findOrFail($cotizacion->id);
+                $cotizacionActualizada = $this->obtenerCotizacion($cotizacion->id);
 
                 $mensajeExito = new MensajeExito();
                 $mensajeExito->actualizar($nombre, $this->generoModelo);
@@ -239,6 +219,27 @@ class CotizacionController extends Controller
     public function destroy(Cotizacion $cotizacion)
     {
         //
+    }
+
+    /**
+     * Obtener la cotización con sus relaciones
+     *
+     * @param integer $id
+     * @return Cotizacion
+     */
+    private function obtenerCotizacion(int $id)
+    {
+        return Cotizacion::with([
+            'empleado',
+            'cliente',
+            'razonSocial',
+            'cotizacionEstado',
+            'telefono',
+            'domicilio',
+            'observacion',
+            'pedido',
+            'productos.producto'
+        ])->findOrFail($id);
     }
 
     /**
