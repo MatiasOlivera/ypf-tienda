@@ -211,4 +211,12 @@ Route::middleware('jwt.auth')->group(function () {
      */
     Route::apiResource('cotizaciones', 'CotizacionController')
         ->parameters(['cotizaciones' => 'cotizacion']);
+
+    Route::group(['prefix' => 'cotizaciones',], function () {
+        Route::put('/{cotizacion}/productos', 'CotizacionProductoController@update')
+            ->name('CotizacionProducto.update');
+
+        Route::delete('/{cotizacion}/productos/{cotizacion_producto}', 'CotizacionProductoController@destroy')
+            ->name('CotizacionProducto.destroy');
+    });
 });
