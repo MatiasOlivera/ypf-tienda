@@ -20,9 +20,6 @@ $factory->define(Cotizacion::class, function (Faker $faker) {
         'estado_id' => function () {
             return factory(CotizacionEstado::class)->create()->id;
         },
-        'observacion_id' => function () {
-            return factory(Observacion::class)->create()->id;
-        },
 
         /**
          * Empleado
@@ -59,5 +56,11 @@ $factory->define(Cotizacion::class, function (Faker $faker) {
 $factory->afterCreatingState(Cotizacion::class, 'productos', function ($cotizacion, $faker) {
     $productos = factory(CotizacionProducto::class, 5)->make();
     $cotizacion->productos()->saveMany($productos);
+    $cotizacion->save();
+});
+
+$factory->afterCreatingState(Cotizacion::class, 'observacion', function ($cotizacion, $faker) {
+    $observacion = factory(Observacion::class)->create();
+    $cotizacion->observacion_id = $observacion->id;
     $cotizacion->save();
 });

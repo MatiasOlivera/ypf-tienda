@@ -40,7 +40,7 @@ class ObservacionTest extends TestCase
 
     public function test_deberia_acceder_a_la_relacion_cotizacion()
     {
-        $cotizacion = factory(Cotizacion::class)->create();
+        $cotizacion = factory(Cotizacion::class)->states('observacion')->create();
         $observacion = $cotizacion->observacion;
 
         $this->assertInstanceOf(Cotizacion::class, $observacion->cotizacion);

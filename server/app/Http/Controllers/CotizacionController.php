@@ -97,11 +97,10 @@ class CotizacionController extends Controller
         $nombre = "La cotización";
 
         try {
-            $atributos = array_merge($inputs, ['observacion_id' => null]);
             $estadoPendiente = CotizacionEstado::where('descripcion', 'Pendiente')->first();
 
             $cotizacion = new Cotizacion();
-            $cotizacion->fill($atributos);
+            $cotizacion->fill($inputs);
             $cotizacion->cotizacionEstado()->associate($estadoPendiente);
             $guardada = $cotizacion->save();
 
