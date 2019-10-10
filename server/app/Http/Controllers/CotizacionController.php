@@ -212,17 +212,6 @@ class CotizacionController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Cotizacion  $cotizacion
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Cotizacion $cotizacion)
-    {
-        //
-    }
-
-    /**
      * Obtener la cotización con sus relaciones
      *
      * @param integer $id

@@ -210,6 +210,7 @@ Route::middleware('jwt.auth')->group(function () {
      * Cotizaciones
      */
     Route::apiResource('cotizaciones', 'CotizacionController')
+        ->except('destroy')
         ->parameters(['cotizaciones' => 'cotizacion']);
 
     Route::group(['prefix' => 'cotizaciones',], function () {
