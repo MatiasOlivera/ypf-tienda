@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests\Cotizacion;
 
+use Illuminate\Validation\Rule;
 use App\Http\Requests\CamposPeticion;
+use App\Http\Requests\Cotizacion\CotizacionRequest;
 
-class CrearCotizacionRequest extends CotizacionRequest
+class ActualizarCotizacionRequest extends CotizacionRequest
 {
     use CamposPeticion;
 
@@ -16,10 +18,5 @@ class CrearCotizacionRequest extends CotizacionRequest
     public function rules()
     {
         return parent::rules();
-    }
-
-    protected function getReglaCotizacionProductoId(): array
-    {
-        return ['bail', 'required', 'integer', Rule::exists('detalle_cot', 'id_det')];
     }
 }

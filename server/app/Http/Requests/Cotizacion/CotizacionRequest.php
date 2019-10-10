@@ -4,6 +4,7 @@ namespace App\Http\Requests\Cotizacion;
 
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Cotizacion\Producto\CotizacionProductoRequest;
 
 class CotizacionRequest extends FormRequest
 {
@@ -24,7 +25,7 @@ class CotizacionRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $reglas = [
             'empleado_id' => $this->getReglaEmpleadoId(),
             'cliente_id' => $this->getReglaClienteId(),
             'razon_id' => $this->getReglaRazonId(),
@@ -34,12 +35,13 @@ class CotizacionRequest extends FormRequest
             'telefono_id' => $this->getReglaTelefonoId(),
             'domicilio_id' => $this->getReglaDomicilioId(),
             'pedido_id' => $this->getReglaPedido(),
-            'observacion' => $this->getReglaObservacion(),
-            'productos' => $this->getReglaProductos(),
-            'productos.*.id' => $this->getReglaProductoId(),
-            'productos.*.cantidad' => $this->getReglaProductoCantidad(),
-            'productos.*.precio' => $this->getReglaProductoPrecio()
+            'observacion' => $this->getReglaObservacion()
         ];
+
+        $cotizacionProductoRequest = new CotizacionProductoRequest();
+        $reglasProductos = $cotizacionProductoRequest->rules();
+
+        return array_merge($reglas, $reglasProductos);
     }
 
     protected function getReglaEmpleadoId(): array
@@ -90,25 +92,5 @@ class CotizacionRequest extends FormRequest
     protected function getReglaObservacion(): array
     {
         return ['bail', 'string', 'max:140'];
-    }
-
-    protected function getReglaProductos(): array
-    {
-        return ['bail', 'required'];
-    }
-
-    protected function getReglaProductoId(): array
-    {
-        return ['bail', 'required', 'integer', Rule::exists('productos', 'id')];
-    }
-
-    protected function getReglaProductoCantidad(): array
-    {
-        return ['bail', 'required', 'numeric', 'min:1'];
-    }
-
-    protected function getReglaProductoPrecio(): array
-    {
-        return ['bail', 'numeric', 'min:1'];
     }
 }
