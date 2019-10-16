@@ -2,13 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\CastingDeTipos;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PaginacionRequest extends FormRequest
 {
-    use CastingDeTipos;
-
     protected $buscar = ['bail', 'nullable', 'string', 'max:25'];
     protected $eliminados = ['bail', 'nullable', 'boolean'];
     protected $pagina = ['bail', 'nullable', 'integer', 'min:1'];
@@ -41,30 +38,5 @@ class PaginacionRequest extends FormRequest
             'ordenarPor' => $this->ordenarPor,
             'orden' => $this->orden
         ];
-    }
-
-    /**
-     * Casting de los parámetros de la ruta (query string)
-     * @return array
-     */
-    public function all($claves = null)
-    {
-        $buscar = $this->query('buscar');
-        $eliminados = $this->query('eliminados');
-        $pagina = $this->query('pagina');
-        $porPagina = $this->query('porPagina');
-        $ordenarPor = $this->query('ordenarPor');
-        $orden = $this->query('orden');
-
-        $input = [
-            'buscar' => $this->getCadena($buscar),
-            'eliminados' => $this->getBooleano($eliminados),
-            'pagina' => $this->getEntero($pagina),
-            'porPagina' => $this->getEntero($porPagina),
-            'ordenarPor' => $ordenarPor,
-            'orden' => $orden
-        ];
-
-        return $input;
     }
 }
