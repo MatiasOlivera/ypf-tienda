@@ -2,10 +2,13 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Traits\CastFormRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PaginacionRequest extends FormRequest
 {
+    use CastFormRequest;
+
     protected $buscar = ['bail', 'nullable', 'string', 'max:25'];
     protected $eliminados = ['bail', 'nullable', 'boolean'];
     protected $pagina = ['bail', 'nullable', 'integer', 'min:1'];
@@ -21,6 +24,15 @@ class PaginacionRequest extends FormRequest
     public function authorize()
     {
         return true;
+    }
+
+    public function casts(): array
+    {
+        return [
+            'eliminados' => 'boolean',
+            'pagina' => 'integer',
+            'porPagina' => 'integer'
+        ];
     }
 
     /**
