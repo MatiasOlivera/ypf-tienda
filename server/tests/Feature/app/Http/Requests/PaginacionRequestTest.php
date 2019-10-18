@@ -31,9 +31,9 @@ class PaginacionRequestTest extends TestCase
     {
         $input = [
             'buscar' => 'elaion',
-            'eliminados' => 'true',
-            'pagina' => '1',
-            'porPagina' => '10',
+            'eliminados' => true,
+            'pagina' => 1,
+            'porPagina' => 10,
             'ordenarPor' => 'nombre',
             'orden' => 'asc'
         ];
