@@ -35,6 +35,13 @@ class ProductosRequest extends PaginacionRequest
         );
     }
 
+    public function casts(): array
+    {
+        $casts = parent::casts();
+        $casts['soloFavoritos'] = 'boolean';
+        return $casts;
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
