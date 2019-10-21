@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Auxiliares\Consulta;
 use Illuminate\Http\Request;
 use App\{ Cliente, ClienteMail };
 use App\Http\Controllers\BaseController;
 use App\Http\Resources\ClienteMailCollection;
 use App\Http\Requests\Cliente\Mail\ClienteMailRequest;
+use App\Http\Requests\Cliente\Mail\ClienteMailsRequest;
 use App\Auxiliares\{ Respuesta, MensajeExito, MensajeError };
 
 class ClienteMailController extends Controller
@@ -30,11 +32,24 @@ class ClienteMailController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, Cliente $cliente)
+    public function index(ClienteMailsRequest $request, Cliente $cliente)
     {
         try {
-            $mails = $cliente->mails;
-            return new ClienteMailCollection($mails);
+            $modelos = $cliente->mails();
+
+            $parametros = [
+                'modelo' => $modelos,
+                'eliminados' => $request->input('eliminados', false),
+                'paginado' => [
+                    'ordenarPor' => 'mail',
+                    'orden' => $request->input('orden', 'ASC'),
+                ]
+            ];
+
+            $consulta = new Consulta();
+            $emails = $consulta->ejecutarConsulta($parametros);
+
+            return new ClienteMailCollection($emails);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
             $mensajeError->obtenerTodos($this->modeloPlural);
