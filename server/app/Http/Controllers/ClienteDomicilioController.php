@@ -1,12 +1,14 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Auxiliares\Consulta;
 use Illuminate\Http\Request;
 use App\{ClienteDomicilio,Cliente};
 use App\Http\Controllers\BaseController;
 use App\Http\Resources\ClienteDomicilioCollection;
 use App\Auxiliares\{Respuesta, MensajeExito, MensajeError};
 use App\Http\Requests\Cliente\Domicilio\ClienteDomicilioRequest;
+use App\Http\Requests\Cliente\Domicilio\ClienteDomiciliosRequest;
 
 class ClienteDomicilioController extends Controller
 {
@@ -29,10 +31,23 @@ class ClienteDomicilioController extends Controller
      * @param App\Cliente $cliente
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, Cliente $cliente)
+    public function index(ClienteDomiciliosRequest $request, Cliente $cliente)
     {
         try {
-            $domicilios = $cliente->domicilios;
+            $modelos = $cliente->domicilios();
+
+            $parametros = [
+                'modelo' => $modelos,
+                'eliminados' => $request->input('eliminados', false),
+                'paginado' => [
+                    'ordenarPor' => $request->input('ordenarPor', 'calle'),
+                    'orden' => $request->input('orden', 'ASC'),
+                ]
+            ];
+
+            $consulta = new Consulta();
+            $domicilios = $consulta->ejecutarConsulta($parametros);
+
             return new ClienteDomicilioCollection($domicilios);
         } catch (\Throwable $th) {
             $mensajeError = new MensajeError();
