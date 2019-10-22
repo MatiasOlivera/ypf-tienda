@@ -69,12 +69,12 @@ class CotizacionController extends Controller
                     'deleted_at'
                 ],
                 'relaciones' => null,
-                'buscar' => $request->query("buscar", null),
-                'eliminados' => $request->query("eliminados", false),
+                'buscar' => $request->input("buscar", null),
+                'eliminados' => $request->input("eliminados", false),
                 'paginado'  => [
-                    'porPagina' => $request->query("porPagina", 10),
-                    'ordenarPor' => $request->query("ordenarPor", 'created_at'),
-                    'orden' => $request->query("orden", 'DESC'),
+                    'porPagina' => $request->input("porPagina", 10),
+                    'ordenarPor' => $request->input("ordenarPor", 'created_at'),
+                    'orden' => $request->input("orden", 'DESC'),
                 ]
             ];
 
