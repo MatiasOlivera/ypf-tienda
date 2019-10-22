@@ -30,8 +30,7 @@ class ProductosController extends Controller
     public function index(ProductosRequest $request)
     {
         try {
-            $soloFavoritosOriginal = $request->query('soloFavoritos', false);
-            $soloFavoritos = $soloFavoritosOriginal === 'true' ? true : false;
+            $soloFavoritos = $request->input('soloFavoritos', false);
 
             if (Auth::check() && $soloFavoritos === true) {
                 $modelo = Producto::with('usuariosQueMarcaronComoFavorito')
@@ -59,9 +58,9 @@ class ProductosController extends Controller
                 ],
                 'relaciones' => null,
                 'buscar' => $request->input('buscar', null),
-                'eliminados' => (bool) $request->input('eliminados', false),
+                'eliminados' => $request->input('eliminados', false),
                 'paginado' => [
-                    'porPagina' => (int) $request->input('porPagina', 10),
+                    'porPagina' => $request->input('porPagina', 10),
                     'ordenarPor' => $request->input('ordenarPor', 'nombre'),
                     'orden' => $request->input('orden', 'ASC'),
                 ]

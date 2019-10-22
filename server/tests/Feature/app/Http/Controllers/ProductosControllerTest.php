@@ -9,6 +9,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\Feature\Utilidades\EloquenceSolucion;
 use Tests\Feature\Utilidades\EstructuraProducto;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
@@ -17,6 +18,7 @@ class ProductosControllerTest extends TestCase
 {
     use AuthHelper;
     use EstructuraJsonHelper;
+    use EloquenceSolucion;
     use EstructuraProducto;
     use RefreshDatabase;
 

@@ -36,7 +36,7 @@ class ClienteDomicilio extends Model
      *
      * @var array
      */
-    protected $fillable = ['id', 'cliente_id', 'localidad_id', 'calle', 'numero', 'aclaracion'];
+    protected $fillable = ['cliente_id', 'localidad_id', 'calle', 'numero', 'aclaracion'];
 
     protected $hidden   = ['id_dom', 'id_cliente', 'id_loc', 'numero_altura', 'acla', 'estado',];
 

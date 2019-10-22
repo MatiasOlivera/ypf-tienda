@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\{Localidad, Provincia};
-use App\Http\Requests\LocalidadRequest;
 use App\Http\controllers\BaseController;
 use App\Http\Resources\LocalidadCollection;
+use App\Http\Requests\Localidad\CrearLocalidadRequest;
 use App\Auxiliares\{Respuesta, MensajeExito, MensajeError};
+use App\Http\Requests\Localidad\ActualizarLocalidadRequest;
 
 
 class LocalidadController extends Controller
@@ -50,13 +51,16 @@ class LocalidadController extends Controller
     /**
      * Store a newly created resource in storage.
      * @param  App\Provincia $provincia
-     * @param  App\Http\Requests\LocalidadRequest  $request
+     * @param  App\Http\Requests\Localidad\CrearLocalidadRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(LocalidadRequest $request, Provincia $provincia)
+    public function store(CrearLocalidadRequest $request)
     {
-        $inputs = $request->only('nombre');
+        $inputs = $request->only('nombre', 'provincia_id');
         $nombreLocalidad = $request->input('nombre');
+        $provinciaId = $request->input('provincia_id');
+
+        $provincia = Provincia::findOrFail($provinciaId);
         $nombre = $this->getNombre($nombreLocalidad, $provincia->nombre);
 
         try {
@@ -94,11 +98,11 @@ class LocalidadController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  App\Http\Requests\LocalidadRequest  $request
+     * @param  App\Http\Requests\ActualizarLocalidadRequest  $request
      * @param  \App\Localidad  $localidad
      * @return \Illuminate\Http\Response
      */
-    public function update(LocalidadRequest $request, Localidad $localidad)
+    public function update(ActualizarLocalidadRequest $request, Localidad $localidad)
     {
         $provincia = $localidad->provincia;
         $inputs = $request->only('nombre');
