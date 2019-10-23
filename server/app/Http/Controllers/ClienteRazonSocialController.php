@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Auxiliares\Consulta;
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
 use App\{ Cliente, ClienteRazonSocial };
 use App\Http\Resources\ClienteRazonSocialCollection;
 use App\Auxiliares\{ Respuesta, MensajeExito, MensajeError };
 use App\Http\Requests\Cliente\RazonSocial\ClienteRazonSocialRequest;
+use App\Http\Requests\Cliente\RazonSocial\ClienteRazonesSocialesRequest;
 use App\Http\Requests\Cliente\RazonSocial\ClienteRazonSocialUpdateRequest;
 
 class ClienteRazonSocialController extends Controller
@@ -31,10 +33,23 @@ class ClienteRazonSocialController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, Cliente $cliente)
+    public function index(ClienteRazonesSocialesRequest $request, Cliente $cliente)
     {
         try {
-            $razones = $cliente->razonesSociales;
+            $modelos = $cliente->razonesSociales();
+
+            $parametros = [
+                'modelo' => $modelos,
+                'eliminados' => $request->input('eliminados', false),
+                'paginado' => [
+                    'ordenarPor' => $request->input('ordenarPor', 'denominacion'),
+                    'orden' => $request->input('orden', 'ASC'),
+                ]
+            ];
+
+            $consulta = new Consulta();
+            $razones = $consulta->ejecutarConsulta($parametros);
+
             return new ClienteRazonSocialCollection($razones);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();

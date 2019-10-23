@@ -13,7 +13,7 @@ class PaginacionRequest extends FormRequest
     protected $eliminados = ['bail', 'nullable', 'boolean'];
     protected $pagina = ['bail', 'nullable', 'integer', 'min:1'];
     protected $porPagina = ['bail', 'nullable', 'integer', 'min:1', 'max:25'];
-    protected $ordenarPor = ['bail', 'nullable', 'alpha'];
+    protected $ordenarPor = ['bail', 'nullable', 'alpha_dash'];
     protected $orden = ['bail', 'nullable', 'in:asc,desc'];
 
     /**
