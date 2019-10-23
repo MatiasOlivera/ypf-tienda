@@ -46,7 +46,7 @@ class ClienteTelefonoController extends Controller
                 'modelo' => $modelos,
                 'eliminados' => $request->input('eliminados', false),
                 'paginado' => [
-                    'ordenarPor' => $request->input('ordenarPor', 'telefono'),
+                    'ordenarPor' => $request->input('ordenarPor', 'area'),
                     'orden' => $request->input('orden', 'ASC'),
                 ]
             ];
