@@ -227,7 +227,6 @@ class CotizacionController extends Controller
             'telefono',
             'domicilio',
             'observacion',
-            'pedido',
             'productos.producto'
         ])->findOrFail($id);
     }

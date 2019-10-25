@@ -21,6 +21,7 @@ class CotizacionResource extends JsonResource
             'fecha_pedido' => $this->fecha_pedido,
             'consumidor_final' => $this->consumidor_final,
             'plazo' => $this->plazo,
+            'pedido_id' => $this->pedido_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,
@@ -30,7 +31,6 @@ class CotizacionResource extends JsonResource
             'estado' => $this->whenLoaded('cotizacionEstado'),
             'telefono' => $this->whenLoaded('telefono'),
             'domicilio' => $this->whenLoaded('domicilio'),
-            'pedido' => $this->whenLoaded('pedido'),
             'observacion' => $this->whenLoaded('observacion'),
             'productos' => $this->whenLoaded('productos')
         ];
