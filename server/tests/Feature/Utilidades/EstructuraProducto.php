@@ -12,7 +12,6 @@ trait EstructuraProducto
         'precio_por_mayor',
         'consumidor_final',
         'imagen',
-        'es_favorito',
         'id_categoria',
         'created_at',
         'updated_at',
