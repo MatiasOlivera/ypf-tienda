@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Auxiliares\Consulta;
 use Illuminate\Http\Request;
 use App\{Localidad, Provincia};
 use App\Http\controllers\BaseController;
 use App\Http\Resources\LocalidadCollection;
+use App\Http\Requests\Localidad\LocalidadesRequest;
 use App\Http\Requests\Localidad\CrearLocalidadRequest;
 use App\Auxiliares\{Respuesta, MensajeExito, MensajeError};
 use App\Http\Requests\Localidad\ActualizarLocalidadRequest;
@@ -36,11 +38,23 @@ class LocalidadController extends Controller
      * @param  App\Provincia $provincia
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, Provincia $provincia)
+    public function index(LocalidadesRequest $request, Provincia $provincia)
     {
         try {
-            $porPagina  = $request->only('porPagina');
-            $localidades = $provincia->localidades()->paginate($porPagina, ['*'], 'pagina');
+            $modelos = $provincia->localidades();
+
+            $parametros = [
+                'modelo' => $modelos,
+                'paginado' => [
+                    'porPagina' => $request->input("porPagina", 10),
+                    'ordenarPor' => 'nombre',
+                    'orden' => $request->input('orden', 'ASC'),
+                ]
+            ];
+
+            $consulta = new Consulta();
+            $localidades = $consulta->ejecutarConsulta($parametros);
+
             return new LocalidadCollection($localidades);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();
