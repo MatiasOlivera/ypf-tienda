@@ -1,33 +1,78 @@
 /* eslint-disable no-param-reassign */
+import isEmpty from 'lodash/isEmpty';
 import {
   getProductos,
-  RespuestaProductos,
-  ParametrosGetProductos
-} from '@/services/api/productos-api';
+  getProductosAutenticado
+} from '@/services/api/productos';
 import { EstadoBase } from '@/store/tipos-store';
-import { Producto } from '@/types/tipos-producto';
+import {
+  Producto,
+  TipoProductos,
+  ProductoConRelaciones,
+  ProductoFavorito
+} from '@/types/tipos-producto';
 import { Module } from 'vuex';
-import { OBTENER_PRODUCTOS } from '@/store/types/acciones';
+import {
+  OBTENER_PRODUCTOS,
+  ACTUALIZAR_PRODUCTO,
+  ESTABLECER_SOLO_FAVORITOS,
+  ESTABLECER_FAVORITOS
+} from '@/store/types/acciones';
 import { Paginacion, ValidacionObtenerTodos } from '@/types/respuesta-tipos';
-import usarParametros, { EstadoParametros } from '@/store/mixins/parametros';
+import usarParametros, {
+  EstadoParametros,
+  RESETEAR_PAGINA
+} from '@/store/mixins/parametros';
 import { MensajeError } from '@/types/mensaje-tipos';
 import { maquinaProductos, Estado, Evento } from './maquina-productos';
 import { OmniEvent } from 'xstate/lib/types';
+import moduloProductosFavoritos from './favoritos';
+import {
+  MODULO_PRODUCTOS_FAVORITOS,
+  obtenerEspacioDeNombres
+} from '@/store/types/modulos';
+import Vue from 'vue';
+import {
+  ParametrosGetProductosNoAutenticado,
+  RespuestaProductosNoAutenticado,
+  ParametrosGetProductosAutenticado,
+  RespuestaProductosAutenticado,
+  SoloFavoritos
+} from '@/services/api/productos/productos/productos-tipos';
 
-interface EstadoProductos extends EstadoParametros<ParametrosGetProductos> {
+export type ParametrosObtenerProductos =
+  | ParametrosGetProductosNoAutenticado
+  | ParametrosGetProductosAutenticado;
+
+type RespuestaGetProductos =
+  | RespuestaProductosAutenticado
+  | RespuestaProductosNoAutenticado;
+
+export type RespuestaObtenerProductos = Promise<
+  RespuestaGetProductos | undefined
+>;
+
+interface EstadoProductos extends EstadoParametros<ParametrosObtenerProductos> {
   estadoActual: Estado;
-  productos: Array<Producto>;
+  productos: TipoProductos;
   paginacion: Paginacion | null;
   validacion: ValidacionObtenerTodos;
   mensaje: MensajeError | null;
 }
 
+const establecerFavoritos = obtenerEspacioDeNombres([
+  MODULO_PRODUCTOS_FAVORITOS,
+  ESTABLECER_FAVORITOS
+]);
+
 // Mutaciones
+const SET_SOLO_FAVORITOS = 'setSoloFavoritos';
 const MAQUINA_EVENTO = 'maquinaEvento';
 const SET_PRODUCTOS = 'setProductos';
 const SET_PAGINACION = 'setPaginacion';
 const SET_VALIDACION = 'setValidacion';
 const SET_MENSAJE = 'setMensaje';
+const SET_PRODUCTO = 'setProducto';
 
 const parametros = usarParametros(OBTENER_PRODUCTOS);
 
@@ -62,17 +107,61 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
 
     estadoEsMensaje(estado): boolean {
       return estado.estadoActual.matches('mensaje');
+    },
+
+    productosConRelaciones(estado, getters): Array<ProductoConRelaciones> {
+      if (isEmpty(estado.productos)) {
+        return [];
+      }
+
+      const favoritos: Array<ProductoFavorito> =
+        getters['favoritos/obtenerFavoritos'];
+
+      if (isEmpty(favoritos)) {
+        return [];
+      }
+
+      return estado.productos.map((producto) => {
+        const favorito = favoritos.find((actual) => actual.id === producto.id);
+
+        if (!favorito) {
+          return {
+            ...producto,
+            esFavorito: {
+              id: producto.id,
+              valor: false,
+              estadoActual: 'noEsFavorito'
+            }
+          };
+        }
+
+        return {
+          ...producto,
+          esFavorito: { ...favorito }
+        };
+      });
     }
   },
 
   actions: {
     ...parametros.actions,
 
+    [ESTABLECER_SOLO_FAVORITOS](
+      { commit, dispatch },
+      soloFavoritos: SoloFavoritos
+    ): void {
+      commit(SET_SOLO_FAVORITOS, soloFavoritos);
+      dispatch(RESETEAR_PAGINA);
+      dispatch(OBTENER_PRODUCTOS);
+    },
+
     async [OBTENER_PRODUCTOS]({
       commit,
+      dispatch,
       getters,
-      state
-    }): Promise<RespuestaProductos | undefined> {
+      state,
+      rootState
+    }): RespuestaObtenerProductos {
       try {
         if (getters.estadoEsPendiente) {
           return;
@@ -80,13 +169,24 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
 
         commit(MAQUINA_EVENTO, 'OBTENER');
 
-        const respuesta = await getProductos(state.parametros);
+        let respuesta: RespuestaGetProductos;
+
+        // @ts-ignore
+        if (rootState.autenticacion.estaLogueado) {
+          respuesta = await getProductosAutenticado(state.parametros);
+        } else {
+          // @ts-ignore
+          respuesta = await getProductos(state.parametros);
+        }
         if (respuesta.ok) {
           commit(MAQUINA_EVENTO, 'OBTUVO_PRODUCTOS');
 
           if (getters.estadoEsProductos) {
-            commit(SET_PRODUCTOS, respuesta.datos.productos);
-            commit(SET_PAGINACION, respuesta.datos.paginacion);
+            const { productos, paginacion } = respuesta.datos;
+
+            commit(SET_PRODUCTOS, productos);
+            await dispatch(establecerFavoritos, productos);
+            commit(SET_PAGINACION, paginacion);
           }
         } else {
           switch (respuesta.estado) {
@@ -124,11 +224,20 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
         }
         throw error;
       }
+    },
+
+    [ACTUALIZAR_PRODUCTO]({ commit }, producto: Producto): void {
+      commit(SET_PRODUCTO, producto as Producto);
     }
   },
 
   mutations: {
     ...parametros.mutations,
+
+    [SET_SOLO_FAVORITOS](estado, soloFavoritos: SoloFavoritos): void {
+      // @ts-ignore
+      estado.parametros.soloFavoritos = soloFavoritos;
+    },
 
     [MAQUINA_EVENTO](estado, evento: OmniEvent<Evento>): void {
       const { estadoActual } = estado;
@@ -137,6 +246,16 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
 
     [SET_PRODUCTOS](estado, productos: Array<Producto>): void {
       estado.productos = productos;
+    },
+
+    [SET_PRODUCTO](estado, producto: Producto): void {
+      const indice: number = estado.productos.findIndex(
+        (productoActual) => productoActual.id === producto.id
+      );
+
+      if (indice >= 0) {
+        Vue.set(estado.productos, indice, producto);
+      }
     },
 
     [SET_PAGINACION](estado, paginacion: Paginacion | null): void {
@@ -150,6 +269,10 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
     [SET_MENSAJE](estado, mensaje: MensajeError | null): void {
       estado.mensaje = mensaje;
     }
+  },
+
+  modules: {
+    [MODULO_PRODUCTOS_FAVORITOS]: moduloProductosFavoritos
   }
 };
 

@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Resources\MissingValue;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductoResource extends JsonResource
@@ -28,11 +30,26 @@ class ProductoResource extends JsonResource
             'imagen' => $this->imagen,
             // FIXME: debería mostrar el campo es_favorito solo cuando el
             // usuario logueado es un cliente
-            'es_favorito' => $this->esFavorito,
+            'es_favorito' => $this->when(Auth::check(), $this->getEsFavorito()),
             'id_categoria' => $this->id_categoria,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at
         ];
+    }
+
+    public function getEsFavorito()
+    {
+        $usuario = $this->whenLoaded('usuariosQueMarcaronComoFavorito');
+
+        if ($usuario instanceof MissingValue) {
+            $this->loadMissing([
+                'usuariosQueMarcaronComoFavorito' => function ($consulta) {
+                    $consulta->where('cliente_usuario_id', Auth::id());
+                }
+            ]);
+        }
+
+        return $this->usuariosQueMarcaronComoFavorito->isNotEmpty();
     }
 }

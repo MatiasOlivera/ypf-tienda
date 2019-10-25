@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Auxiliares\Consulta;
 use Illuminate\Http\Request;
 use App\{Cliente, ClienteTelefono};
 use App\Http\Controllers\BaseController;
 use App\Http\Resources\ClienteTelefonoCollection;
 use App\Auxiliares\{Respuesta, MensajeExito, MensajeError};
 use App\Http\Requests\Cliente\Telefono\ClienteTelefonoRequest;
+use App\Http\Requests\Cliente\Telefono\ClienteTelefonosRequest;
 
 class ClienteTelefonoController extends Controller
 {
@@ -35,10 +37,23 @@ class ClienteTelefonoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, Cliente $cliente)
+    public function index(ClienteTelefonosRequest $request, Cliente $cliente)
     {
         try {
-            $telefonos = $cliente->telefonos;
+            $modelos = $cliente->telefonos();
+
+            $parametros = [
+                'modelo' => $modelos,
+                'eliminados' => $request->input('eliminados', false),
+                'paginado' => [
+                    'ordenarPor' => $request->input('ordenarPor', 'area'),
+                    'orden' => $request->input('orden', 'ASC'),
+                ]
+            ];
+
+            $consulta = new Consulta();
+            $telefonos = $consulta->ejecutarConsulta($parametros);
+
             return new ClienteTelefonoCollection($telefonos);
         } catch (\Throwable $th) {
             $mensajeError   = new MensajeError();

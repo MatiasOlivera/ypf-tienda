@@ -73,7 +73,10 @@ class ClienteRazonSocialControllerTest extends TestCase
             ->json('GET', "api/clientes/$id/razones");
 
         $estructura = $this->getEstructuraRazones();
-        $razones = $cliente->razonesSociales()->get()->toArray();
+        $razones = $cliente->razonesSociales()
+            ->orderBy('denominacion', 'ASC')
+            ->get()
+            ->toArray();
 
         $respuesta
             ->assertOk()

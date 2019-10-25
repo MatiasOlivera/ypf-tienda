@@ -69,6 +69,11 @@ class ProductosFavoritosControllerTest extends TestCase
         $id = $producto['id'];
 
         $cabeceras = $this->loguearseComo('defecto');
+
+        $this
+            ->withHeaders($cabeceras)
+            ->json('POST', "api/productos/$id/favorito", $producto);
+
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('DELETE', "api/productos/$id/favorito");

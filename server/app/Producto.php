@@ -30,8 +30,7 @@ class Producto extends Model
         'id_categoria',
         'precio_por_mayor',
         'consumidor_final',
-        'imagen',
-        'es_favorito'
+        'imagen'
     ];
 
     protected $hidden = [
