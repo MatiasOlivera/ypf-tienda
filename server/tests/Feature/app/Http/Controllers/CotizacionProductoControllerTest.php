@@ -184,7 +184,7 @@ class CotizacionProductoControllerTest extends TestCase
         $cotizacionProductoId = $producto['id'];
         $respuesta = $this
             ->withHeaders($cabeceras)
-            ->json('DELETE', "api/cotizaciones/$cotizacionId/productos/$cotizacionProductoId");
+            ->json('DELETE', "api/cotizaciones/productos/$cotizacionProductoId");
 
         $producto['id'] = null;
         $producto['cantidad'] = 10;
@@ -226,7 +226,6 @@ class CotizacionProductoControllerTest extends TestCase
     public function test_deberia_eliminar_un_producto_de_una_cotizacion()
     {
         $cotizacion = $this->crearCotizacion();
-        $cotizacionId = $cotizacion['id'];
         $cotizacionProducto = $cotizacion['productos'][0];
         $id = $cotizacionProducto['id'];
 
@@ -236,7 +235,7 @@ class CotizacionProductoControllerTest extends TestCase
         $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
             ->withHeaders($cabeceras)
-            ->json('DELETE', "api/cotizaciones/$cotizacionId/productos/$id");
+            ->json('DELETE', "api/cotizaciones/productos/$id");
 
         $cotizacionProductoEsperadoArray = $cotizacionProductoEsperado->toArray();
         unset($cotizacionProductoEsperadoArray['deleted_at']);

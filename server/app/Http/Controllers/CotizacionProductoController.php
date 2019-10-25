@@ -46,10 +46,10 @@ class CotizacionProductoController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Cotizacion  $cotizacion
+     * @param  \App\CotizacionProducto  $cotizacionProducto
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, Cotizacion $cotizacion, CotizacionProducto $cotizacionProducto)
+    public function destroy(Request $request, CotizacionProducto $cotizacionProducto)
     {
         $nombre = "El producto {$cotizacionProducto->producto->nombre}";
         return $this->controladorBase->destroy($cotizacionProducto, $nombre);
