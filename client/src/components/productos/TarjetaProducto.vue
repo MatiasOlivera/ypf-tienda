@@ -16,22 +16,45 @@
       {{ presentacion | capitalizar }}
     </b-card-text>
 
-    <div class="d-flex justify-content-between">
-      <b-button
-        id="agregar-favorito"
-        title="Agregar a favoritos"
-        variant="outline-secondary"
-        class="d-flex align-items-center"
-        :class="[hover ? 'mostrar-icono' : 'ocultar-icono']"
-        @click="clickAgregarFavorito"
-      >
-        <feather type="heart" size="1em" />
-      </b-button>
+    <div
+      class="d-flex"
+      :class="[
+        estaAutenticado ? 'justify-content-between' : 'justify-content-end'
+      ]"
+    >
+      <template v-if="estaAutenticado">
+        <b-button
+          v-if="esFavorito"
+          id="quitar-favorito"
+          :disabled="estadoEsPendiente"
+          title="Quitar de favoritos"
+          pill
+          variant="light"
+          class="d-flex align-items-center"
+          @click="clickQuitarFavorito"
+        >
+          <feather type="heart" size="1em" stroke="none" fill="#dc3545" />
+        </b-button>
+
+        <b-button
+          v-else
+          id="agregar-favorito"
+          :disabled="estadoEsPendiente"
+          title="Agregar a favoritos"
+          pill
+          variant="light"
+          class="d-flex align-items-center"
+          @click="clickAgregarFavorito"
+        >
+          <feather type="heart" size="1em" stroke="#dc3545" />
+        </b-button>
+      </template>
 
       <b-button
         id="agregar-carrito"
         title="Agregar al carrito"
-        variant="outline-primary"
+        pill
+        variant="light"
         class="d-flex align-items-center"
         @click="clickAgregarCarrito"
       >
@@ -47,11 +70,15 @@ import { PropValidator } from 'vue/types/options';
 
 // Mixins
 import filtroCapitalizarMixin from '@/mixins/string/filtro-capitalizar-mixin';
+import { EstadoFavoritoCadena } from '../../store/modules/productos/favoritos/maquina-favoritos';
 
 // Props
 export type PropNombre = string;
 export type PropPresentacion = string;
 export type PropImagen = string;
+export type PropEstaAutenticado = boolean;
+export type PropEsFavorito = boolean;
+export type PropEstadoFavorito = EstadoFavoritoCadena;
 
 interface Data {
   hover: boolean;
@@ -76,13 +103,34 @@ export default Vue.extend({
     imagen: {
       type: String,
       default: ''
-    } as PropValidator<PropImagen>
+    } as PropValidator<PropImagen>,
+
+    estaAutenticado: {
+      type: Boolean,
+      default: false
+    } as PropValidator<PropEstaAutenticado>,
+
+    esFavorito: {
+      type: Boolean,
+      default: false
+    } as PropValidator<PropEsFavorito>,
+
+    estadoFavorito: {
+      type: String,
+      default: 'noEsFavorito'
+    } as PropValidator<PropEstadoFavorito>
   },
 
   data(): Data {
     return {
       hover: false
     };
+  },
+
+  computed: {
+    estadoEsPendiente(): boolean {
+      return this.estadoFavorito === 'pendiente';
+    }
   },
 
   methods: {
@@ -96,6 +144,10 @@ export default Vue.extend({
 
     clickAgregarFavorito(): void {
       this.$emit('clickAgregarFavorito');
+    },
+
+    clickQuitarFavorito(): void {
+      this.$emit('clickQuitarFavorito');
     },
 
     clickAgregarCarrito(): void {

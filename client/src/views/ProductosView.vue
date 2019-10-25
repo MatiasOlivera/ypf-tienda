@@ -19,12 +19,18 @@
           <h1 class="h2">
             {{ (parametros.buscar || '') | placeholder('Productos') }}
           </h1>
-          <p>
+          <p v-if="paginacion && paginacion.total">
             {{
-              (paginacion.total || 0)
+              paginacion.total
                 | pluralizar(['producto', 'productos'], { incluirNumero: true })
             }}
           </p>
+        </div>
+
+        <div v-if="estaLogueado" class="mb-5">
+          <b-form-checkbox v-model="soloFavoritos" switch name="solo-favoritos">
+            Solo favoritos
+          </b-form-checkbox>
         </div>
       </b-col>
 
@@ -41,7 +47,7 @@
         <template v-if="mostrarProductos">
           <b-row class="mb-5">
             <b-col
-              v-for="producto in productos"
+              v-for="producto in productosConRelaciones"
               :key="producto.id"
               sm="12"
               md="6"
@@ -52,6 +58,11 @@
                 :nombre="producto.nombre"
                 :presentacion="producto.presentacion"
                 :imagen="producto.imagen"
+                :esta-autenticado="estaLogueado"
+                :es-favorito="producto.esFavorito.valor"
+                :estado-favorito="producto.esFavorito.estadoActual"
+                @clickAgregarFavorito="agregarAFavoritos(producto.esFavorito)"
+                @clickQuitarFavorito="quitarDeFavoritos(producto.esFavorito)"
               ></TarjetaProducto>
             </b-col>
           </b-row>
@@ -100,12 +111,24 @@ import filtroPlaceholderMixin from '../mixins/string/filtro-placeholder-mixin';
 import filtroPluralizarMixin from '../mixins/string/filtro-pluralizar-mixin';
 
 // Store
-import { MODULO_PRODUCTOS } from '../store/types/modulos';
+import {
+  MODULO_AUTENTICACION,
+  MODULO_PRODUCTOS,
+  PRODUCTOS_PRODUCTOS_FAVORITOS
+} from '../store/types/modulos';
 import {
   OBTENER_PRODUCTOS,
   ESTABLECER_BUSCAR,
-  ESTABLECER_PAGINA
+  ESTABLECER_PAGINA,
+  ESTABLECER_SOLO_FAVORITOS,
+  AGREGAR_A_FAVORITOS,
+  QUITAR_DE_FAVORITOS
 } from '../store/types/acciones';
+import { SoloFavoritos } from '../services/api/productos/productos/productos-tipos';
+
+interface Data {
+  soloFavoritos: SoloFavoritos;
+}
 
 export default Vue.extend({
   name: 'ProductosView',
@@ -120,18 +143,22 @@ export default Vue.extend({
 
   mixins: [filtroPlaceholderMixin, filtroPluralizarMixin],
 
+  data(): Data {
+    return {
+      soloFavoritos: false
+    };
+  },
+
   computed: {
-    ...mapState(MODULO_PRODUCTOS, [
-      'parametros',
-      'productos',
-      'paginacion',
-      'mensaje'
-    ]),
+    ...mapState(MODULO_AUTENTICACION, ['estaLogueado']),
+
+    ...mapState(MODULO_PRODUCTOS, ['parametros', 'paginacion', 'mensaje']),
     ...mapGetters(MODULO_PRODUCTOS, [
       'estadoEsPendiente',
       'estadoEsProductos',
       'estadoEsValidacion',
-      'estadoEsMensaje'
+      'estadoEsMensaje',
+      'productosConRelaciones'
     ]),
 
     mostrarProductos(): boolean {
@@ -143,7 +170,13 @@ export default Vue.extend({
     },
 
     hayProductos(): boolean {
-      return !isEmpty(this.productos);
+      return !isEmpty(this.productosConRelaciones);
+    }
+  },
+
+  watch: {
+    soloFavoritos: function(valor) {
+      this.establecerSoloFavoritos(valor);
     }
   },
 
@@ -157,7 +190,13 @@ export default Vue.extend({
     ...mapActions(MODULO_PRODUCTOS, [
       OBTENER_PRODUCTOS,
       ESTABLECER_BUSCAR,
-      ESTABLECER_PAGINA
+      ESTABLECER_PAGINA,
+      ESTABLECER_SOLO_FAVORITOS
+    ]),
+
+    ...mapActions(PRODUCTOS_PRODUCTOS_FAVORITOS, [
+      AGREGAR_A_FAVORITOS,
+      QUITAR_DE_FAVORITOS
     ])
   }
 });

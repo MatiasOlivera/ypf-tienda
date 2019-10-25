@@ -10,6 +10,8 @@ use App\Auxiliares\MensajeError;
 use App\Auxiliares\MensajeExito;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\ProductoResource;
+use Illuminate\Database\Eloquent\Builder;
 use App\Http\Resources\ProductoCollection;
 use App\Http\Requests\Producto\ProductosRequest;
 use App\Http\Requests\Producto\CrearProductoRequest;
@@ -18,14 +20,7 @@ use App\Http\Requests\Producto\ActualizarProductoRequest;
 class ProductosController extends Controller
 {
     private $controladorBase;
-    private $modeloSingular = 'producto';
-    private $modeloPlural = 'productos';
     private $generoModelo = 'masculino';
-
-    public function __construct()
-    {
-        $this->controladorBase = new BaseController($this->modeloSingular, $this->modeloPlural, $this->generoModelo);
-    }
 
     /**
      * Display a listing of the resource.
@@ -38,13 +33,16 @@ class ProductosController extends Controller
             $soloFavoritos = $request->input('soloFavoritos', false);
 
             if (Auth::check() && $soloFavoritos === true) {
-                $consulta = Auth::user()->productosFavoritos();
+                $modelo = Producto::with('usuariosQueMarcaronComoFavorito')
+                    ->whereHas('usuariosQueMarcaronComoFavorito', function (Builder $consulta) {
+                        $consulta->where('cliente_usuario_id', Auth::id());
+                    });
             } else {
-                $consulta = 'Producto';
+                $modelo = 'Producto';
             }
 
             $parametros = [
-                'modelo' => $consulta,
+                'modelo' => $modelo,
                 'campos' => [
                     'id',
                     'codigo',
@@ -116,7 +114,10 @@ class ProductosController extends Controller
                 $mensajeExito = new MensajeExito();
                 $mensajeExito->guardar($nombre, $this->generoModelo);
 
-                return Respuesta::exito([$this->modeloSingular => $productoGuardado], $mensajeExito, 201);
+                return (new ProductoResource($productoGuardado))
+                    ->additional(['mensaje' => $mensajeExito->toJson()])
+                    ->response()
+                    ->setStatusCode(201);
             }
         } catch (\Throwable $th) {
             $mensajeError = new MensajeError();
@@ -133,7 +134,7 @@ class ProductosController extends Controller
      */
     public function show(Producto $producto)
     {
-        return Respuesta::exito([$this->modeloSingular => $producto], null, 200);
+        return new ProductoResource($producto);
     }
 
     /**
@@ -168,7 +169,8 @@ class ProductosController extends Controller
                 $mensajeExito = new MensajeExito();
                 $mensajeExito->actualizar($nombres['exito'], $this->generoModelo);
 
-                return Respuesta::exito([$this->modeloSingular => $producto], $mensajeExito, 200);
+                return (new ProductoResource($producto))
+                    ->additional(['mensaje' => $mensajeExito->toJson()]);
             }
         } catch (\Throwable $th) {
             $mensajeError = new MensajeError();
@@ -195,7 +197,8 @@ class ProductosController extends Controller
                 $mensajeExito = new MensajeExito();
                 $mensajeExito->eliminar($nombre, $this->generoModelo);
 
-                return Respuesta::exito([$this->modeloSingular => $producto], $mensajeExito, 200);
+                return (new ProductoResource($producto))
+                    ->additional(['mensaje' => $mensajeExito->toJson()]);
             }
         } catch (\Throwable $th) {
             $mensajeError = new MensajeError();
@@ -222,7 +225,8 @@ class ProductosController extends Controller
                 $mensajeExito = new MensajeExito();
                 $mensajeExito->restaurar($nombre, $this->generoModelo);
 
-                return Respuesta::exito([$this->modeloSingular => $producto], $mensajeExito, 200);
+                return (new ProductoResource($producto))
+                    ->additional(['mensaje' => $mensajeExito->toJson()]);
             }
         } catch (\Throwable $th) {
             $mensajeError = new MensajeError();

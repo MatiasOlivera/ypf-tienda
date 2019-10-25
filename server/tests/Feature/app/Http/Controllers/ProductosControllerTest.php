@@ -366,6 +366,7 @@ class ProductosControllerTest extends TestCase
             ->where('id', $id)
             ->firstOrFail()
             ->toArray();
+        $productoDB['es_favorito'] = false;
 
         $respuesta
             ->assertStatus(200)
@@ -403,6 +404,7 @@ class ProductosControllerTest extends TestCase
             ->where('id', $id)
             ->firstOrFail()
             ->toArray();
+        $productoDB['es_favorito'] = false;
 
         $respuesta
             ->assertStatus(200)
