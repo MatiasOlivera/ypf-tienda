@@ -212,6 +212,39 @@ class CotizacionController extends Controller
     }
 
     /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Cotizacion  $cotizacion
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Cotizacion $cotizacion)
+    {
+        $nombre = "La cotización";
+
+        try {
+            $eliminada = $cotizacion->delete();
+
+            if ($eliminada) {
+                // Crear la respuesta
+                $cotizacionEliminada= $this->obtenerCotizacion($cotizacion->id);
+
+                $mensajeExito = new MensajeExito();
+                $mensajeExito->eliminar($nombre, $this->generoModelo);
+
+                return (new CotizacionResource($cotizacionEliminada))
+                    ->additional(['mensaje' => $mensajeExito->toJson()])
+                    ->response()
+                    ->setStatusCode(200);
+            }
+        } catch (\Throwable $th) {
+            $mensajeError = new MensajeError();
+            $mensajeError->eliminar($nombre, $this->generoModelo);
+
+            return Respuesta::error($mensajeError, 500);
+        }
+    }
+
+    /**
      * Obtener la cotización con sus relaciones
      *
      * @param integer $id
@@ -219,16 +252,18 @@ class CotizacionController extends Controller
      */
     private function obtenerCotizacion(int $id)
     {
-        return Cotizacion::with([
-            'empleado',
-            'cliente',
-            'razonSocial',
-            'cotizacionEstado',
-            'telefono',
-            'domicilio',
-            'observacion',
-            'productos.producto'
-        ])->findOrFail($id);
+        return Cotizacion::withTrashed()
+            ->with([
+                'empleado',
+                'cliente',
+                'razonSocial',
+                'cotizacionEstado',
+                'telefono',
+                'domicilio',
+                'observacion',
+                'productos.producto'
+            ])
+            ->findOrFail($id);
     }
 
     /**

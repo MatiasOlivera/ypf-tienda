@@ -78,17 +78,19 @@ class CotizacionControllerTest extends TestCase
 
     private function getCotizacion($id): array
     {
-        $cotizacion = Cotizacion::with([
-            'empleado',
-            'cliente',
-            'razonSocial',
-            'cotizacionEstado',
-            'telefono',
-            'domicilio',
-            'observacion',
-            'pedido',
-            'productos.producto'
-        ])->findOrFail($id);
+        $cotizacion = Cotizacion::withTrashed()->
+            with([
+                'empleado',
+                'cliente',
+                'razonSocial',
+                'cotizacionEstado',
+                'telefono',
+                'domicilio',
+                'observacion',
+                'pedido',
+                'productos.producto'
+            ])
+            ->findOrFail($id);
         $recurso = new CotizacionResource($cotizacion);
         $respuesta = $recurso->response()->getData(true);
         return $respuesta['cotizacion'];
@@ -378,5 +380,29 @@ class CotizacionControllerTest extends TestCase
                 $this->assertEquals($productoDuplicado['precio'], $producto['precio']);
             }
         }
+    }
+
+    public function test_deberia_eliminar_una_cotizacion()
+    {
+        $cotizacion = $this->crearCotizacion();
+        $id = $cotizacion['id'];
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('DELETE', "api/cotizaciones/$id");
+
+        $cotizacionRespuesta = $this->getCotizacion($id);
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertJson([
+                'cotizacion' => $cotizacionRespuesta,
+                'mensaje' => [
+                    'tipo' => 'exito',
+                    'codigo' => 'ELIMINADO',
+                    'descripcion' => 'La cotización ha sido eliminada'
+                ]
+            ]);
     }
 }
