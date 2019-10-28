@@ -2,9 +2,10 @@
 
 namespace App;
 
+use App\Cotizacion;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Sofa\Eloquence\{ Eloquence, Mappable };
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ClienteTelefono extends Model
 {
@@ -48,5 +49,10 @@ class ClienteTelefono extends Model
     public function cliente()
     {
         return $this->belongsTo('App\Cliente', 'id_cliente', 'id_cliente');
+    }
+
+    public function cotizaciones()
+    {
+        return $this->hasMany(Cotizacion::class, 'id_cot');
     }
 }

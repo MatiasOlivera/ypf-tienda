@@ -89,7 +89,7 @@ jobs:
       - run: cd server && php artisan migrate --env=testing --force
 
       # ejecutar los tests unitarios
-      - run: cd server && phpdbg -qrr vendor/bin/phpunit --coverage-clover=coverage/clover.xml
+      - run: cd server && phpdbg -qrr vendor/bin/phpunit --coverage-clover=coverage/clover.xml -d memory_limit=512M
       - store_artifacts:
           path: server/coverage/clover.xml
       # subir la cobertura del código a codecov

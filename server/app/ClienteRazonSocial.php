@@ -2,9 +2,10 @@
 
 namespace App;
 
+use App\Cotizacion;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Sofa\Eloquence\{ Eloquence, Mappable };
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ClienteRazonSocial extends Model
 {
@@ -73,5 +74,10 @@ class ClienteRazonSocial extends Model
         return $this->belongsToMany('App\Cliente', 'cliente_razon', 'id_razon', 'id_cliente')
             ->with(['localidad',])
             ->withTimestamps();
+    }
+
+    public function cotizaciones()
+    {
+        return $this->hasMany(Cotizacion::class, 'id_cot');
     }
 }

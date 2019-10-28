@@ -205,4 +205,18 @@ Route::middleware('jwt.auth')->group(function () {
 
     Route::delete('productos/{producto}/favorito', 'ProductosFavoritosController@desasociar')
         ->name('productos.no_es_favorito');
+
+    /**
+     * Cotizaciones
+     */
+    Route::apiResource('cotizaciones', 'CotizacionController')
+        ->parameters(['cotizaciones' => 'cotizacion']);
+
+    Route::group(['prefix' => 'cotizaciones',], function () {
+        Route::put('/{cotizacion}/productos', 'CotizacionProductoController@update')
+            ->name('CotizacionProducto.update');
+
+        Route::delete('/productos/{cotizacion_producto}', 'CotizacionProductoController@destroy')
+            ->name('CotizacionProducto.destroy');
+    });
 });

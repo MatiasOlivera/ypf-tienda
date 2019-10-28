@@ -2,9 +2,10 @@
 
 namespace App;
 
+use App\Cotizacion;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Sofa\Eloquence\{ Eloquence, Mappable };
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ClienteDomicilio extends Model
 {
@@ -48,5 +49,10 @@ class ClienteDomicilio extends Model
     public function localidad()
     {
         return $this->belongsTo('App\Localidad', 'id_loc')->with(['provincia',]);
+    }
+
+    public function cotizaciones()
+    {
+        return $this->hasMany(Cotizacion::class, 'id_cot');
     }
 }

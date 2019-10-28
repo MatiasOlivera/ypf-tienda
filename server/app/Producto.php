@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\CotizacionProducto;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -77,6 +78,28 @@ class Producto extends Model
         return $this->belongsToMany('App\User', 'productos_favoritos', 'producto_id', 'cliente_usuario_id')
             ->as('favorito')
             ->withTimestamps();
+    }
+
+    /**
+     * Obtener si el usuario marco este producto como favorito
+     */
+    public function getEsFavoritoAttribute(): bool
+    {
+        if (Auth::check() === false) {
+            return false;
+        }
+
+        $esFavorito = $this->usuariosQueMarcaronComoFavorito()
+            ->wherePivot('cliente_usuario_id', Auth::user()->id)
+            ->get()
+            ->toArray();
+
+        return !empty($esFavorito);
+    }
+
+    public function cotizacion()
+    {
+        return $this->belongsTo(CotizacionProducto::class, 'codigo_prod', 'codigo_p');
     }
 
     public function categoria()

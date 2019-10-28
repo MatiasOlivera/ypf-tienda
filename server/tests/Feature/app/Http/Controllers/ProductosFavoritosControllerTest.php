@@ -4,6 +4,7 @@ namespace Tests\Feature\app\Http\Controllers;
 
 use App\Producto;
 use Tests\TestCase;
+use CategoriaProductoSeeder;
 use Tests\Feature\Utilidades\AuthHelper;
 use Tests\Feature\Utilidades\EstructuraProducto;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -15,6 +16,12 @@ class ProductosFavoritosControllerTest extends TestCase
     use RefreshDatabase;
     use EstructuraProducto;
     use EstructuraJsonHelper;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(CategoriaProductoSeeder::class);
+    }
 
     private function crearProducto()
     {
