@@ -219,4 +219,10 @@ Route::middleware('jwt.auth')->group(function () {
         Route::delete('/productos/{cotizacion_producto}', 'CotizacionProductoController@destroy')
             ->name('CotizacionProducto.destroy');
     });
+
+    /**
+     * Pedidos
+     */
+    Route::apiResource('pedidos', 'PedidoController')
+        ->parameters(['pedidos' => 'pedido']);
 });
