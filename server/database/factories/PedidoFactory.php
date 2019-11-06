@@ -20,7 +20,13 @@ $factory->define(Pedido::class, function (Faker $faker) {
             return factory(CotizacionEstado::class)->create()->id;
         },
         'pedido_estado_id' => function () {
-            return factory(PedidoEstado::class)->create()->id;
+            $estado = PedidoEstado::inRandomOrder()->first();
+
+            if ($estado === null) {
+                throw new Exception("Debes usar el seeder PedidoEstadoSeeder");
+            }
+
+            return $estado->id;
         },
         'observacion_id' => function () {
             return factory(Observacion::class)->create()->id;

@@ -25,7 +25,9 @@ class PedidosRequest extends PaginacionRequest
     public function rules()
     {
         $this->setOrdenarPor();
-        return parent::rules();
+        $reglas = parent::rules();
+        $pedidoEstado = $this->getReglaPedidoEstado();
+        return array_merge($reglas, $pedidoEstado);
     }
 
     public function setOrdenarPor()
@@ -41,5 +43,12 @@ class PedidosRequest extends PaginacionRequest
                 'updated_at'
             ])
         );
+    }
+
+    public function getReglaPedidoEstado()
+    {
+        return [
+            'pedido_estado_id' => ['bail', 'string', Rule::in(['pendiente'])]
+        ];
     }
 }

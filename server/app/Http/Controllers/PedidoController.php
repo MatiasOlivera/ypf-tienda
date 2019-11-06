@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Pedido;
+use App\PedidoEstado;
 use App\Auxiliares\Consulta;
 use Illuminate\Http\Request;
 use App\Auxiliares\Respuesta;
@@ -26,6 +27,17 @@ class PedidoController extends Controller
                 'empleado:id,nombre',
                 'domicilio.localidad:id,nombre'
             ]);
+
+            $pedidoEstado = $request->input('pedido_estado');
+
+            if ($pedidoEstado === 'pendiente') {
+                $estadoPendiente = PedidoEstado::where('descripcion', 'Pendiente')->first();
+                $estadoEntregaParcial = PedidoEstado::where('descripcion', 'Entrega Parcial')->first();
+
+                $consulta
+                    ->where('pedido_estado_id', $estadoPendiente->id)
+                    ->orWhere('pedido_estado_id', $estadoEntregaParcial->id);
+            }
 
             $parametros = [
                 'modelo' => $consulta,
