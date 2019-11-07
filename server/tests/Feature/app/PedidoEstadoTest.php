@@ -5,6 +5,7 @@ namespace Tests\Feature\app;
 use App\Pedido;
 use Tests\TestCase;
 use App\PedidoEstado;
+use PedidoEstadoSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -42,6 +43,8 @@ class PedidoEstadoTest extends TestCase
 
     public function test_deberia_acceder_a_la_relacion_pedidos()
     {
+        $this->seed(PedidoEstadoSeeder::class);
+
         $nuevoPedido = factory(Pedido::class)->create();
         $estado = $nuevoPedido->pedidoEstado;
         $pedido = $estado->pedidos()->get()->first();
