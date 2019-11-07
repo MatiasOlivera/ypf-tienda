@@ -7,6 +7,7 @@ use App\Empleado;
 use App\Cotizacion;
 use App\Observacion;
 use App\PedidoEstado;
+use App\PedidoProducto;
 use App\ClienteTelefono;
 use App\ClienteDomicilio;
 use App\CotizacionEstado;
@@ -78,6 +79,11 @@ class Pedido extends Model
     ];
 
     public $timestamps = false;
+
+    public function productos()
+    {
+        return $this->hasMany(PedidoProducto::class, 'id_pedido', 'id_pedido');
+    }
 
     public function empleado()
     {

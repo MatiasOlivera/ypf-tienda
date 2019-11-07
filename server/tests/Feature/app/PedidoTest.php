@@ -9,10 +9,13 @@ use App\Cotizacion;
 use Tests\TestCase;
 use App\Observacion;
 use App\PedidoEstado;
+use App\PedidoProducto;
+use PedidoEstadoSeeder;
 use App\ClienteTelefono;
 use App\ClienteDomicilio;
 use App\CotizacionEstado;
 use App\ClienteRazonSocial;
+use CategoriaProductoSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\Utilidades\EstructuraPedido;
 use Tests\Feature\Utilidades\EloquenceSolucion;
@@ -23,6 +26,14 @@ class PedidoTest extends TestCase
     use RefreshDatabase;
     use EstructuraPedido;
     use EloquenceSolucion;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seed(CategoriaProductoSeeder::class);
+        $this->seed(PedidoEstadoSeeder::class);
+    }
 
     public function test_deberia_crear_un_pedido()
     {
@@ -46,6 +57,17 @@ class PedidoTest extends TestCase
 
         unset($entrada['id']);
         $this->assertArraySubset($entrada, $pedido->toArray());
+    }
+
+    public function test_deberia_acceder_a_la_relacion_productos()
+    {
+        $pedido = factory(Pedido::class)->states('productos')->create();
+        $productos = $pedido->productos;
+
+        foreach ($productos as $producto) {
+            $this->assertInstanceOf(PedidoProducto::class, $producto);
+            $this->assertEquals($pedido->id, $producto->pedido_id);
+        }
     }
 
     public function test_deberia_acceder_a_la_relacion_empleado()
