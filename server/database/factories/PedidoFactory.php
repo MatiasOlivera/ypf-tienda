@@ -5,6 +5,7 @@ use App\Cliente;
 use App\Empleado;
 use App\Observacion;
 use App\PedidoEstado;
+use App\PedidoProducto;
 use App\ClienteTelefono;
 use App\ClienteDomicilio;
 use App\CotizacionEstado;
@@ -55,4 +56,10 @@ $factory->define(Pedido::class, function (Faker $faker) {
             return factory(ClienteDomicilio::class)->create()->id;
         }
     ];
+});
+
+$factory->afterCreatingState(Pedido::class, 'productos', function ($pedido, $faker) {
+    $productos = factory(PedidoProducto::class, 5)->make();
+    $pedido->productos()->saveMany($productos);
+    $pedido->save();
 });
