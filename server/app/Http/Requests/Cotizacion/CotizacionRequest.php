@@ -86,7 +86,7 @@ class CotizacionRequest extends FormRequest
 
     protected function getReglaPedido(): array
     {
-        return ['bail', 'integer', Rule::exists('pedido', 'id_pedido')];
+        return ['bail', 'nullable', 'integer', Rule::exists('pedido', 'id_pedido')];
     }
 
     protected function getReglaObservacion(): array
