@@ -144,7 +144,7 @@ class PedidoTest extends TestCase
 
     public function test_deberia_acceder_a_la_relacion_cotizacion()
     {
-        $cotizacion = factory(Cotizacion::class)->create();
+        $cotizacion = factory(Cotizacion::class)->states('pedido')->create();
         $pedido = $cotizacion->pedido;
 
         $this->assertInstanceOf(Cotizacion::class, $pedido->cotizacion);
