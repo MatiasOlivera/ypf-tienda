@@ -27,7 +27,7 @@ class PedidoListadoResource extends JsonResource
             'fecha_pedido' => $this->fecha_pedido,
             'entrega' => [
                 'fecha' => $this->fecha_entrega,
-                'estado' => $this->pedidoEstado
+                'estado' => $this->entregaEstado
             ],
             'consumidor_final' => $this->consumidor_final,
             'plazo' => $this->plazo,

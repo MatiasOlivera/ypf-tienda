@@ -6,7 +6,7 @@ use App\Pedido;
 use App\Producto;
 use Tests\TestCase;
 use App\PedidoProducto;
-use PedidoEstadoSeeder;
+use PedidoEntregaEstadoSeeder;
 use CategoriaProductoSeeder;
 use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -23,7 +23,7 @@ class PedidoProductoTest extends TestCase
         parent::setUp();
 
         $this->seed(CategoriaProductoSeeder::class);
-        $this->seed(PedidoEstadoSeeder::class);
+        $this->seed(PedidoEntregaEstadoSeeder::class);
 
         $this->pedido = factory(Pedido::class)->create();
     }

@@ -1,9 +1,9 @@
 <?php
 
-use App\PedidoEstado;
+use App\PedidoEntregaEstado;
 use Illuminate\Database\Seeder;
 
-class PedidoEstadoSeeder extends Seeder
+class PedidoEntregaEstadoSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -20,7 +20,7 @@ class PedidoEstadoSeeder extends Seeder
         ];
 
         foreach ($estados as $estado) {
-            $nuevoEstado = new PedidoEstado();
+            $nuevoEstado = new PedidoEntregaEstado();
             $nuevoEstado->fill($estado);
             $nuevoEstado->save();
         }

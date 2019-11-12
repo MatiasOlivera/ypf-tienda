@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Utilidades;
 
-trait EstructuraPedidoEstado
+trait EstructuraPedidoEntregaEstado
 {
-    private $atributosPedidoEstado = [
+    private $atributosPedidoEntregaEstado = [
         'id',
         'descripcion'
     ];

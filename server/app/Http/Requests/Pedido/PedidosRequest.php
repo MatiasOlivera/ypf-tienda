@@ -26,8 +26,8 @@ class PedidosRequest extends PaginacionRequest
     {
         $this->setOrdenarPor();
         $reglas = parent::rules();
-        $pedidoEstado = $this->getReglaPedidoEstado();
-        return array_merge($reglas, $pedidoEstado);
+        $entregaEstado = $this->getReglaPedidoEntregaEstado();
+        return array_merge($reglas, $entregaEstado);
     }
 
     public function setOrdenarPor()
@@ -45,10 +45,10 @@ class PedidosRequest extends PaginacionRequest
         );
     }
 
-    public function getReglaPedidoEstado()
+    public function getReglaPedidoEntregaEstado()
     {
         return [
-            'pedido_estado_id' => ['bail', 'string', Rule::in(['pendiente'])]
+            'entrega_estado_id' => ['bail', 'string', Rule::in(['pendiente'])]
         ];
     }
 }

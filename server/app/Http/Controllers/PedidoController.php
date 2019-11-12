@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Pedido;
-use App\PedidoEstado;
+use App\PedidoEntregaEstado;
 use App\Auxiliares\Consulta;
 use Illuminate\Http\Request;
 use App\Auxiliares\Respuesta;
@@ -23,20 +23,20 @@ class PedidoController extends Controller
         try {
             $consulta = Pedido::with([
                 'cliente:id,nombre',
-                'pedidoEstado:id,descripcion',
+                'entregaEstado:id,descripcion',
                 'empleado:id,nombre',
                 'domicilio.localidad:id,nombre'
             ]);
 
-            $pedidoEstado = $request->input('pedido_estado');
+            $entregaEstado = $request->input('entrega_estado');
 
-            if ($pedidoEstado === 'pendiente') {
-                $estadoPendiente = PedidoEstado::where('descripcion', 'Pendiente')->first();
-                $estadoEntregaParcial = PedidoEstado::where('descripcion', 'Entrega Parcial')->first();
+            if ($entregaEstado === 'pendiente') {
+                $estadoPendiente = PedidoEntregaEstado::where('descripcion', 'Pendiente')->first();
+                $estadoEntregaParcial = PedidoEntregaEstado::where('descripcion', 'Entrega Parcial')->first();
 
                 $consulta
-                    ->where('pedido_estado_id', $estadoPendiente->id)
-                    ->orWhere('pedido_estado_id', $estadoEntregaParcial->id);
+                    ->where('entrega_estado_id', $estadoPendiente->id)
+                    ->orWhere('entrega_estado_id', $estadoEntregaParcial->id);
             }
 
             $parametros = [
@@ -48,7 +48,7 @@ class PedidoController extends Controller
                     'razon_id',
                     'fecha_pedido',
                     'fecha_entrega',
-                    'pedido_estado_id',
+                    'entrega_estado_id',
                     'consumidor_final',
                     'plazo',
                     'telefono_id',

@@ -4,7 +4,7 @@ use App\Pedido;
 use App\Cliente;
 use App\Empleado;
 use App\Observacion;
-use App\PedidoEstado;
+use App\PedidoEntregaEstado;
 use App\PedidoProducto;
 use App\ClienteTelefono;
 use App\ClienteDomicilio;
@@ -20,11 +20,11 @@ $factory->define(Pedido::class, function (Faker $faker) {
         'cotizacion_estado_id' => function () {
             return factory(CotizacionEstado::class)->create()->id;
         },
-        'pedido_estado_id' => function () {
-            $estado = PedidoEstado::inRandomOrder()->first();
+        'entrega_estado_id' => function () {
+            $estado = PedidoEntregaEstado::inRandomOrder()->first();
 
             if ($estado === null) {
-                throw new Exception("Debes usar el seeder PedidoEstadoSeeder");
+                throw new Exception("Debes usar el seeder PedidoEntregaEstadoSeeder");
             }
 
             return $estado->id;

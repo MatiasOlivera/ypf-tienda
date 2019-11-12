@@ -11,7 +11,7 @@ trait EstructuraPedido
         'razon_id',
         'fecha_pedido',
         'cotizacion_estado_id',
-        'pedido_estado_id',
+        'entrega_estado_id',
         'consumidor_final',
         'plazo',
         'telefono_id',

@@ -8,7 +8,7 @@ use App\Empleado;
 use App\Cotizacion;
 use Tests\TestCase;
 use App\Observacion;
-use PedidoEstadoSeeder;
+use PedidoEntregaEstadoSeeder;
 use App\ClienteTelefono;
 use App\ClienteDomicilio;
 use App\CotizacionEstado;
@@ -121,7 +121,7 @@ class CotizacionTest extends TestCase
 
     public function test_deberia_acceder_a_la_relacion_pedido()
     {
-        $this->seed(PedidoEstadoSeeder::class);
+        $this->seed(PedidoEntregaEstadoSeeder::class);
 
         $cotizacion = factory(Cotizacion::class)->states('pedido')->create();
         $pedido = $cotizacion->pedido;

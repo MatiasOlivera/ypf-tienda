@@ -4,8 +4,8 @@ namespace Tests\Feature\app\Http\Controllers;
 
 use App\Pedido;
 use Tests\TestCase;
-use App\PedidoEstado;
-use PedidoEstadoSeeder;
+use App\PedidoEntregaEstado;
+use PedidoEntregaEstadoSeeder;
 use Tests\Feature\Utilidades\AuthHelper;
 use Tests\Feature\Utilidades\EstructuraPedido;
 use App\Http\Resources\Pedido\PedidoCollection;
@@ -24,7 +24,7 @@ class PedidoControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(PedidoEstadoSeeder::class);
+        $this->seed(PedidoEntregaEstadoSeeder::class);
     }
 
     private function getEstructuraPedidos(): array
@@ -77,15 +77,15 @@ class PedidoControllerTest extends TestCase
         $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
             ->withHeaders($cabeceras)
-            ->json('GET', "api/pedidos?pedido_estado=pendiente");
+            ->json('GET', "api/pedidos?entrega_estado=pendiente");
 
         $estructura = $this->getEstructuraPedidos();
 
-        $estadoPendiente = PedidoEstado::where('descripcion', 'Pendiente')->first();
-        $estadoEntregaParcial = PedidoEstado::where('descripcion', 'Entrega Parcial')->first();
+        $estadoPendiente = PedidoEntregaEstado::where('descripcion', 'Pendiente')->first();
+        $estadoEntregaParcial = PedidoEntregaEstado::where('descripcion', 'Entrega Parcial')->first();
 
-        $pedidosTabla = Pedido::where('pedido_estado_id', $estadoPendiente->id)
-            ->orWhere('pedido_estado_id', $estadoEntregaParcial->id)
+        $pedidosTabla = Pedido::where('entrega_estado_id', $estadoPendiente->id)
+            ->orWhere('entrega_estado_id', $estadoEntregaParcial->id)
             ->orderBy('id', 'DESC')
             ->paginate(10);
         $pedidosColeccion = new PedidoCollection($pedidosTabla);

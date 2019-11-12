@@ -7,7 +7,7 @@ use Sofa\Eloquence\Mappable;
 use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
 
-class PedidoEstado extends Model
+class PedidoEntregaEstado extends Model
 {
     use Eloquence, Mappable;
 

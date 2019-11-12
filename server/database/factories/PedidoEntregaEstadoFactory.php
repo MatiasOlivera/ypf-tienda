@@ -1,9 +1,9 @@
 <?php
 
-use App\PedidoEstado;
+use App\PedidoEntregaEstado;
 use Faker\Generator as Faker;
 
-$factory->define(PedidoEstado::class, function (Faker $faker) {
+$factory->define(PedidoEntregaEstado::class, function (Faker $faker) {
     return [
         'descripcion' => $faker->unique()->word()
     ];
