@@ -4,35 +4,35 @@ namespace Tests\Feature\app;
 
 use App\Pedido;
 use Tests\TestCase;
+use App\PedidoEstado;
 use PedidoEstadoSeeder;
-use App\PedidoEntregaEstado;
 use PedidoEntregaEstadoSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\Feature\Utilidades\EstructuraPedidoEntregaEstado;
+use Tests\Feature\Utilidades\EstructuraPedidoEstado;
 
-class PedidoEntregaEstadoTest extends TestCase
+class PedidoEstadoTest extends TestCase
 {
     use RefreshDatabase;
     use EloquenceSolucion;
-    use EstructuraPedidoEntregaEstado;
+    use EstructuraPedidoEstado;
 
     public function test_deberia_crear_un_estado()
     {
-        $estado = factory(PedidoEntregaEstado::class)->create();
-        $estadoDB = PedidoEntregaEstado::findOrFail($estado->id)->toArray();
+        $estado = factory(PedidoEstado::class)->create();
+        $estadoDB = PedidoEstado::findOrFail($estado->id)->toArray();
 
-        foreach ($this->atributosPedidoEntregaEstado as $atributo) {
+        foreach ($this->atributosPedidoEstado as $atributo) {
             $this->assertArrayHasKey($atributo, $estadoDB);
         }
     }
 
     public function test_deberia_llenar_los_atributos_fillable_de_estado()
     {
-        $entrada = factory(PedidoEntregaEstado::class)->make()->toArray();
+        $entrada = factory(PedidoEstado::class)->make()->toArray();
 
-        $estado = new PedidoEntregaEstado();
+        $estado = new PedidoEstado();
         $estado->fill($entrada);
         $guardado = $estado->save();
 

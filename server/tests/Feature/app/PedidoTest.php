@@ -8,14 +8,15 @@ use App\Empleado;
 use App\Cotizacion;
 use Tests\TestCase;
 use App\Observacion;
-use App\PedidoEntregaEstado;
+use App\PedidoEstado;
 use App\PedidoProducto;
-use PedidoEntregaEstadoSeeder;
+use PedidoEstadoSeeder;
 use App\ClienteTelefono;
 use App\ClienteDomicilio;
-use App\CotizacionEstado;
 use App\ClienteRazonSocial;
+use App\PedidoEntregaEstado;
 use CategoriaProductoSeeder;
+use PedidoEntregaEstadoSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\Utilidades\EstructuraPedido;
 use Tests\Feature\Utilidades\EloquenceSolucion;
@@ -32,6 +33,7 @@ class PedidoTest extends TestCase
         parent::setUp();
 
         $this->seed(CategoriaProductoSeeder::class);
+        $this->seed(PedidoEstadoSeeder::class);
         $this->seed(PedidoEntregaEstadoSeeder::class);
     }
 
@@ -106,13 +108,13 @@ class PedidoTest extends TestCase
         $this->assertEquals($pedido->entrega_estado_id, $estado->id);
     }
 
-    public function test_deberia_acceder_a_la_relacion_cotizacion_estado()
+    public function test_deberia_acceder_a_la_relacion_estado()
     {
         $pedido = factory(Pedido::class)->create();
-        $estado = $pedido->cotizacionEstado;
+        $estado = $pedido->pedidoEstado;
 
-        $this->assertInstanceOf(CotizacionEstado::class, $estado);
-        $this->assertEquals($pedido->cotizacion_estado_id, $estado->id);
+        $this->assertInstanceOf(PedidoEstado::class, $estado);
+        $this->assertEquals($pedido->estado_id, $estado->id);
     }
 
     public function test_deberia_acceder_a_la_relacion_telefono()

@@ -6,6 +6,7 @@ use App\Pedido;
 use App\Cotizacion;
 use Tests\TestCase;
 use App\Observacion;
+use PedidoEstadoSeeder;
 use PedidoEntregaEstadoSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -50,6 +51,7 @@ class ObservacionTest extends TestCase
 
     public function test_deberia_acceder_a_la_relacion_pedido()
     {
+        $this->seed(PedidoEstadoSeeder::class);
         $this->seed(PedidoEntregaEstadoSeeder::class);
 
         $pedido = factory(Pedido::class)->create();

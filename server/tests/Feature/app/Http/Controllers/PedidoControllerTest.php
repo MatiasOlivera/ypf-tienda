@@ -4,6 +4,7 @@ namespace Tests\Feature\app\Http\Controllers;
 
 use App\Pedido;
 use Tests\TestCase;
+use PedidoEstadoSeeder;
 use App\PedidoEntregaEstado;
 use PedidoEntregaEstadoSeeder;
 use Tests\Feature\Utilidades\AuthHelper;
@@ -24,6 +25,7 @@ class PedidoControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->seed(PedidoEstadoSeeder::class);
         $this->seed(PedidoEntregaEstadoSeeder::class);
     }
 

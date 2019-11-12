@@ -6,12 +6,13 @@ use App\Cliente;
 use App\Empleado;
 use App\Cotizacion;
 use App\Observacion;
-use App\PedidoEntregaEstado;
+use App\PedidoEstado;
 use App\PedidoProducto;
 use App\ClienteTelefono;
 use App\ClienteDomicilio;
-use App\CotizacionEstado;
+
 use App\ClienteRazonSocial;
+use App\PedidoEntregaEstado;
 use Sofa\Eloquence\Mappable;
 use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
@@ -28,7 +29,7 @@ class Pedido extends Model
         'empleado_id' => 'id_us',
         'cliente_id' => 'id_cliente',
         'razon_id' => 'id_rz',
-        'cotizacion_estado_id' => 'estado',
+        'estado_id' => 'estado',
         'entrega_estado_id' => 'est_entrega',
         'consumidor_final' => 'cons_final',
         'telefono_id' => 'id_con',
@@ -41,7 +42,7 @@ class Pedido extends Model
         'empleado_id',
         'cliente_id',
         'razon_id',
-        'cotizacion_estado_id',
+        'estado_id',
         'entrega_estado_id',
         'consumidor_final',
         'telefono_id',
@@ -68,7 +69,7 @@ class Pedido extends Model
         'empleado_id',
         'cliente_id',
         'razon_id',
-        'cotizacion_estado_id',
+        'estado_id',
         'entrega_estado_id',
         'fecha_pedido',
         'consumidor_final',
@@ -100,9 +101,9 @@ class Pedido extends Model
         return $this->belongsTo(ClienteRazonSocial::class, 'id_rz', 'id_razon');
     }
 
-    public function cotizacionEstado()
+    public function pedidoEstado()
     {
-        return $this->belongsTo(CotizacionEstado::class, 'estado', 'id_apro');
+        return $this->belongsTo(PedidoEstado::class, 'estado', 'id_apro');
     }
 
     public function entregaEstado()

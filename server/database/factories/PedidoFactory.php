@@ -4,12 +4,13 @@ use App\Pedido;
 use App\Cliente;
 use App\Empleado;
 use App\Observacion;
-use App\PedidoEntregaEstado;
+use App\PedidoEstado;
 use App\PedidoProducto;
 use App\ClienteTelefono;
 use App\ClienteDomicilio;
-use App\CotizacionEstado;
+
 use App\ClienteRazonSocial;
+use App\PedidoEntregaEstado;
 use Faker\Generator as Faker;
 
 $factory->define(Pedido::class, function (Faker $faker) {
@@ -17,8 +18,14 @@ $factory->define(Pedido::class, function (Faker $faker) {
         'fecha_pedido' => $faker->date(),
         'consumidor_final' => $faker->randomElement(['0', '1']),
         'plazo' => $faker->word(),
-        'cotizacion_estado_id' => function () {
-            return factory(CotizacionEstado::class)->create()->id;
+        'estado_id' => function () {
+            $estado = PedidoEstado::inRandomOrder()->first();
+
+            if ($estado === null) {
+                throw new Exception("Debes usar el seeder PedidoEstadoSeeder");
+            }
+
+            return $estado->id;
         },
         'entrega_estado_id' => function () {
             $estado = PedidoEntregaEstado::inRandomOrder()->first();
