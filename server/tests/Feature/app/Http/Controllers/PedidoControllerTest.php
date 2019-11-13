@@ -263,4 +263,24 @@ class PedidoControllerTest extends TestCase
                 ]
             ]);
     }
+
+    public function test_deberia_obtener_un_pedido()
+    {
+        $pedidoGuardado = factory(Pedido::class)
+            ->states('productos')
+            ->create()
+            ->toArray();
+        $id = $pedidoGuardado['id'];
+
+        $cabeceras = $this->loguearseComo('defecto');
+        $respuesta = $this
+            ->withHeaders($cabeceras)
+            ->json('GET', "api/pedidos/$id");
+
+        $pedidoRespuesta = $this->getPedido($id);
+
+        $respuesta
+            ->assertStatus(200)
+            ->assertExactJson(['pedido' => $pedidoRespuesta]);
+    }
 }

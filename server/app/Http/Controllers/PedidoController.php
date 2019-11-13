@@ -174,7 +174,8 @@ class PedidoController extends Controller
      */
     public function show(Pedido $pedido)
     {
-        //
+        $pedidoConRelaciones = $this->obtenerPedido($pedido->id);
+        return new PedidoResource($pedidoConRelaciones);
     }
 
     /**
