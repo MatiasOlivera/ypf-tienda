@@ -224,5 +224,6 @@ Route::middleware('jwt.auth')->group(function () {
      * Pedidos
      */
     Route::apiResource('pedidos', 'PedidoController')
+        ->only('index', 'store', 'show')
         ->parameters(['pedidos' => 'pedido']);
 });
