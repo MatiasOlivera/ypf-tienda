@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Pedido;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Pedido\PedidoProductoResource;
 
 class PedidoResource extends JsonResource
 {
@@ -28,7 +29,7 @@ class PedidoResource extends JsonResource
             'telefono' => $this->whenLoaded('telefono'),
             'domicilio' => $this->whenLoaded('domicilio'),
             'observacion' => $this->whenLoaded('observacion'),
-            'productos' => $this->whenLoaded('productos')
+            'productos' => PedidoProductoResource::collection($this->whenLoaded('productos'))
         ];
     }
 }
