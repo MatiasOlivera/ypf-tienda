@@ -226,10 +226,10 @@ class PedidoControllerTest extends TestCase
 
         foreach ($pedidoEsperadoProductos as $producto) {
             unset($producto['id']);
-            unset($producto['cotizacion_id']);
+            unset($producto['cotizacion']);
             unset($producto['deleted_at']);
 
-            $producto['pedido_id'] = $id;
+            $producto['pedido']['id'] = $id;
 
             $productosEsperados[] = $producto;
         }

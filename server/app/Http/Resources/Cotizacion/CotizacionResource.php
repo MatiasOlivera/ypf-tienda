@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Cotizacion;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Cotizacion\CotizacionProductoResource;
 
 class CotizacionResource extends JsonResource
 {
@@ -32,7 +33,7 @@ class CotizacionResource extends JsonResource
             'telefono' => $this->whenLoaded('telefono'),
             'domicilio' => $this->whenLoaded('domicilio'),
             'observacion' => $this->whenLoaded('observacion'),
-            'productos' => $this->whenLoaded('productos')
+            'productos' => CotizacionProductoResource::collection($this->whenLoaded('productos'))
         ];
     }
 }
