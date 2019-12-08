@@ -13,6 +13,8 @@ class User extends Authenticatable implements JWTSubject
 {
     use SoftDeletes, Notifiable;
 
+    protected $guard = 'cliente';
+
     /**
      * The database table used by the model.
      *

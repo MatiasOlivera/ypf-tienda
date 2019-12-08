@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Auxiliares\{Respuesta, MensajeExito, MensajeError};
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use JWTAuth;
-use tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
-
-//Users Request
+use tymon\JWTAuth\Exceptions\JWTException;
 use App\Http\Requests\UsersRequest\ClienteLoginRequest;
+use App\Http\Requests\Autenticacion\EmpleadoLoginRequest;
+use App\Auxiliares\{Respuesta, MensajeExito, MensajeError};
 
 class AuthController extends Controller
 {
@@ -21,16 +19,40 @@ class AuthController extends Controller
         $credenciales = $request->only('email', 'password');
 
         try {
-            if (!$token = JWTAuth::attempt($credenciales)) {
+            $token = Auth::guard('cliente')
+                ->claims(['tipo' => 'cliente'])
+                ->attempt($credenciales);
+
+            if (!$token) {
                 $mensajeError = new MensajeError('Credenciales inválidas', 'CREDENCIALES_INVALIDAS');
                 return Respuesta::error($mensajeError, 401);
             }
+
+            return $this->setRespuestaToken($token);
         } catch (JWTException $e) {
             $mensajeError = new MensajeError('Hubo un problema al intentar iniciar la sesión', 'NO_AUTENTICADO');
             return Respuesta::error($mensajeError, 500);
         }
+    }
 
-        return $this->setRespuestaToken($token);
+    public function empleadoLogin(EmpleadoLoginRequest $request)
+    {
+        try {
+            $credenciales = $request->only('documento', 'password');
+            $token = Auth::guard('empleado')
+                ->claims(['tipo' => 'empleado'])
+                ->attempt($credenciales);
+
+            if (!$token) {
+                $mensajeError = new MensajeError('Credenciales inválidas', 'CREDENCIALES_INVALIDAS');
+                return Respuesta::error($mensajeError, 401);
+            }
+
+            return $this->setRespuestaToken($token);
+        } catch (JWTException $e) {
+            $mensajeError = new MensajeError('Hubo un problema al intentar iniciar la sesión', 'NO_AUTENTICADO');
+            return Respuesta::error($mensajeError, 500);
+        }
     }
 
     /**

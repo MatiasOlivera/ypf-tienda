@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
  * Login
  */
 Route::post('/auth/cliente/login', 'AuthController@clienteLogin');
+Route::post('/auth/empleado/login', 'AuthController@empleadoLogin');
 
 /**
  * Registro
