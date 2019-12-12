@@ -28,7 +28,7 @@ Route::post('/usuarios', 'UsersController@store');
 /**
  * Autenticación
  */
-Route::group(['prefix' => 'auth', 'middleware' => ['jwt.auth',],], function () {
+Route::group(['prefix' => 'auth', 'middleware' => ['auth.tipo', 'jwt.auth',],], function () {
     Route::get('usuario', 'AuthController@usuario');
     Route::post('renovar', 'AuthController@renovar');
     Route::post('logout', 'AuthController@logout');
@@ -48,7 +48,7 @@ Route::apiResource('categorias-productos', 'CategoriaProductoController')
     ->only(['index', 'show'])
     ->parameters(['categorias-productos' => 'categoriaProducto']);
 
-Route::middleware('jwt.auth')->group(function () {
+Route::middleware(['auth.tipo', 'jwt.auth'])->group(function () {
     /**
      * Usuarios
      */
