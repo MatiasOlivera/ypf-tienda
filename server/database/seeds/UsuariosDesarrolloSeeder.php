@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\User;
+use App\ClienteUsuario;
 
 class UsuariosDesarrolloSeeder extends Seeder
 {
@@ -20,7 +20,7 @@ class UsuariosDesarrolloSeeder extends Seeder
         );
 
         foreach ($usuarios as $usuario) {
-            User::create($usuario);
+            ClienteUsuario::create($usuario);
         }
     }
 }

@@ -75,7 +75,7 @@ class Producto extends Model
      */
     public function usuariosQueMarcaronComoFavorito()
     {
-        return $this->belongsToMany('App\User', 'productos_favoritos', 'producto_id', 'cliente_usuario_id')
+        return $this->belongsToMany('App\ClienteUsuario', 'productos_favoritos', 'producto_id', 'cliente_usuario_id')
             ->as('favorito')
             ->withTimestamps();
     }

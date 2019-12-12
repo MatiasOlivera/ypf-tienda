@@ -2,7 +2,7 @@
 namespace App\Http\Controllers;
 
 use Hash;
-use App\User;
+use App\ClienteUsuario;
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\UsersRequest\UsersRequest;
@@ -28,7 +28,7 @@ class UsersController extends Controller
     public function index(UsersRequest $request)
     {
         $parametros = [
-            'modelo' => 'User',
+            'modelo' => 'ClienteUsuario',
             'campos' => [
                 'id',
                 'name',
@@ -67,7 +67,7 @@ class UsersController extends Controller
         //parametros
         $parametros = [
             'inputs' => $input,
-            'modelo' => 'User',
+            'modelo' => 'ClienteUsuario',
         ];
         $nombre = "El usuario {$nombre}";
 
@@ -77,10 +77,10 @@ class UsersController extends Controller
     /**
      * Muestra un usuario especifico.
      *
-     * @param App\User $user
+     * @param App\ClienteUsuario $user
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show(ClienteUsuario $user)
     {
         return $this->controladorBase->show($user);
     }
@@ -92,7 +92,7 @@ class UsersController extends Controller
      * @param  \App\Http\Request  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(UserUpdateRequest $request, User $user)
+    public function update(UserUpdateRequest $request, ClienteUsuario $user)
     {
         $input  = $request->only('name', 'email');
         $nombre  = $request->input('name');
@@ -112,10 +112,10 @@ class UsersController extends Controller
     /**
      * elimina el usuario especifico de la BD
      *
-     * @param App\User $user
+     * @param App\ClienteUsuario $user
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy(ClienteUsuario $user)
     {
         $nombre = "El usuario {$user->name}";
         return $this->controladorBase->destroy($user, $nombre);
@@ -124,10 +124,10 @@ class UsersController extends Controller
     /**
      * Restaurar el usuario que ha sido eliminado
      *
-     * @param  \App\User  $user
+     * @param  \App\ClienteUsuario  $user
      * @return \Illuminate\Http\Response
      */
-    public function restore(User $user)
+    public function restore(ClienteUsuario $user)
     {
         $nombre = "El usuario {$user->name}";
         return $this->controladorBase->restore($user, $nombre);

@@ -9,7 +9,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 
-class User extends Authenticatable implements JWTSubject
+class ClienteUsuario extends Authenticatable implements JWTSubject
 {
     use SoftDeletes, Notifiable;
 

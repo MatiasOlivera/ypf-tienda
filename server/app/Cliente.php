@@ -54,7 +54,7 @@ class Cliente extends Model
 
     public function users()
     {
-        return $this->hasMany('App\User', 'id_cliente', 'id_cliente');
+        return $this->hasMany('App\ClienteUsuario', 'id_cliente', 'id_cliente');
     }
 
     public function domicilios()
