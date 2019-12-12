@@ -23,7 +23,7 @@ Route::post('/auth/empleado/login', 'AuthController@empleadoLogin');
 /**
  * Registro
  */
-Route::post('/usuarios', 'ClienteUsuarioController@store');
+Route::post('/clientes/usuarios', 'ClienteUsuarioController@store');
 
 /**
  * Autenticación
@@ -49,13 +49,6 @@ Route::apiResource('categorias-productos', 'CategoriaProductoController')
     ->parameters(['categorias-productos' => 'categoriaProducto']);
 
 Route::middleware(['auth.tipo', 'jwt.auth'])->group(function () {
-    /**
-     * Usuarios
-     */
-    Route::apiResource('/usuarios', 'ClienteUsuarioController')->parameters(['usuarios' => 'user']);
-
-    Route::post('/usuarios/{user}/restaurar/', 'ClienteUsuarioController@restore')->name('usuarios.restore');
-
     /**
      * Clientes
      */
@@ -149,6 +142,13 @@ Route::middleware(['auth.tipo', 'jwt.auth'])->group(function () {
             Route::post('/{razonSocial}/restaurar/', 'ClienteRazonSocialController@restore')
                 ->name('ClienteRazones.restore');
         });
+
+        /**
+         * Usuarios
+         */
+        Route::apiResource('/usuarios', 'ClienteUsuarioController')->parameters(['usuarios' => 'user']);
+
+        Route::post('/usuarios/{user}/restaurar/', 'ClienteUsuarioController@restore')->name('usuarios.restore');
     });
 
      /**
