@@ -23,7 +23,7 @@ Route::post('/auth/empleado/login', 'AuthController@empleadoLogin');
 /**
  * Registro
  */
-Route::post('/usuarios', 'UsersController@store');
+Route::post('/usuarios', 'ClienteUsuarioController@store');
 
 /**
  * Autenticación
@@ -52,9 +52,9 @@ Route::middleware(['auth.tipo', 'jwt.auth'])->group(function () {
     /**
      * Usuarios
      */
-    Route::apiResource('/usuarios', 'UsersController')->parameters(['usuarios' => 'user']);
+    Route::apiResource('/usuarios', 'ClienteUsuarioController')->parameters(['usuarios' => 'user']);
 
-    Route::post('/usuarios/{user}/restaurar/', 'UsersController@restore')->name('usuarios.restore');
+    Route::post('/usuarios/{user}/restaurar/', 'ClienteUsuarioController@restore')->name('usuarios.restore');
 
     /**
      * Clientes

@@ -9,7 +9,7 @@ use App\Http\Requests\UsersRequest\UsersRequest;
 use App\Http\Requests\UsersRequest\UserCreateRequest;
 use App\Http\Requests\UsersRequest\UserUpdateRequest;
 
-class UsersController extends Controller
+class ClienteUsuarioController extends Controller
 {
     private $controladorBase;
     private $generoModelo;
