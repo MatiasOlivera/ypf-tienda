@@ -3,11 +3,12 @@
 namespace Tests\Feature\app;
 
 use App\Recurso;
+use App\Empleado;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\Utilidades\EloquenceSolucion;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraRecurso;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RecursoTest extends TestCase
 {
@@ -37,5 +38,14 @@ class RecursoTest extends TestCase
 
         unset($entrada['id']);
         $this->assertArraySubset($entrada, $recurso->toArray());
+    }
+
+    public function test_deberia_acceder_a_la_relacion_permisos()
+    {
+        $recurso = factory(Recurso::class)->states('permisos')->create();
+        $empleado = $recurso->permisos()->first();
+
+        $this->assertInstanceOf(Empleado::class, $empleado);
+        $this->assertEquals($recurso->id, $empleado->permiso->ID_recurso);
     }
 }
