@@ -1,9 +1,12 @@
 <?php
 
+use App\Recurso;
+use App\Empleado;
 use App\EmpleadoCargo;
+use App\EmpleadoPermiso;
 use Faker\Generator as Faker;
 
-$factory->define(App\Empleado::class, function (Faker $faker) {
+$factory->define(Empleado::class, function (Faker $faker) {
     return [
         'documento' => $faker->randomNumber(8, true),
         'nombre' => $faker->firstname(),
@@ -17,4 +20,11 @@ $factory->define(App\Empleado::class, function (Faker $faker) {
             return factory(EmpleadoCargo::class)->create()->id;
         }
     ];
+});
+
+$factory->afterCreatingState(Empleado::class, 'permisos', function ($empleado, $faker) {
+    $recurso = factory(Recurso::class)->create();
+    $permisos = factory(EmpleadoPermiso::class)->make()->toArray();
+    $empleado->permisos()->attach($recurso, $permisos);
+    $empleado->save();
 });

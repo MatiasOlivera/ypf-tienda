@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\app;
 
+use App\Recurso;
 use App\Empleado;
 use App\Cotizacion;
 use Tests\TestCase;
@@ -64,5 +65,14 @@ class EmpleadoTest extends TestCase
 
         $this->assertInstanceOf(Cotizacion::class, $cotizacion);
         $this->assertEquals($cotizacion->empleado_id, $empleado->id);
+    }
+
+    public function test_deberia_acceder_a_la_relacion_permisos()
+    {
+        $empleado = factory(Empleado::class)->states('permisos')->create();
+        $recurso = $empleado->permisos()->first();
+
+        $this->assertInstanceOf(Recurso::class, $recurso);
+        $this->assertEquals($empleado->id, $recurso->permiso->ID_ven);
     }
 }
