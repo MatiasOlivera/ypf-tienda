@@ -11,7 +11,6 @@ trait EstructuraEmpleado
         'apellido',
         'fecha_nacimiento',
         'sexo',
-        'password',
-        'cargo_id'
+        'password'
     ];
 }

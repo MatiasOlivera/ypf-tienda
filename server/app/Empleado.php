@@ -4,7 +4,6 @@ namespace App;
 
 use App\Recurso;
 use App\Cotizacion;
-use App\EmpleadoCargo;
 use App\EmpleadoPermiso;
 use Sofa\Eloquence\Mappable;
 use Sofa\Eloquence\Eloquence;
@@ -25,16 +24,14 @@ class Empleado extends User implements JWTSubject
         'id' => 'ID_ven',
         'documento' => 'dni_ven',
         'fecha_nacimiento' => 'fe_na',
-        'password' => 'pass',
-        'cargo_id' => 'id_cargo'
+        'password' => 'pass'
     ];
 
     protected $appends = [
         'id',
         'documento',
         'fecha_nacimiento',
-        'password',
-        'cargo_id'
+        'password'
     ];
 
     protected $hidden = [
@@ -42,8 +39,7 @@ class Empleado extends User implements JWTSubject
         'dni_ven',
         'fe_na',
         'pass',
-        'estado',
-        'id_cargo'
+        'estado'
     ];
 
     protected $dates = ['fecha_nacimiento'];
@@ -54,8 +50,7 @@ class Empleado extends User implements JWTSubject
         'apellido',
         'fecha_nacimiento',
         'sexo',
-        'password',
-        'cargo_id'
+        'password'
     ];
 
     public $timestamps = false;
@@ -78,11 +73,6 @@ class Empleado extends User implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
-    }
-
-    public function cargo()
-    {
-        return $this->belongsTo(EmpleadoCargo::class, 'id_cargo');
     }
 
     public function permisos()

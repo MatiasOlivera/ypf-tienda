@@ -6,7 +6,6 @@ use App\Recurso;
 use App\Empleado;
 use App\Cotizacion;
 use Tests\TestCase;
-use App\EmpleadoCargo;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\Utilidades\EloquenceSolucion;
 use Tests\Feature\Utilidades\EstructuraEmpleado;
@@ -40,15 +39,6 @@ class EmpleadoTest extends TestCase
 
         unset($entrada['id']);
         $this->assertArraySubset($entrada, $empleado->toArray());
-    }
-
-    public function test_deberia_acceder_a_la_relacion_cargo()
-    {
-        $empleado = factory(Empleado::class)->create();
-        $cargo = $empleado->cargo;
-
-        $this->assertInstanceOf(EmpleadoCargo::class, $cargo);
-        $this->assertEquals($empleado->cargo_id, $cargo->id);
     }
 
     public function test_deberia_acceder_a_la_relacion_cotizaciones()
