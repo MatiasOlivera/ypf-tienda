@@ -4,7 +4,6 @@ namespace App;
 
 use App\Recurso;
 use App\Cotizacion;
-use App\EmpleadoPermiso;
 use Sofa\Eloquence\Mappable;
 use Sofa\Eloquence\Eloquence;
 use Illuminate\Foundation\Auth\User;
@@ -73,14 +72,6 @@ class Empleado extends User implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
-    }
-
-    public function permisos()
-    {
-        return $this->belongsToMany(Recurso::class, 'permiso', 'ID_ven', 'ID_recurso')
-            ->as('permiso')
-            ->using(EmpleadoPermiso::class)
-            ->withPivot('ver', 'crear', 'editar', 'borrar');
     }
 
     public function cotizaciones()

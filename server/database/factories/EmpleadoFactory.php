@@ -2,7 +2,6 @@
 
 use App\Recurso;
 use App\Empleado;
-use App\EmpleadoPermiso;
 use Faker\Generator as Faker;
 
 $factory->define(Empleado::class, function (Faker $faker) {
@@ -14,11 +13,4 @@ $factory->define(Empleado::class, function (Faker $faker) {
         'sexo' => $faker->optional()->randomElement(['F', 'M']),
         'password' => Hash::make('12345678')
     ];
-});
-
-$factory->afterCreatingState(Empleado::class, 'permisos', function ($empleado, $faker) {
-    $recurso = factory(Recurso::class)->create();
-    $permisos = factory(EmpleadoPermiso::class)->make()->toArray();
-    $empleado->permisos()->attach($recurso, $permisos);
-    $empleado->save();
 });
