@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
@@ -14,6 +15,12 @@ class ClienteUsuario extends Authenticatable implements JWTSubject
     use SoftDeletes, Notifiable;
 
     protected $guard = 'cliente';
+
+    /**
+     * spatie/laravel-permission
+     */
+    use HasRoles;
+    protected $guard_name = 'cliente';
 
     /**
      * The database table used by the model.
