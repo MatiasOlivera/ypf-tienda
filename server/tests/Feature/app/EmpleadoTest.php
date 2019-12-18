@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\app;
 
-use App\Recurso;
 use App\Empleado;
 use App\Cotizacion;
 use Tests\TestCase;

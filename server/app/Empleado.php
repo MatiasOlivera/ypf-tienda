@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Recurso;
 use App\Cotizacion;
 use Sofa\Eloquence\Mappable;
 use Sofa\Eloquence\Eloquence;

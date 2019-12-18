@@ -1,6 +1,5 @@
 <?php
 
-use App\Recurso;
 use App\Empleado;
 use Faker\Generator as Faker;
 
