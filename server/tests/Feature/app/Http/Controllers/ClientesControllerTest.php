@@ -50,7 +50,7 @@ class ClientesControllerTest extends TestCase
      */
     public function testNoDeberiaObtenerNingunCliente()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('GET', 'api/clientes');
@@ -70,7 +70,7 @@ class ClientesControllerTest extends TestCase
     {
         factory(Cliente::class, 10)->create();
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('GET', 'api/clientes');
@@ -94,7 +94,7 @@ class ClientesControllerTest extends TestCase
             'documento' => 12345678
         ];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('POST', 'api/clientes', $cliente);
@@ -119,7 +119,7 @@ class ClientesControllerTest extends TestCase
      */
     public function testDeberiaObtenerUnCliente()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $clienteGuardado = $this->crearCliente($cabeceras);
         $id = $clienteGuardado['id'];
@@ -141,7 +141,7 @@ class ClientesControllerTest extends TestCase
      */
     public function testDeberiaEditarUnCliente()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $clienteGuardado = $this->crearCliente($cabeceras);
         $id = $clienteGuardado['id'];
@@ -176,7 +176,7 @@ class ClientesControllerTest extends TestCase
      */
     public function testDeberiaEliminarUnCliente()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $clienteGuardado = $this->crearCliente($cabeceras);
         $id = $clienteGuardado['id'];
@@ -213,7 +213,7 @@ class ClientesControllerTest extends TestCase
      */
     public function testDeberiaRestaurarUnCliente()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $clienteGuardado = $this->crearCliente($cabeceras);
         $id = $clienteGuardado['id'];

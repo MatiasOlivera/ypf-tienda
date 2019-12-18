@@ -50,7 +50,7 @@ class ProvinciaControllerTest extends TestCase
      */
     public function testNoDeberiaObtenerNingunaProvincia()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('GET', 'api/provincias');
@@ -68,7 +68,7 @@ class ProvinciaControllerTest extends TestCase
     {
         factory(Provincia::class, 10)->create();
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('GET', 'api/provincias');
@@ -88,7 +88,7 @@ class ProvinciaControllerTest extends TestCase
     {
         $provincia = ['nombre' => 'Corrientes'];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('POST', 'api/provincias', $provincia);
@@ -113,7 +113,7 @@ class ProvinciaControllerTest extends TestCase
      */
     public function testDeberiaObtenerUnaProvincia()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $provinciaGuardada = $this->crearProvincia($cabeceras);
         $id = $provinciaGuardada['id'];
@@ -135,7 +135,7 @@ class ProvinciaControllerTest extends TestCase
      */
     public function testDeberiaEditarUnaProvincia()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $provinciaGuardada = $this->crearProvincia($cabeceras);
         $id = $provinciaGuardada['id'];
@@ -167,7 +167,7 @@ class ProvinciaControllerTest extends TestCase
      */
     public function testDeberiaEliminarUnaProvincia()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $provinciaGuardada = $this->crearProvincia($cabeceras);
         $id = $provinciaGuardada['id'];
@@ -203,7 +203,7 @@ class ProvinciaControllerTest extends TestCase
      */
     public function testDeberiaRestaurarUnaProvincia()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $provinciaGuardada = $this->crearProvincia($cabeceras);
         $id = $provinciaGuardada['id'];

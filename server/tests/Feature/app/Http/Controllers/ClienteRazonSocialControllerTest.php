@@ -46,7 +46,7 @@ class ClienteRazonSocialControllerTest extends TestCase
         $cliente = factory(Cliente::class)->create();
         $id = $cliente->id;
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('GET', "api/clientes/$id/razones");
@@ -67,7 +67,7 @@ class ClienteRazonSocialControllerTest extends TestCase
         $cliente = factory(Cliente::class)->states('razonesSociales')->create();
         $id = $cliente->id;
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('GET', "api/clientes/$id/razones");
@@ -91,7 +91,7 @@ class ClienteRazonSocialControllerTest extends TestCase
 
         $razonSocial = factory(ClienteRazonSocial::class)->make()->toArray();
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('POST', "api/clientes/$id/razones", $razonSocial);
@@ -122,7 +122,7 @@ class ClienteRazonSocialControllerTest extends TestCase
         $clienteId = $cliente->id;
         $id = $razonSocial->id;
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('GET', "api/clientes/$clienteId/razones/$id");
@@ -147,7 +147,7 @@ class ClienteRazonSocialControllerTest extends TestCase
 
         $razonSocialModificada = array_merge($razonSocial->toArray(), ['denominacion' => 'AppLab']);
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('PUT', "api/clientes/$clienteId/razones/$id", $razonSocialModificada);
@@ -178,7 +178,7 @@ class ClienteRazonSocialControllerTest extends TestCase
         $clienteId = $cliente->id;
         $id = $razonSocial->id;
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('DELETE', "api/clientes/$clienteId/razones/$id");
@@ -213,7 +213,7 @@ class ClienteRazonSocialControllerTest extends TestCase
         $clienteId = $cliente->id;
         $id = $razonSocial->id;
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('DELETE', "api/clientes/$clienteId/razones/$id");
@@ -250,7 +250,7 @@ class ClienteRazonSocialControllerTest extends TestCase
         $clienteId = $cliente->id;
         $id = $razonSocial->id;
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('POST', "api/clientes/$clienteId/razones/$id/asociar");
@@ -280,7 +280,7 @@ class ClienteRazonSocialControllerTest extends TestCase
         $clienteId = $cliente->id;
         $id = $razonSocial->id;
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('DELETE', "api/clientes/$clienteId/razones/$id/desasociar");

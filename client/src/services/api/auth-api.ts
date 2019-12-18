@@ -21,11 +21,11 @@ export type RespuestaLogin =
   | RespuestaMensajeError
   | RespuestasComunesApiSinToken;
 
-export async function login(
+export async function clienteLogin(
   credenciales: CredencialesUsuario
 ): Promise<RespuestaLogin> {
   const respuesta = await clienteApiSinToken<RespuestaLogin>({
-    url: 'auth/login',
+    url: 'auth/cliente/login',
     metodo: 'POST',
     datos: credenciales
   });
@@ -78,7 +78,7 @@ export async function logout(): Promise<RespuestaLogout> {
 }
 
 export default {
-  login,
+  clienteLogin,
   getUsuario,
   logout
 };

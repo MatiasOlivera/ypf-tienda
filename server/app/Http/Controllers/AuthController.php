@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 //Users Request
-use App\Http\Requests\UsersRequest\UserLoginRequest;
+use App\Http\Requests\UsersRequest\ClienteLoginRequest;
 
 class AuthController extends Controller
 {
-    public function login(UserLoginRequest $request)
+    public function clienteLogin(ClienteLoginRequest $request)
     {
         $credenciales = $request->only('email', 'password');
 

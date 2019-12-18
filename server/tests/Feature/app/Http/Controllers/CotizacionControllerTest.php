@@ -98,7 +98,7 @@ class CotizacionControllerTest extends TestCase
 
     public function test_no_deberia_obtener_ninguna_cotizacion()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('GET', 'api/cotizaciones');
@@ -115,7 +115,7 @@ class CotizacionControllerTest extends TestCase
     {
         factory(Cotizacion::class, 10)->create();
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('GET', 'api/cotizaciones');
@@ -136,7 +136,7 @@ class CotizacionControllerTest extends TestCase
     {
         $nuevaCotizacion = $this->crearCotizacion();
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('POST', 'api/cotizaciones', $nuevaCotizacion);
@@ -161,7 +161,7 @@ class CotizacionControllerTest extends TestCase
         $cotizacionGuardada = $this->crearCotizacion();
         $id = $cotizacionGuardada['id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('GET', "api/cotizaciones/$id");
@@ -183,7 +183,7 @@ class CotizacionControllerTest extends TestCase
         $cotizacionActualizada = factory(Cotizacion::class)->make()->toArray();
         $cotizacionActualizada['productos'] = $cotizacion['productos'];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('PUT', "api/cotizaciones/$id", $cotizacionActualizada);
@@ -217,7 +217,7 @@ class CotizacionControllerTest extends TestCase
         $observacion = factory(Observacion::class)->make()->toArray();
         $cotizacion['observacion'] = $observacion['descripcion'];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('PUT', "api/cotizaciones/$id", $cotizacion);
@@ -247,7 +247,7 @@ class CotizacionControllerTest extends TestCase
         $observacion = factory(Observacion::class)->make()->toArray();
         $cotizacion['observacion'] = $observacion['descripcion'];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('PUT', "api/cotizaciones/$id", $cotizacion);
@@ -279,7 +279,7 @@ class CotizacionControllerTest extends TestCase
         $productoActualizado['precio'] = 5000;
         $cotizacion['productos'][0] = $productoActualizado;
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('PUT', "api/cotizaciones/$id", $cotizacion);
@@ -319,7 +319,7 @@ class CotizacionControllerTest extends TestCase
         $nuevoProducto['producto_id'] = $producto->id;
         $cotizacion['productos'][] = $nuevoProducto;
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('PUT', "api/cotizaciones/$id", $cotizacion);
@@ -350,7 +350,7 @@ class CotizacionControllerTest extends TestCase
         $productoDuplicado['id'] = null;
         $cotizacion['productos'][] = $productoDuplicado;
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('PUT', "api/cotizaciones/$id", $cotizacion);
@@ -387,7 +387,7 @@ class CotizacionControllerTest extends TestCase
         $cotizacion = $this->crearCotizacion();
         $id = $cotizacion['id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('DELETE', "api/cotizaciones/$id");

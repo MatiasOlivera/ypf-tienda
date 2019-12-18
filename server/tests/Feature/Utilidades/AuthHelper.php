@@ -4,29 +4,33 @@ namespace Tests\Feature\Utilidades;
 
 trait AuthHelper
 {
-    protected function loguearseComo(string $usuario = 'defecto'): array
+    protected function loguearseComo(string $usuario = 'cliente'): array
     {
         $this->seed('UsuariosDesarrolloSeeder');
 
         $usuarios = [
-            'defecto' => [
+            'cliente' => [
                 'email' => 'applab@dev.com',
                 'password' => '12345678'
             ]
         ];
 
         if (!array_key_exists($usuario, $usuarios)) {
-            throw new Exception("El nivel no es válido");
+            throw new \Exception("El nivel no es válido");
         }
 
         $credenciales = $usuarios[$usuario];
 
-        $respuesta = $this->json('POST', 'api/auth/login', [
-            'email' => $credenciales['email'],
-            'password' => $credenciales['password']
-        ]);
+        $token = "";
 
-        $token = $respuesta->original['autenticacion']['token'];
+        if ($usuario === 'cliente') {
+            $respuesta = $this->json('POST', 'api/auth/cliente/login', [
+                'email' => $credenciales['email'],
+                'password' => $credenciales['password']
+            ]);
+
+            $token = $respuesta->original['autenticacion']['token'];
+        }
 
         return ['authorization' => "bearer $token"];
     }

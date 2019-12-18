@@ -68,7 +68,7 @@ class CotizacionProductoControllerTest extends TestCase
         $productoActualizado['precio'] = 5000;
         $productos[0] = $productoActualizado;
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('PUT', "api/cotizaciones/$id/productos", ["productos" => $productos]);
@@ -107,7 +107,7 @@ class CotizacionProductoControllerTest extends TestCase
         $nuevoProducto['producto_id'] = $producto->id;
         $productos[] = $nuevoProducto;
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('PUT', "api/cotizaciones/$id/productos", ["productos" => $productos]);
@@ -139,7 +139,7 @@ class CotizacionProductoControllerTest extends TestCase
         $productoDuplicado['id'] = null;
         $productos[] = $productoDuplicado;
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('PUT', "api/cotizaciones/$id/productos", ["productos" => $productos]);
@@ -179,7 +179,7 @@ class CotizacionProductoControllerTest extends TestCase
 
         $producto = $productos[0];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $cotizacionProductoId = $producto['id'];
         $respuesta = $this
@@ -232,7 +232,7 @@ class CotizacionProductoControllerTest extends TestCase
         $cotizacionProductoEsperado = CotizacionProducto::with('producto')->findOrFail($id);
         $nombre = $cotizacionProductoEsperado->producto->nombre;
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('DELETE', "api/cotizaciones/productos/$id");

@@ -91,7 +91,7 @@ class LocalidadControllerTest extends TestCase
      */
     public function testNoDeberiaObtenerNingunaLocalidad()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $provincia = $this->crearProvincia($cabeceras);
         $id = $provincia['id'];
@@ -118,7 +118,7 @@ class LocalidadControllerTest extends TestCase
         $provincia = Provincia::inRandomOrder()->first();
         $id = $provincia->id;
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('GET', "api/provincias/$id/localidades");
@@ -137,7 +137,7 @@ class LocalidadControllerTest extends TestCase
      */
     public function testDeberiaCrearUnaLocalidad()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $provincia = $this->crearProvincia($cabeceras);
 
@@ -170,7 +170,7 @@ class LocalidadControllerTest extends TestCase
      */
     public function testDeberiaObtenerUnaLocalidad()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $localidadGuardada = $this->crearLocalidad($cabeceras);
         $id = $localidadGuardada['id'];
@@ -192,7 +192,7 @@ class LocalidadControllerTest extends TestCase
      */
     public function testDeberiaEditarUnaLocalidad()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $localidadGuardada = $this->crearLocalidad($cabeceras);
         $id = $localidadGuardada['id'];
@@ -225,7 +225,7 @@ class LocalidadControllerTest extends TestCase
      */
     public function testDeberiaEliminarUnaLocalidad()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $localidadGuardada = $this->crearLocalidad($cabeceras);
         $id = $localidadGuardada['id'];
@@ -258,7 +258,7 @@ class LocalidadControllerTest extends TestCase
      */
     public function testDeberiaRestaurarUnaLocalidad()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $localidadGuardada = $this->crearLocalidad($cabeceras);
         $id = $localidadGuardada['id'];

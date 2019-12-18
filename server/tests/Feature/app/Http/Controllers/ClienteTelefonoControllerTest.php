@@ -62,7 +62,7 @@ class ClienteTelefonoControllerTest extends TestCase
         $cliente = factory(Cliente::class, 1)->create()->toArray()[0];
         $id = $cliente['id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('GET', "api/clientes/$id/telefonos");
@@ -85,7 +85,7 @@ class ClienteTelefonoControllerTest extends TestCase
         $cliente = Cliente::inRandomOrder()->first();
         $id = $cliente->id;
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('GET', "api/clientes/$id/telefonos");
@@ -109,7 +109,7 @@ class ClienteTelefonoControllerTest extends TestCase
         ])->toArray()[0];
         $id = $telefono['cliente_id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('POST', "api/clientes/$id/telefonos", $telefono);
@@ -143,7 +143,7 @@ class ClienteTelefonoControllerTest extends TestCase
 
         unset($telefono['nombreContacto']);
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('POST', "api/clientes/$id/telefonos", $telefono);
@@ -176,7 +176,7 @@ class ClienteTelefonoControllerTest extends TestCase
         $clienteId = $telefono['cliente_id'];
         $id = $telefono['id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('GET', "api/clientes/$clienteId/telefonos/$id");
@@ -203,7 +203,7 @@ class ClienteTelefonoControllerTest extends TestCase
         ])->toArray()[0];
         unset($telefonoModificado['cliente_id']);
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('PUT', "api/clientes/$clienteId/telefonos/$id", $telefonoModificado);
@@ -232,7 +232,7 @@ class ClienteTelefonoControllerTest extends TestCase
         $clienteId = $telefono['cliente_id'];
         $id = $telefono['id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('DELETE', "api/clientes/$clienteId/telefonos/$id");
@@ -265,7 +265,7 @@ class ClienteTelefonoControllerTest extends TestCase
         $clienteId = $telefono['cliente_id'];
         $id = $telefono['id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('DELETE', "api/clientes/$clienteId/telefonos/$id");

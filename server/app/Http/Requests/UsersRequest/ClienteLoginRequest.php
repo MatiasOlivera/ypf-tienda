@@ -4,7 +4,7 @@ namespace App\Http\Requests\UsersRequest;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserLoginRequest extends FormRequest
+class ClienteLoginRequest extends FormRequest
 {
     protected $reglas = [
         'email' => ['bail', 'required', 'email',  'max:80'],

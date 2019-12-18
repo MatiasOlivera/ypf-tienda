@@ -4,7 +4,7 @@ namespace App\Http\Requests\UsersRequest;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserCreateRequest extends UserLoginRequest
+class UserCreateRequest extends ClienteLoginRequest
 {
     private function setReglaName()
     {

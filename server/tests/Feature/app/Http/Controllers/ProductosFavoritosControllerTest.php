@@ -36,7 +36,7 @@ class ProductosFavoritosControllerTest extends TestCase
         $producto = $this->crearProducto();
         $id = $producto['id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('POST', "api/productos/$id/favorito", $producto);
@@ -68,7 +68,7 @@ class ProductosFavoritosControllerTest extends TestCase
         $producto = $this->crearProducto();
         $id = $producto['id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $this
             ->withHeaders($cabeceras)

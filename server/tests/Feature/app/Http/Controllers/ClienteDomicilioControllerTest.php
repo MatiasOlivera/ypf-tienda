@@ -74,7 +74,7 @@ class ClienteDomicilioControllerTest extends TestCase
      */
     public function testNoDeberiaObtenerNingunDomicilio()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $cliente = factory(Cliente::class, 1)->create()->toArray()[0];
         $id = $cliente['id'];
@@ -101,7 +101,7 @@ class ClienteDomicilioControllerTest extends TestCase
         $cliente = Cliente::inRandomOrder()->first();
         $id = $cliente->id;
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('GET', "api/clientes/$id/domicilios");
@@ -123,7 +123,7 @@ class ClienteDomicilioControllerTest extends TestCase
         $domicilio = factory(ClienteDomicilio::class, 1)->make()->toArray()[0];
         $id = $domicilio['cliente_id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('POST', "api/clientes/$id/domicilios", $domicilio);
@@ -153,7 +153,7 @@ class ClienteDomicilioControllerTest extends TestCase
         $clienteId = $domicilio['cliente_id'];
         $id = $domicilio['id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('GET', "api/clientes/$clienteId/domicilios/$id");
@@ -177,7 +177,7 @@ class ClienteDomicilioControllerTest extends TestCase
 
         $domicilioModificado = array_merge($domicilio, ['calle' => 'San Martín']);
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('PUT', "api/clientes/$clienteId/domicilios/$id", $domicilioModificado);
@@ -208,7 +208,7 @@ class ClienteDomicilioControllerTest extends TestCase
         $clienteId = $domicilio['cliente_id'];
         $id = $domicilio['id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('DELETE', "api/clientes/$clienteId/domicilios/$id");
@@ -241,7 +241,7 @@ class ClienteDomicilioControllerTest extends TestCase
         $clienteId = $domicilio['cliente_id'];
         $id = $domicilio['id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('DELETE', "api/clientes/$clienteId/domicilios/$id");

@@ -94,7 +94,7 @@ class CategoriaProductoControllerTest extends TestCase
     {
         $categoria = ['descripcion' => 'Combustibles'];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('POST', 'api/categorias-productos', $categoria);
@@ -119,7 +119,7 @@ class CategoriaProductoControllerTest extends TestCase
      */
     public function testDeberiaObtenerUnaCategoria()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $categoriaGuardada = $this->crearCategoria($cabeceras);
         $id = $categoriaGuardada['id'];
@@ -139,7 +139,7 @@ class CategoriaProductoControllerTest extends TestCase
      */
     public function testDeberiaEditarUnaCategoria()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $categoria = ['descripcion' => 'Combustible'];
         $categoriaGuardada = $this->crearCategoria($cabeceras, $categoria);
@@ -172,7 +172,7 @@ class CategoriaProductoControllerTest extends TestCase
      */
     public function testDeberiaEliminarUnaCategoria()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $categoria = ['descripcion' => 'Combustibles'];
         $categoriaGuardada = $this->crearCategoria($cabeceras, $categoria);
@@ -207,7 +207,7 @@ class CategoriaProductoControllerTest extends TestCase
      */
     public function testDeberiaRestaurarUnaCategoria()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $categoria = ['descripcion' => 'Combustibles'];
         $categoriaGuardada = $this->crearCategoria($cabeceras, $categoria);

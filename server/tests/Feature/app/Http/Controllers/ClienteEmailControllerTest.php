@@ -52,7 +52,7 @@ class ClienteEmailControllerTest extends TestCase
         $cliente = factory(Cliente::class, 1)->create()->toArray()[0];
         $id = $cliente['id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('GET', "api/clientes/$id/emails");
@@ -75,7 +75,7 @@ class ClienteEmailControllerTest extends TestCase
         $cliente = Cliente::inRandomOrder()->first();
         $id = $cliente->id;
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('GET', "api/clientes/$id/emails");
@@ -97,7 +97,7 @@ class ClienteEmailControllerTest extends TestCase
         $email = factory(ClienteMail::class, 1)->make()->toArray()[0];
         $id = $email['cliente_id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('POST', "api/clientes/$id/emails", $email);
@@ -127,7 +127,7 @@ class ClienteEmailControllerTest extends TestCase
         $clienteId = $email['cliente_id'];
         $id = $email['id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('GET', "api/clientes/$clienteId/emails/$id");
@@ -151,7 +151,7 @@ class ClienteEmailControllerTest extends TestCase
 
         $emailModificado = array_merge($email, ['mail' => 'nuevo@gmail.com']);
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('PUT', "api/clientes/$clienteId/emails/$id", $emailModificado);
@@ -181,7 +181,7 @@ class ClienteEmailControllerTest extends TestCase
         $clienteId = $email['cliente_id'];
         $id = $email['id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('DELETE', "api/clientes/$clienteId/emails/$id");
@@ -214,7 +214,7 @@ class ClienteEmailControllerTest extends TestCase
         $clienteId = $email['cliente_id'];
         $id = $email['id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
             ->withHeaders($cabeceras)
             ->json('DELETE', "api/clientes/$clienteId/emails/$id");

@@ -6,7 +6,7 @@ export const CREAR_NOTIFICACION = 'crearNotificacion';
 /**
  * Autenticación
  */
-export const LOGIN = 'login';
+export const CLIENTE_LOGIN = 'clienteLogin';
 export const LOGIN_CLIENTE = 'loginCliente';
 export const LOGOUT = 'logout';
 export const LOGOUT_CLIENTE = 'logoutCliente';

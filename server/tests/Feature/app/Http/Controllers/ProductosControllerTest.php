@@ -122,7 +122,7 @@ class ProductosControllerTest extends TestCase
     {
         factory(Producto::class, 10)->create();
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $producto = Producto::inRandomOrder()->first()->toArray();
         $producto['es_favorito'] = true;
@@ -149,7 +149,7 @@ class ProductosControllerTest extends TestCase
      */
     public function testDeberiaCrearUnProductoSinImagen()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $categoria = ['descripcion' => 'Automotriz Alta Gama'];
 
@@ -192,7 +192,7 @@ class ProductosControllerTest extends TestCase
      */
     public function testDeberiaCrearUnProductoConImagen()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $categoria = ['descripcion' => 'Automotriz Alta Gama'];
 
@@ -247,7 +247,7 @@ class ProductosControllerTest extends TestCase
      */
     public function testDeberiaObtenerUnProducto()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $productoGuardado = $this->crearProducto($cabeceras);
         $id = $productoGuardado['id'];
@@ -267,7 +267,7 @@ class ProductosControllerTest extends TestCase
      */
     public function testDeberiaEditarUnProductoSinImagen()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $productoGuardado = $this->crearProducto($cabeceras);
         $idProducto = $productoGuardado['id'];
@@ -319,7 +319,7 @@ class ProductosControllerTest extends TestCase
      */
     public function testDeberiaEditarUnProductoConImagen()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $productoGuardado = $this->crearProducto($cabeceras);
         $idProducto = $productoGuardado['id'];
@@ -358,7 +358,7 @@ class ProductosControllerTest extends TestCase
      */
     public function testDeberiaEliminarUnProducto()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $productoGuardado = $this->crearProducto($cabeceras);
         $id = $productoGuardado['id'];
@@ -393,7 +393,7 @@ class ProductosControllerTest extends TestCase
      */
     public function testDeberiaRestaurarUnProducto()
     {
-        $cabeceras = $this->loguearseComo('defecto');
+        $cabeceras = $this->loguearseComo('cliente');
 
         $productoGuardado = $this->crearProducto($cabeceras);
         $id = $productoGuardado['id'];
