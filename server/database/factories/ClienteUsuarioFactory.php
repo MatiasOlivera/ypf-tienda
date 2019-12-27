@@ -1,5 +1,7 @@
 <?php
 
+use App\Cliente;
+use App\ClienteUsuario;
 use Faker\Generator as Faker;
 
 /*
@@ -13,12 +15,17 @@ use Faker\Generator as Faker;
 |
 */
 
-$factory->define(App\ClienteUsuario::class, function (Faker $faker) {
+$factory->define(ClienteUsuario::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
         'email_verified_at' => now(),
         'password' => Hash::make('12345678'),
         'remember_token' => str_random(10),
+
+        'id_cliente' => function () {
+            $cliente = factory(Cliente::class)->create();
+            return $cliente->id;
+        }
     ];
 });
