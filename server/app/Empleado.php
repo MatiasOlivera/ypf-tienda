@@ -5,6 +5,7 @@ namespace App;
 use App\Cotizacion;
 use Sofa\Eloquence\Mappable;
 use Sofa\Eloquence\Eloquence;
+use App\Auxiliares\TipoUsuario;
 use Illuminate\Foundation\Auth\User;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -13,6 +14,7 @@ use Illuminate\Notifications\Notifiable;
 class Empleado extends User implements JWTSubject
 {
     use Notifiable, Eloquence, Mappable;
+    use TipoUsuario;
 
     protected $guard = 'empleado';
 

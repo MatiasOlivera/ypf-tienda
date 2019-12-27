@@ -2,17 +2,19 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Carbon\Carbon;
+use App\Auxiliares\TipoUsuario;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Carbon\Carbon;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class ClienteUsuario extends Authenticatable implements JWTSubject
 {
     use SoftDeletes, Notifiable;
+    use TipoUsuario;
 
     protected $guard = 'cliente';
 
