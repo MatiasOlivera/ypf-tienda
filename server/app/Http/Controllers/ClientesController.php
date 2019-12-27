@@ -15,6 +15,8 @@ class ClientesController extends Controller
 
     public function __construct()
     {
+        $this->authorizeResource(Cliente::class, 'cliente');
+
         $this->modeloPlural = 'clientes';
         $this->modeloSingular = 'cliente';
         $this->generoModelo = 'masculino';
@@ -28,6 +30,8 @@ class ClientesController extends Controller
      */
     public function index(ClientesRequest $request)
     {
+        $this->authorize('index', Cliente::class);
+
         $parametros = [
             'modelo'            => 'Cliente',
             'campos'            => [
@@ -121,6 +125,8 @@ class ClientesController extends Controller
      */
     public function restore(Cliente $cliente)
     {
+        $this->authorize('restore', $cliente);
+
         $nombre = "El cliente $cliente->nombre";
         return $this->baseController->restore($cliente, $nombre);
     }
