@@ -4,6 +4,7 @@ namespace Tests\Feature\app\Http\Controllers;
 
 use App\Cliente;
 use Tests\TestCase;
+use AutorizacionSeeder;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\Utilidades\EloquenceSolucion;
@@ -19,6 +20,20 @@ class ClientesControllerTest extends TestCase
     use EloquenceSolucion;
     use EstructuraJsonHelper;
 
+    protected $usuario;
+    protected $cabeceras;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->seed(AutorizacionSeeder::class);
+
+        $login = $this->loguearseComoSuperAdministrador();
+        $this->usuario = $login['usuario'];
+        $this->cabeceras = $login['cabeceras'];
+    }
+
     private function getEstructuraClientes()
     {
         return array_merge(['clientes'], $this->estructuraPaginacion);
@@ -29,7 +44,7 @@ class ClientesControllerTest extends TestCase
         return array_merge(['cliente' => $this->atributosCliente], $this->estructuraMensaje);
     }
 
-    private function crearCliente($cabeceras, $cliente = null)
+    private function crearCliente($cliente = null)
     {
         if ($cliente === null) {
             $cliente = [
@@ -39,7 +54,7 @@ class ClientesControllerTest extends TestCase
         }
 
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('POST', 'api/clientes', $cliente);
 
         return $respuesta->getData(true)['cliente'];
@@ -50,9 +65,8 @@ class ClientesControllerTest extends TestCase
      */
     public function testNoDeberiaObtenerNingunCliente()
     {
-        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('GET', 'api/clientes');
 
         $estructura = $this->getEstructuraClientes();
@@ -70,9 +84,8 @@ class ClientesControllerTest extends TestCase
     {
         factory(Cliente::class, 10)->create();
 
-        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('GET', 'api/clientes');
 
         $estructura = $this->getEstructuraClientes();
@@ -94,9 +107,8 @@ class ClientesControllerTest extends TestCase
             'documento' => 12345678
         ];
 
-        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('POST', 'api/clientes', $cliente);
 
         $estructura = $this->getEstructuraCliente();
@@ -119,13 +131,11 @@ class ClientesControllerTest extends TestCase
      */
     public function testDeberiaObtenerUnCliente()
     {
-        $cabeceras = $this->loguearseComo('cliente');
-
-        $clienteGuardado = $this->crearCliente($cabeceras);
+        $clienteGuardado = $this->crearCliente();
         $id = $clienteGuardado['id'];
 
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('GET', "api/clientes/$id");
 
         $respuesta
@@ -141,9 +151,7 @@ class ClientesControllerTest extends TestCase
      */
     public function testDeberiaEditarUnCliente()
     {
-        $cabeceras = $this->loguearseComo('cliente');
-
-        $clienteGuardado = $this->crearCliente($cabeceras);
+        $clienteGuardado = $this->crearCliente();
         $id = $clienteGuardado['id'];
 
         $clienteModificado = [
@@ -151,7 +159,7 @@ class ClientesControllerTest extends TestCase
             'documento' => 12345678
         ];
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('PUT', "api/clientes/$id", $clienteModificado);
 
         $clienteEsperado = array_merge($clienteGuardado, $clienteModificado);
@@ -176,13 +184,11 @@ class ClientesControllerTest extends TestCase
      */
     public function testDeberiaEliminarUnCliente()
     {
-        $cabeceras = $this->loguearseComo('cliente');
-
-        $clienteGuardado = $this->crearCliente($cabeceras);
+        $clienteGuardado = $this->crearCliente();
         $id = $clienteGuardado['id'];
 
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('DELETE', "api/clientes/$id");
 
         $clienteDB = Cliente::withTrashed()
@@ -213,15 +219,13 @@ class ClientesControllerTest extends TestCase
      */
     public function testDeberiaRestaurarUnCliente()
     {
-        $cabeceras = $this->loguearseComo('cliente');
-
-        $clienteGuardado = $this->crearCliente($cabeceras);
+        $clienteGuardado = $this->crearCliente();
         $id = $clienteGuardado['id'];
 
-        $this->withHeaders($cabeceras)
+        $this->withHeaders($this->cabeceras)
             ->json('DELETE', "api/clientes/$id");
 
-        $respuesta = $this->withHeaders($cabeceras)
+        $respuesta = $this->withHeaders($this->cabeceras)
             ->json('POST', "api/clientes/$id/restaurar");
 
         $clienteDB = Cliente::withTrashed()
