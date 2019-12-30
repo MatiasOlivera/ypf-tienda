@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
 
@@ -24,5 +25,10 @@ class AutorizacionSeeder extends Seeder
         Permission::create(['name' => 'crear clientes', 'guard_name' => 'empleado']);
         Permission::create(['name' => 'actualizar clientes', 'guard_name' => 'empleado']);
         Permission::create(['name' => 'eliminar clientes', 'guard_name' => 'empleado']);
+
+        /**
+         * Roles
+         */
+        Role::create(['name' => 'super administrador', 'guard_name' => 'empleado']);
     }
 }

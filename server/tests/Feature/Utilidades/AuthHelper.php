@@ -75,4 +75,14 @@ trait AuthHelper
             'cabeceras' => $cabeceras
         ];
     }
+
+    protected function loguearseComoSuperAdministrador(): array
+    {
+        $login = $this->loguearseComoEmpleado();
+        $usuario = $login['usuario'];
+
+        $usuario->assignRole('super administrador');
+
+        return $login;
+    }
 }

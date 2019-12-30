@@ -28,6 +28,14 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        /**
+         * Si el usuario es "super administrador" otorgar de forma implicita
+         * todos los permisos, para evitar asignarlos a nivel de base de datos.
+         */
+        Gate::before(function ($usuario, $habilidad) {
+            return $usuario->esEmpleado() && $usuario->hasRole('super administrador')
+                ? true
+                : null;
+        });
     }
 }
