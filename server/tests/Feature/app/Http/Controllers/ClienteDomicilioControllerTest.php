@@ -4,6 +4,7 @@ namespace Tests\Feature\app\Http\Controllers;
 
 use App\Cliente;
 use Tests\TestCase;
+use AutorizacionSeeder;
 use App\ClienteDomicilio;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -31,6 +32,19 @@ class ClienteDomicilioControllerTest extends TestCase
             'deleted_at'
         ]
     ];
+    protected $usuario;
+    protected $cabeceras;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->seed(AutorizacionSeeder::class);
+
+        $login = $this->loguearseComoSuperAdministrador();
+        $this->usuario = $login['usuario'];
+        $this->cabeceras = $login['cabeceras'];
+    }
 
     private function getEstructuraDomicilios()
     {
@@ -74,13 +88,11 @@ class ClienteDomicilioControllerTest extends TestCase
      */
     public function testNoDeberiaObtenerNingunDomicilio()
     {
-        $cabeceras = $this->loguearseComo('cliente');
-
         $cliente = factory(Cliente::class, 1)->create()->toArray()[0];
         $id = $cliente['id'];
 
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('GET', "api/clientes/$id/domicilios");
 
         $estructura = $this->getEstructuraDomicilios();
@@ -101,9 +113,8 @@ class ClienteDomicilioControllerTest extends TestCase
         $cliente = Cliente::inRandomOrder()->first();
         $id = $cliente->id;
 
-        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('GET', "api/clientes/$id/domicilios");
 
         $estructura = $this->getEstructuraDomicilios();
@@ -123,9 +134,8 @@ class ClienteDomicilioControllerTest extends TestCase
         $domicilio = factory(ClienteDomicilio::class, 1)->make()->toArray()[0];
         $id = $domicilio['cliente_id'];
 
-        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('POST', "api/clientes/$id/domicilios", $domicilio);
 
         $estructura = $this->getEstructuraDomicilioConLocalidad();
@@ -153,9 +163,8 @@ class ClienteDomicilioControllerTest extends TestCase
         $clienteId = $domicilio['cliente_id'];
         $id = $domicilio['id'];
 
-        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('GET', "api/clientes/$clienteId/domicilios/$id");
 
         $respuesta
@@ -177,9 +186,8 @@ class ClienteDomicilioControllerTest extends TestCase
 
         $domicilioModificado = array_merge($domicilio, ['calle' => 'San Martín']);
 
-        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('PUT', "api/clientes/$clienteId/domicilios/$id", $domicilioModificado);
 
         $domicilioEsperado = array_merge($domicilio, $domicilioModificado);
@@ -208,9 +216,8 @@ class ClienteDomicilioControllerTest extends TestCase
         $clienteId = $domicilio['cliente_id'];
         $id = $domicilio['id'];
 
-        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('DELETE', "api/clientes/$clienteId/domicilios/$id");
 
         $estructura = $this->getEstructuraDomicilio();
@@ -241,13 +248,12 @@ class ClienteDomicilioControllerTest extends TestCase
         $clienteId = $domicilio['cliente_id'];
         $id = $domicilio['id'];
 
-        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('DELETE', "api/clientes/$clienteId/domicilios/$id");
 
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('POST', "api/clientes/$clienteId/domicilios/$id/restaurar");
 
         $estructura = $this->getEstructuraDomicilio();
