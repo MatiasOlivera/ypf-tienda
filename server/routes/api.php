@@ -68,20 +68,28 @@ Route::middleware(['auth.tipo', 'jwt.auth'])->group(function () {
         /*
          *  Domicilio
          */
-        Route::get('/{cliente}/domicilios', 'ClienteDomicilioController@index')->name('ClienteDomicilio.index');
+        Route::get('/{cliente}/domicilios', 'ClienteDomicilioController@index')
+            ->middleware('can:ver_cliente_domicilios,cliente')
+            ->name('ClienteDomicilio.index');
 
-        Route::post('/{cliente}/domicilios', 'ClienteDomicilioController@store')->name('ClienteDomicilio.store');
+        Route::post('/{cliente}/domicilios', 'ClienteDomicilioController@store')
+            ->middleware('can:crear_cliente_domicilio,cliente')
+            ->name('ClienteDomicilio.store');
 
         Route::get('/{cliente}/domicilios/{domicilio}', 'ClienteDomicilioController@show')
+            ->middleware('can:view,domicilio')
             ->name('ClienteDomicilio.show');
 
         Route::put('/{cliente}/domicilios/{domicilio}', 'ClienteDomicilioController@update')
+            ->middleware('can:update,domicilio')
             ->name('ClienteDomicilio.update');
 
         Route::delete('/{cliente}/domicilios/{domicilio}', 'ClienteDomicilioController@destroy')
+            ->middleware('can:delete,domicilio')
             ->name('ClienteDomicilio.destroy');
 
         Route::post('/{cliente}/domicilios/{domicilio}/restaurar/', 'ClienteDomicilioController@restore')
+            ->middleware('can:restore,domicilio')
             ->name('ClienteDomicilio.restore');
 
         /*

@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Cliente;
+use App\ClienteDomicilio;
 use App\Policies\ClientePolicy;
 use Illuminate\Support\Facades\Gate;
+use App\Policies\ClienteDomicilioPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -16,7 +18,8 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         'App\Model' => 'App\Policies\ModelPolicy',
-        Cliente::class => ClientePolicy::class
+        Cliente::class => ClientePolicy::class,
+        ClienteDomicilio::class => ClienteDomicilioPolicy::class,
     ];
 
     /**
@@ -37,5 +40,11 @@ class AuthServiceProvider extends ServiceProvider
                 ? true
                 : null;
         });
+
+        /**
+         * Cliente domicilio
+         */
+        Gate::define('ver_cliente_domicilios', "App\Policies\ClienteDomicilioPolicy@index");
+        Gate::define('crear_cliente_domicilio', 'App\Policies\ClienteDomicilioPolicy@create');
     }
 }
