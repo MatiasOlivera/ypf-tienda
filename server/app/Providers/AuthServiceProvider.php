@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use App\Cliente;
+use App\ClienteMail;
 use App\ClienteTelefono;
 use App\ClienteDomicilio;
 use App\Policies\ClientePolicy;
+use App\Policies\ClienteEmailPolicy;
 use Illuminate\Support\Facades\Gate;
 use App\Policies\ClienteTelefonoPolicy;
 use App\Policies\ClienteDomicilioPolicy;
@@ -22,7 +24,8 @@ class AuthServiceProvider extends ServiceProvider
         'App\Model' => 'App\Policies\ModelPolicy',
         Cliente::class => ClientePolicy::class,
         ClienteDomicilio::class => ClienteDomicilioPolicy::class,
-        ClienteTelefono::class => ClienteTelefonoPolicy::class
+        ClienteTelefono::class => ClienteTelefonoPolicy::class,
+        ClienteMail::class => ClienteEmailPolicy::class,
     ];
 
     /**
@@ -55,5 +58,11 @@ class AuthServiceProvider extends ServiceProvider
          */
         Gate::define('ver_cliente_telefonos', "App\Policies\ClienteTelefonoPolicy@index");
         Gate::define('crear_cliente_telefono', "App\Policies\ClienteTelefonoPolicy@create");
+
+        /**
+         * Cliente email
+         */
+        Gate::define('ver_cliente_emails', 'App\Policies\ClienteEmailPolicy@index');
+        Gate::define('crear_cliente_email', 'App\Policies\ClienteEmailPolicy@create');
     }
 }

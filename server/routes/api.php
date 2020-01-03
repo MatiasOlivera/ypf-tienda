@@ -122,17 +122,28 @@ Route::middleware(['auth.tipo', 'jwt.auth'])->group(function () {
         /*
          *  Emails
          */
-        Route::get('/{cliente}/emails', 'ClienteMailController@index')->name('ClienteMails.index');
+        Route::get('/{cliente}/emails', 'ClienteMailController@index')
+            ->middleware('can:ver_cliente_emails,cliente')
+            ->name('ClienteMails.index');
 
-        Route::post('/{cliente}/emails', 'ClienteMailController@store')->name('ClienteMails.store');
+        Route::post('/{cliente}/emails', 'ClienteMailController@store')
+            ->middleware('can:crear_cliente_email,cliente')
+            ->name('ClienteMails.store');
 
-        Route::get('/{cliente}/emails/{mail}', 'ClienteMailController@show')->name('ClienteMails.show');
+        Route::get('/{cliente}/emails/{mail}', 'ClienteMailController@show')
+            ->middleware('can:view,mail')
+            ->name('ClienteMails.show');
 
-        Route::put('/{cliente}/emails/{mail}', 'ClienteMailController@update')->name('ClienteMails.update');
+        Route::put('/{cliente}/emails/{mail}', 'ClienteMailController@update')
+            ->middleware('can:update,mail')
+            ->name('ClienteMails.update');
 
-        Route::delete('/{cliente}/emails/{mail}', 'ClienteMailController@destroy')->name('ClienteMails.destroy');
+        Route::delete('/{cliente}/emails/{mail}', 'ClienteMailController@destroy')
+            ->middleware('can:delete,mail')
+            ->name('ClienteMails.destroy');
 
         Route::post('/{cliente}/emails/{mail}/restaurar/', 'ClienteMailController@restore')
+            ->middleware('can:restore,mail')
             ->name('ClienteMails.restore');
 
         /*
