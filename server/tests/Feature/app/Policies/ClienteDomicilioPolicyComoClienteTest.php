@@ -7,6 +7,7 @@ use Tests\TestCase;
 use AutorizacionSeeder;
 use App\ClienteDomicilio;
 use Tests\Feature\Utilidades\AuthHelper;
+use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\Api\ClienteDomicilioApi;
 
@@ -14,6 +15,7 @@ class ClienteDomicilioPolicyComoClienteTest extends TestCase
 {
     use AuthHelper;
     use RefreshDatabase;
+    use EloquenceSolucion;
     use ClienteDomicilioApi;
 
     protected $usuario;

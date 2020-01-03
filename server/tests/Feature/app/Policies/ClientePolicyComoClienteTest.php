@@ -6,12 +6,14 @@ use App\Cliente;
 use Tests\TestCase;
 use AutorizacionSeeder;
 use Tests\Feature\Utilidades\AuthHelper;
+use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ClientePolicyComoClienteTest extends TestCase
 {
     use AuthHelper;
     use RefreshDatabase;
+    use EloquenceSolucion;
 
     protected $usuario;
     protected $cabeceras;
