@@ -7,12 +7,14 @@ use App\ClienteUsuario;
 use App\ClienteDomicilio;
 use Illuminate\Foundation\Auth\User;
 use App\Policies\UsuarioTienePermiso;
+use App\Policies\HayRelacionUsuarioYCliente;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ClienteDomicilioPolicy
 {
     use HandlesAuthorization;
     use UsuarioTienePermiso;
+    use HayRelacionUsuarioYCliente;
 
     /**
      * Determine whether the user can view the clientes.
@@ -100,17 +102,6 @@ class ClienteDomicilioPolicy
     public function restore(User $usuario, ClienteDomicilio $domicilio)
     {
         return $this->tienePermisoParaEliminar($usuario, $domicilio);
-    }
-
-    private function hayRelacionEntreClienteUsuarioYCliente(ClienteUsuario $usuario, Cliente $cliente)
-    {
-        $hayRelacion = $usuario->id_cliente === $cliente->id;
-
-        if (!$hayRelacion) {
-            $this->deny('No tienes ninguna relación con el cliente');
-        }
-
-        return $hayRelacion;
     }
 
     private function hayRelacionEntreClienteUsuarioYClienteDomicilio(
