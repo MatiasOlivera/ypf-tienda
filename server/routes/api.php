@@ -95,19 +95,28 @@ Route::middleware(['auth.tipo', 'jwt.auth'])->group(function () {
         /*
          *  Teléfono
          */
-        Route::get('/{cliente}/telefonos', 'ClienteTelefonoController@index')->name('ClienteTelefono.index');
+        Route::get('/{cliente}/telefonos', 'ClienteTelefonoController@index')
+            ->middleware('can:ver_cliente_telefonos,cliente')
+            ->name('ClienteTelefono.index');
 
-        Route::post('/{cliente}/telefonos', 'ClienteTelefonoController@store')->name('ClienteTelefono.store');
+        Route::post('/{cliente}/telefonos', 'ClienteTelefonoController@store')
+            ->middleware('can:crear_cliente_telefono,cliente')
+            ->name('ClienteTelefono.store');
 
-        Route::get('/{cliente}/telefonos/{telefono}', 'ClienteTelefonoController@show')->name('ClienteTelefono.show');
+        Route::get('/{cliente}/telefonos/{telefono}', 'ClienteTelefonoController@show')
+            ->middleware('can:view,telefono')
+            ->name('ClienteTelefono.show');
 
         Route::put('/{cliente}/telefonos/{telefono}', 'ClienteTelefonoController@update')
+            ->middleware('can:update,telefono')
             ->name('ClienteTelefono.update');
 
         Route::delete('/{cliente}/telefonos/{telefono}', 'ClienteTelefonoController@destroy')
+            ->middleware('can:delete,telefono')
             ->name('ClienteTelefono.destroy');
 
         Route::post('/{cliente}/telefonos/{telefono}/restaurar/', 'ClienteTelefonoController@restore')
+            ->middleware('can:restore,telefono')
             ->name('ClienteTelefonos.restore');
 
         /*
