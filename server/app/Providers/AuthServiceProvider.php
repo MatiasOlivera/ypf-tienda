@@ -6,11 +6,13 @@ use App\Cliente;
 use App\ClienteMail;
 use App\ClienteTelefono;
 use App\ClienteDomicilio;
+use App\ClienteRazonSocial;
 use App\Policies\ClientePolicy;
 use App\Policies\ClienteEmailPolicy;
 use Illuminate\Support\Facades\Gate;
 use App\Policies\ClienteTelefonoPolicy;
 use App\Policies\ClienteDomicilioPolicy;
+use App\Policies\ClienteRazonSocialPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -26,6 +28,7 @@ class AuthServiceProvider extends ServiceProvider
         ClienteDomicilio::class => ClienteDomicilioPolicy::class,
         ClienteTelefono::class => ClienteTelefonoPolicy::class,
         ClienteMail::class => ClienteEmailPolicy::class,
+        ClienteRazonSocial::class => ClienteRazonSocialPolicy::class,
     ];
 
     /**
@@ -64,5 +67,13 @@ class AuthServiceProvider extends ServiceProvider
          */
         Gate::define('ver_cliente_emails', 'App\Policies\ClienteEmailPolicy@index');
         Gate::define('crear_cliente_email', 'App\Policies\ClienteEmailPolicy@create');
+
+        /**
+         * Cliente razón social
+         */
+        Gate::define('ver_cliente_razones', 'App\Policies\ClienteRazonSocialPolicy@index');
+        Gate::define('crear_cliente_razon', 'App\Policies\ClienteRazonSocialPolicy@create');
+        Gate::define('asociar_cliente_y_razon_social', 'App\Policies\ClienteRazonSocialPolicy@asociar');
+        Gate::define('desasociar_cliente_y_razon_social', 'App\Policies\ClienteRazonSocialPolicy@desasociar');
     }
 }

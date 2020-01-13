@@ -150,24 +150,36 @@ Route::middleware(['auth.tipo', 'jwt.auth'])->group(function () {
          *  Razón social
          */
         Route::group(['prefix' => '/{cliente}/razones',], function () {
-            Route::get('/', 'ClienteRazonSocialController@index')->name('RazonesCliente');
+            Route::get('/', 'ClienteRazonSocialController@index')
+                ->middleware('can:ver_cliente_razones,cliente')
+                ->name('RazonesCliente');
 
-            Route::post('/', 'ClienteRazonSocialController@store')->name('CrearRazonCliente');
+            Route::post('/', 'ClienteRazonSocialController@store')
+                ->middleware('can:crear_cliente_razon,cliente')
+                ->name('CrearRazonCliente');
 
             Route::post('/{razonSocial}/asociar', 'ClienteRazonSocialController@asociar')
+                ->middleware('can:asociar_cliente_y_razon_social,cliente,razonSocial')
                 ->name('AsociarRazonesCliente');
 
             Route::delete('/{razonSocial}/desasociar', 'ClienteRazonSocialController@desasociar')
+                ->middleware('can:desasociar_cliente_y_razon_social,cliente,razonSocial')
                 ->name('DesasociarRazonesCliente');
 
+            Route::get('/{razonSocial}', 'ClienteRazonSocialController@show')
+                ->middleware('can:view,razonSocial')
+                ->name('ClienteRazones.show');
 
-            Route::get('/{razonSocial}', 'ClienteRazonSocialController@show')->name('ClienteRazones.show');
+            Route::put('/{razonSocial}', 'ClienteRazonSocialController@update')
+                ->middleware('can:update,razonSocial')
+                ->name('ClienteRazones.update');
 
-            Route::put('/{razonSocial}', 'ClienteRazonSocialController@update')->name('ClienteRazones.update');
-
-            Route::delete('/{razonSocial}', 'ClienteRazonSocialController@destroy')->name('ClienteRazones.destroy');
+            Route::delete('/{razonSocial}', 'ClienteRazonSocialController@destroy')
+                ->middleware('can:delete,razonSocial')
+                ->name('ClienteRazones.destroy');
 
             Route::post('/{razonSocial}/restaurar/', 'ClienteRazonSocialController@restore')
+                ->middleware('can:restore,razonSocial')
                 ->name('ClienteRazones.restore');
         });
 
