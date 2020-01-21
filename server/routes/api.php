@@ -53,6 +53,35 @@ Route::middleware(['auth.tipo', 'jwt.auth'])->group(function () {
      * Clientes
      */
     Route::group(['prefix' => 'clientes',], function () {
+        /**
+         * Usuarios
+         */
+        Route::name('usuarios.')->prefix('usuarios')->group(function () {
+            Route::get('/', 'ClienteUsuarioController@index')
+                ->middleware('can:list,App\ClienteUsuario')
+                ->name('index');
+
+            Route::post('/', 'ClienteUsuarioController@store')
+                ->middleware('can:create,App\ClienteUsuario')
+                ->name('store');
+
+            Route::get('/{user}', 'ClienteUsuarioController@show')
+                ->middleware('can:view,user')
+                ->name('show');
+
+            Route::put('/{user}', 'ClienteUsuarioController@update')
+                ->middleware('can:update,user')
+                ->name('update');
+
+            Route::delete('/{user}', 'ClienteUsuarioController@destroy')
+                ->middleware('can:delete,user')
+                ->name('destroy');
+
+            Route::post('/{user}/restaurar/', 'ClienteUsuarioController@restore')
+                ->middleware('can:restore,user')
+                ->name('restore');
+        });
+
         Route::get('/', 'ClientesController@index')->name('clientes.index');
 
         Route::post('/', 'ClientesController@store')->name('clientes.store');
@@ -182,13 +211,6 @@ Route::middleware(['auth.tipo', 'jwt.auth'])->group(function () {
                 ->middleware('can:restore,razonSocial')
                 ->name('ClienteRazones.restore');
         });
-
-        /**
-         * Usuarios
-         */
-        Route::apiResource('/usuarios', 'ClienteUsuarioController')->parameters(['usuarios' => 'user']);
-
-        Route::post('/usuarios/{user}/restaurar/', 'ClienteUsuarioController@restore')->name('usuarios.restore');
     });
 
      /**

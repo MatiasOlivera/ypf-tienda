@@ -27,6 +27,14 @@ class AutorizacionSeeder extends Seeder
         Permission::create(['name' => 'eliminar clientes', 'guard_name' => 'empleado']);
 
         /**
+         * Cliente usuarios
+         */
+        Permission::create(['name' => 'ver usuarios de clientes', 'guard_name' => 'empleado']);
+        Permission::create(['name' => 'crear usuarios de clientes', 'guard_name' => 'empleado']);
+        Permission::create(['name' => 'actualizar usuarios de clientes', 'guard_name' => 'empleado']);
+        Permission::create(['name' => 'eliminar usuarios de clientes', 'guard_name' => 'empleado']);
+
+        /**
          * Roles
          */
         Role::create(['name' => 'super administrador', 'guard_name' => 'empleado']);

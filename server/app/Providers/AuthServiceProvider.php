@@ -4,12 +4,14 @@ namespace App\Providers;
 
 use App\Cliente;
 use App\ClienteMail;
+use App\ClienteUsuario;
 use App\ClienteTelefono;
 use App\ClienteDomicilio;
 use App\ClienteRazonSocial;
 use App\Policies\ClientePolicy;
 use App\Policies\ClienteEmailPolicy;
 use Illuminate\Support\Facades\Gate;
+use App\Policies\ClienteUsuarioPolicy;
 use App\Policies\ClienteTelefonoPolicy;
 use App\Policies\ClienteDomicilioPolicy;
 use App\Policies\ClienteRazonSocialPolicy;
@@ -29,6 +31,7 @@ class AuthServiceProvider extends ServiceProvider
         ClienteTelefono::class => ClienteTelefonoPolicy::class,
         ClienteMail::class => ClienteEmailPolicy::class,
         ClienteRazonSocial::class => ClienteRazonSocialPolicy::class,
+        ClienteUsuario::class => ClienteUsuarioPolicy::class,
     ];
 
     /**
