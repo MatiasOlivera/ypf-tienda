@@ -35,6 +35,14 @@ class AutorizacionSeeder extends Seeder
         Permission::create(['name' => 'eliminar usuarios de clientes', 'guard_name' => 'empleado']);
 
         /**
+         * Provincias
+         */
+        Permission::create(['name' => 'ver provincias', 'guard_name' => 'empleado']);
+        Permission::create(['name' => 'crear provincias', 'guard_name' => 'empleado']);
+        Permission::create(['name' => 'actualizar provincias', 'guard_name' => 'empleado']);
+        Permission::create(['name' => 'eliminar provincias', 'guard_name' => 'empleado']);
+
+        /**
          * Roles
          */
         Role::create(['name' => 'super administrador', 'guard_name' => 'empleado']);

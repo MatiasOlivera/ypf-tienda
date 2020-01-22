@@ -216,10 +216,31 @@ Route::middleware(['auth.tipo', 'jwt.auth'])->group(function () {
      /**
      * Provincia
      */
-    Route::apiResource('/provincias', 'ProvinciaController')->parameters(['provincias' => 'provincia']);
+    Route::name('provincias.')->prefix('provincias')->group(function () {
+        Route::get('/', 'ProvinciaController@index')
+            ->middleware('can:list,App\Provincia')
+            ->name('index');
 
-    Route::post('provincias/{provincia}/restaurar', 'ProvinciaController@restore')
-        ->name('provincias.restore');
+        Route::post('/', 'ProvinciaController@store')
+            ->middleware('can:create,App\Provincia')
+            ->name('store');
+
+        Route::get('/{provincia}', 'ProvinciaController@show')
+            ->middleware('can:view,provincia')
+            ->name('show');
+
+        Route::put('/{provincia}', 'ProvinciaController@update')
+            ->middleware('can:update,provincia')
+            ->name('update');
+
+        Route::delete('/{provincia}', 'ProvinciaController@destroy')
+            ->middleware('can:delete,provincia')
+            ->name('destroy');
+
+        Route::post('/{provincia}/restaurar/', 'ProvinciaController@restore')
+            ->middleware('can:restore,provincia')
+            ->name('restore');
+    });
 
     /**
      * Localidad
