@@ -3,14 +3,14 @@
 namespace Tests\Feature\app\Http\Controllers;
 
 use App\Provincia;
-use Tests\TestCase;
+use Tests\ApiTestCase;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
 
-class ProvinciaControllerTest extends TestCase
+class ProvinciaControllerTest extends ApiTestCase
 {
     use AuthHelper;
     use RefreshDatabase;

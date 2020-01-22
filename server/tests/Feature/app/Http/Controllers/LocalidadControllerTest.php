@@ -4,14 +4,14 @@ namespace Tests\Feature\app\Http\Controllers;
 
 use App\Localidad;
 use App\Provincia;
-use Tests\TestCase;
+use Tests\ApiTestCase;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
 
-class LocalidadControllerTest extends TestCase
+class LocalidadControllerTest extends ApiTestCase
 {
     use AuthHelper;
     use RefreshDatabase;

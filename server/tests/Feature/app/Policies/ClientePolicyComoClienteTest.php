@@ -3,13 +3,13 @@
 namespace Tests\Feature\app\Policies;
 
 use App\Cliente;
-use Tests\TestCase;
+use Tests\ApiTestCase;
 use AutorizacionSeeder;
 use Tests\Feature\Utilidades\AuthHelper;
 use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class ClientePolicyComoClienteTest extends TestCase
+class ClientePolicyComoClienteTest extends ApiTestCase
 {
     use AuthHelper;
     use RefreshDatabase;

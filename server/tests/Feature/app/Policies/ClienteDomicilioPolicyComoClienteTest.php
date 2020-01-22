@@ -3,7 +3,7 @@
 namespace Tests\Feature\app\Policies;
 
 use App\Cliente;
-use Tests\TestCase;
+use Tests\ApiTestCase;
 use AutorizacionSeeder;
 use App\ClienteDomicilio;
 use Tests\Feature\Utilidades\AuthHelper;
@@ -11,7 +11,7 @@ use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\Api\ClienteDomicilioApi;
 
-class ClienteDomicilioPolicyComoClienteTest extends TestCase
+class ClienteDomicilioPolicyComoClienteTest extends ApiTestCase
 {
     use AuthHelper;
     use RefreshDatabase;

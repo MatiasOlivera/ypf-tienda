@@ -3,7 +3,7 @@
 namespace Tests\Feature\app\Http\Controllers;
 
 use App\Cliente;
-use Tests\TestCase;
+use Tests\ApiTestCase;
 use App\ClienteMail;
 use AutorizacionSeeder;
 use Tests\Feature\Utilidades\AuthHelper;
@@ -12,7 +12,7 @@ use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
 
-class ClienteEmailControllerTest extends TestCase
+class ClienteEmailControllerTest extends ApiTestCase
 {
     use AuthHelper;
     use RefreshDatabase;

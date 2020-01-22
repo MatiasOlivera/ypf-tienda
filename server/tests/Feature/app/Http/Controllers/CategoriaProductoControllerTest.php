@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers;
 
-use Tests\TestCase;
+use Tests\ApiTestCase;
 use App\CategoriaProducto;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -10,7 +10,7 @@ use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
 
-class CategoriaProductoControllerTest extends TestCase
+class CategoriaProductoControllerTest extends ApiTestCase
 {
     use AuthHelper;
     use RefreshDatabase;

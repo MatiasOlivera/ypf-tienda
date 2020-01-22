@@ -3,7 +3,7 @@
 namespace Tests\Feature\app\Http\Controllers;
 
 use App\Cliente;
-use Tests\TestCase;
+use Tests\ApiTestCase;
 use AutorizacionSeeder;
 use App\ClienteRazonSocial;
 use Tests\Feature\Utilidades\AuthHelper;
@@ -13,7 +13,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
 use Tests\Feature\Utilidades\AtributosClienteRazonSocial;
 
-class ClienteRazonSocialControllerTest extends TestCase
+class ClienteRazonSocialControllerTest extends ApiTestCase
 {
     use AuthHelper;
     use RefreshDatabase;

@@ -3,11 +3,11 @@
 namespace Tests\Feature;
 
 use Exception;
-use Tests\TestCase;
+use Tests\ApiTestCase;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class AuthTest extends TestCase
+class AuthTest extends ApiTestCase
 {
     use AuthHelper;
     use RefreshDatabase;

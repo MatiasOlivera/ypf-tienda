@@ -3,14 +3,14 @@
 namespace Tests\Feature\app\Http\Controllers;
 
 use App\Producto;
-use Tests\TestCase;
+use Tests\ApiTestCase;
 use CategoriaProductoSeeder;
 use Tests\Feature\Utilidades\AuthHelper;
 use Tests\Feature\Utilidades\EstructuraProducto;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
 
-class ProductosFavoritosControllerTest extends TestCase
+class ProductosFavoritosControllerTest extends ApiTestCase
 {
     use AuthHelper;
     use RefreshDatabase;

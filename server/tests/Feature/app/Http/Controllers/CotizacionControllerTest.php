@@ -4,7 +4,7 @@ namespace Tests\Feature\app\Http\Controllers;
 
 use App\Producto;
 use App\Cotizacion;
-use Tests\TestCase;
+use Tests\ApiTestCase;
 use App\Observacion;
 use App\CotizacionProducto;
 use CotizacionEstadoSeeder;
@@ -18,7 +18,7 @@ use Tests\Feature\Utilidades\EstructuraJsonHelper;
 use App\Http\Resources\Cotizacion\CotizacionResource;
 use App\Http\Resources\Cotizacion\CotizacionCollection;
 
-class CotizacionControllerTest extends TestCase
+class CotizacionControllerTest extends ApiTestCase
 {
     use AuthHelper;
     use RefreshDatabase;

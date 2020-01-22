@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\app\Policies;
 
-use Tests\TestCase;
+use Tests\ApiTestCase;
 use App\ClienteUsuario;
 use AutorizacionSeeder;
 use Tests\Feature\Utilidades\AuthHelper;
@@ -10,7 +10,7 @@ use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\Api\ClienteUsuarioApi;
 
-class ClienteUsuarioPolicyComoClienteTest extends TestCase
+class ClienteUsuarioPolicyComoClienteTest extends ApiTestCase
 {
     use AuthHelper;
     use RefreshDatabase;

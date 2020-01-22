@@ -3,7 +3,7 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Producto;
-use Tests\TestCase;
+use Tests\ApiTestCase;
 use App\CategoriaProducto;
 use CategoriaProductoSeeder;
 use Illuminate\Http\UploadedFile;
@@ -15,7 +15,7 @@ use Tests\Feature\Utilidades\EstructuraProducto;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
 
-class ProductosControllerTest extends TestCase
+class ProductosControllerTest extends ApiTestCase
 {
     use AuthHelper;
     use EstructuraJsonHelper;

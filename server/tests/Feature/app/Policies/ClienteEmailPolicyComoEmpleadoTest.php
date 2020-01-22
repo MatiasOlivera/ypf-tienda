@@ -3,7 +3,7 @@
 namespace Tests\Feature\app\Policies;
 
 use App\Cliente;
-use Tests\TestCase;
+use Tests\ApiTestCase;
 use AutorizacionSeeder;
 use App\ClienteMail;
 use Tests\Feature\Utilidades\AuthHelper;
@@ -11,7 +11,7 @@ use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\Api\ClienteEmailApi;
 
-class ClienteEmailPolicyComoEmpleadoTest extends TestCase
+class ClienteEmailPolicyComoEmpleadoTest extends ApiTestCase
 {
     use AuthHelper;
     use RefreshDatabase;
