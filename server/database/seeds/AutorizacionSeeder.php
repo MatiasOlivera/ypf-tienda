@@ -43,6 +43,14 @@ class AutorizacionSeeder extends Seeder
         Permission::create(['name' => 'eliminar provincias', 'guard_name' => 'empleado']);
 
         /**
+         * Localidades
+         */
+        Permission::create(['name' => 'ver localidades', 'guard_name' => 'empleado']);
+        Permission::create(['name' => 'crear localidades', 'guard_name' => 'empleado']);
+        Permission::create(['name' => 'actualizar localidades', 'guard_name' => 'empleado']);
+        Permission::create(['name' => 'eliminar localidades', 'guard_name' => 'empleado']);
+
+        /**
          * Roles
          */
         Role::create(['name' => 'super administrador', 'guard_name' => 'empleado']);

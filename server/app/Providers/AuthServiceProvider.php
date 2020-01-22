@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Cliente;
+use App\Localidad;
 use App\Provincia;
 use App\ClienteMail;
 use App\ClienteUsuario;
@@ -10,6 +11,7 @@ use App\ClienteTelefono;
 use App\ClienteDomicilio;
 use App\ClienteRazonSocial;
 use App\Policies\ClientePolicy;
+use App\Policies\LocalidadPolicy;
 use App\Policies\ProvinciaPolicy;
 use App\Policies\ClienteEmailPolicy;
 use Illuminate\Support\Facades\Gate;
@@ -35,6 +37,7 @@ class AuthServiceProvider extends ServiceProvider
         ClienteRazonSocial::class => ClienteRazonSocialPolicy::class,
         ClienteUsuario::class => ClienteUsuarioPolicy::class,
         Provincia::class => ProvinciaPolicy::class,
+        Localidad::class => LocalidadPolicy::class,
     ];
 
     /**
@@ -81,5 +84,10 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('crear_cliente_razon', 'App\Policies\ClienteRazonSocialPolicy@create');
         Gate::define('asociar_cliente_y_razon_social', 'App\Policies\ClienteRazonSocialPolicy@asociar');
         Gate::define('desasociar_cliente_y_razon_social', 'App\Policies\ClienteRazonSocialPolicy@desasociar');
+
+        /**
+         * Localidad
+         */
+        Gate::define('ver_localidades', 'App\Policies\LocalidadPolicy@list');
     }
 }

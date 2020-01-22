@@ -246,19 +246,31 @@ Route::middleware(['auth.tipo', 'jwt.auth'])->group(function () {
      * Localidad
      */
     Route::group(['prefix' => '/provincias',], function () {
-        Route::get('/{provincia}/localidades', 'LocalidadController@index')->name('Localidad.index');
+        Route::get('/{provincia}/localidades', 'LocalidadController@index')
+            ->middleware('can:ver_localidades,provincia')
+            ->name('Localidad.index');
     });
 
     Route::group(['prefix' => '/localidades',], function () {
-        Route::post('/', 'LocalidadController@store')->name('Localidad.store');
+        Route::post('/', 'LocalidadController@store')
+            ->middleware('can:create,App\Localidad')
+            ->name('Localidad.store');
 
-        Route::get('/{localidad}', 'LocalidadController@show')->name('Localidad.show');
+        Route::get('/{localidad}', 'LocalidadController@show')
+            ->middleware('can:view,localidad')
+            ->name('Localidad.show');
 
-        Route::put('/{localidad}', 'LocalidadController@update')->name('Localidad.update');
+        Route::put('/{localidad}', 'LocalidadController@update')
+            ->middleware('can:update,localidad')
+            ->name('Localidad.update');
 
-        Route::delete('/{localidad}', 'LocalidadController@destroy')->name('Localidad.destroy');
+        Route::delete('/{localidad}', 'LocalidadController@destroy')
+            ->middleware('can:delete,localidad')
+            ->name('Localidad.destroy');
 
-        Route::post('/{localidad}/restaurar/', 'LocalidadController@restore')->name('Localidad.restore');
+        Route::post('/{localidad}/restaurar/', 'LocalidadController@restore')
+            ->middleware('can:restore,localidad')
+            ->name('Localidad.restore');
     });
 
     /**
