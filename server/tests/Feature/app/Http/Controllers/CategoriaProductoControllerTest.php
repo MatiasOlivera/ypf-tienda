@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http\Controllers;
 
 use Tests\ApiTestCase;
+use AutorizacionSeeder;
 use App\CategoriaProducto;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -16,6 +17,20 @@ class CategoriaProductoControllerTest extends ApiTestCase
     use RefreshDatabase;
     use EloquenceSolucion;
     use EstructuraJsonHelper;
+
+    protected $usuario;
+    protected $cabeceras;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->seed(AutorizacionSeeder::class);
+
+        $login = $this->loguearseComoSuperAdministrador();
+        $this->usuario = $login['usuario'];
+        $this->cabeceras = $login['cabeceras'];
+    }
 
     private $estructuraCategoria = [
         'categoria' => [
@@ -94,9 +109,8 @@ class CategoriaProductoControllerTest extends ApiTestCase
     {
         $categoria = ['descripcion' => 'Combustibles'];
 
-        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('POST', 'api/categorias-productos', $categoria);
 
         $estructura = $this->getEstructuraCategoria();
@@ -119,9 +133,7 @@ class CategoriaProductoControllerTest extends ApiTestCase
      */
     public function testDeberiaObtenerUnaCategoria()
     {
-        $cabeceras = $this->loguearseComo('cliente');
-
-        $categoriaGuardada = $this->crearCategoria($cabeceras);
+        $categoriaGuardada = $this->crearCategoria($this->cabeceras);
         $id = $categoriaGuardada['id'];
 
         $respuesta = $this->json('GET', "api/categorias-productos/$id");
@@ -139,15 +151,13 @@ class CategoriaProductoControllerTest extends ApiTestCase
      */
     public function testDeberiaEditarUnaCategoria()
     {
-        $cabeceras = $this->loguearseComo('cliente');
-
         $categoria = ['descripcion' => 'Combustible'];
-        $categoriaGuardada = $this->crearCategoria($cabeceras, $categoria);
+        $categoriaGuardada = $this->crearCategoria($this->cabeceras, $categoria);
         $id = $categoriaGuardada['id'];
 
         $categoriaModificada = ['descripcion' => 'Combustibles'];
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('PUT', "api/categorias-productos/$id", $categoriaModificada);
 
         $categoriaEsperada = array_merge($categoriaGuardada, $categoriaModificada);
@@ -172,14 +182,12 @@ class CategoriaProductoControllerTest extends ApiTestCase
      */
     public function testDeberiaEliminarUnaCategoria()
     {
-        $cabeceras = $this->loguearseComo('cliente');
-
         $categoria = ['descripcion' => 'Combustibles'];
-        $categoriaGuardada = $this->crearCategoria($cabeceras, $categoria);
+        $categoriaGuardada = $this->crearCategoria($this->cabeceras, $categoria);
         $id = $categoriaGuardada['id'];
 
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('DELETE', "api/categorias-productos/$id");
 
         $categoriaDB = CategoriaProducto::withTrashed()
@@ -207,16 +215,14 @@ class CategoriaProductoControllerTest extends ApiTestCase
      */
     public function testDeberiaRestaurarUnaCategoria()
     {
-        $cabeceras = $this->loguearseComo('cliente');
-
         $categoria = ['descripcion' => 'Combustibles'];
-        $categoriaGuardada = $this->crearCategoria($cabeceras, $categoria);
+        $categoriaGuardada = $this->crearCategoria($this->cabeceras, $categoria);
         $id = $categoriaGuardada['id'];
 
-        $this->withHeaders($cabeceras)
+        $this->withHeaders($this->cabeceras)
             ->json('DELETE', "api/categorias-productos/$id");
 
-        $respuesta = $this->withHeaders($cabeceras)
+        $respuesta = $this->withHeaders($this->cabeceras)
             ->json('POST', "api/categorias-productos/$id/restaurar");
 
         $categoriaDB = CategoriaProducto::withTrashed()
