@@ -51,6 +51,14 @@ class AutorizacionSeeder extends Seeder
         Permission::create(['name' => 'eliminar localidades', 'guard_name' => 'empleado']);
 
         /**
+         * Categorías de producto
+         */
+        Permission::create(['name' => 'crear categorias de producto', 'guard_name' => 'empleado']);
+        Permission::create(['name' => 'actualizar categorias de producto', 'guard_name' => 'empleado']);
+        Permission::create(['name' => 'eliminar categorias de producto', 'guard_name' => 'empleado']);
+
+
+        /**
          * Roles
          */
         Role::create(['name' => 'super administrador', 'guard_name' => 'empleado']);

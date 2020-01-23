@@ -44,9 +44,15 @@ Route::apiResource('productos', 'ProductosController')
 /**
  * Categorías de producto
  */
-Route::apiResource('categorias-productos', 'CategoriaProductoController')
-    ->only(['index', 'show'])
-    ->parameters(['categorias-productos' => 'categoriaProducto']);
+Route::name('categorias-productos.')->prefix('categorias-productos')->group(function () {
+    Route::get('/', 'CategoriaProductoController@index')
+        ->middleware('can:list,App\CategoriaProducto')
+        ->name('index');
+
+    Route::get('/{categoriaProducto}', 'CategoriaProductoController@show')
+        ->middleware('can:view,categoriaProducto')
+        ->name('show');
+});
 
 Route::middleware(['auth.tipo', 'jwt.auth'])->group(function () {
     /**
@@ -276,12 +282,23 @@ Route::middleware(['auth.tipo', 'jwt.auth'])->group(function () {
     /**
      * Categorias de producto
      */
-    Route::apiResource('categorias-productos', 'CategoriaProductoController')
-        ->except(['index', 'show'])
-        ->parameters(['categorias-productos' => 'categoriaProducto']);
+    Route::name('categorias-productos.')->prefix('categorias-productos')->group(function () {
+        Route::post('/', 'CategoriaProductoController@store')
+            ->middleware('can:create,App\CategoriaProducto')
+            ->name('store');
 
-    Route::post('categorias-productos/{categoriaProducto}/restaurar', 'CategoriaProductoController@restore')
-        ->name('categorias.restore');
+        Route::put('/{categoriaProducto}', 'CategoriaProductoController@update')
+            ->middleware('can:update,categoriaProducto')
+            ->name('update');
+
+        Route::delete('/{categoriaProducto}', 'CategoriaProductoController@destroy')
+            ->middleware('can:delete,categoriaProducto')
+            ->name('destroy');
+
+        Route::post('/{categoriaProducto}/restaurar/', 'CategoriaProductoController@restore')
+            ->middleware('can:restore,categoriaProducto')
+            ->name('restore');
+    });
 
     /**
      * Productos

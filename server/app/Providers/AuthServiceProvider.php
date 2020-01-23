@@ -9,6 +9,7 @@ use App\ClienteMail;
 use App\ClienteUsuario;
 use App\ClienteTelefono;
 use App\ClienteDomicilio;
+use App\CategoriaProducto;
 use App\ClienteRazonSocial;
 use App\Policies\ClientePolicy;
 use App\Policies\LocalidadPolicy;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Gate;
 use App\Policies\ClienteUsuarioPolicy;
 use App\Policies\ClienteTelefonoPolicy;
 use App\Policies\ClienteDomicilioPolicy;
+use App\Policies\CategoriaProductoPolicy;
 use App\Policies\ClienteRazonSocialPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -38,6 +40,7 @@ class AuthServiceProvider extends ServiceProvider
         ClienteUsuario::class => ClienteUsuarioPolicy::class,
         Provincia::class => ProvinciaPolicy::class,
         Localidad::class => LocalidadPolicy::class,
+        CategoriaProducto::class => CategoriaProductoPolicy::class,
     ];
 
     /**
