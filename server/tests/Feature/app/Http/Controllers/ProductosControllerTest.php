@@ -4,6 +4,7 @@ namespace Tests\Feature\Http\Controllers;
 
 use App\Producto;
 use Tests\ApiTestCase;
+use AutorizacionSeeder;
 use App\CategoriaProducto;
 use CategoriaProductoSeeder;
 use Illuminate\Http\UploadedFile;
@@ -23,10 +24,19 @@ class ProductosControllerTest extends ApiTestCase
     use EstructuraProducto;
     use RefreshDatabase;
 
+    protected $usuario;
+    protected $cabeceras;
+
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->seed(CategoriaProductoSeeder::class);
+        $this->seed(AutorizacionSeeder::class);
+
+        $login = $this->loguearseComoSuperAdministrador();
+        $this->usuario = $login['usuario'];
+        $this->cabeceras = $login['cabeceras'];
     }
 
     private function getEstructuraProductos(): array
@@ -149,12 +159,10 @@ class ProductosControllerTest extends ApiTestCase
      */
     public function testDeberiaCrearUnProductoSinImagen()
     {
-        $cabeceras = $this->loguearseComo('cliente');
-
         $categoria = ['descripcion' => 'Automotriz Alta Gama'];
 
         $respuestaCategoria = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('POST', 'api/categorias-productos', $categoria);
 
         $idCategoria = $respuestaCategoria->getData(true)['categoria']['id'];
@@ -169,7 +177,7 @@ class ProductosControllerTest extends ApiTestCase
         ];
 
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('POST', 'api/productos', $producto);
 
         $estructura = $this->getEstructuraProducto();
@@ -192,12 +200,10 @@ class ProductosControllerTest extends ApiTestCase
      */
     public function testDeberiaCrearUnProductoConImagen()
     {
-        $cabeceras = $this->loguearseComo('cliente');
-
         $categoria = ['descripcion' => 'Automotriz Alta Gama'];
 
         $respuestaCategoria = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('POST', 'api/categorias-productos', $categoria);
 
         $idCategoria = $respuestaCategoria->getData(true)['categoria']['id'];
@@ -216,7 +222,7 @@ class ProductosControllerTest extends ApiTestCase
         ];
 
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('POST', 'api/productos', $producto);
 
         $estructura = $this->getEstructuraProducto();
@@ -247,9 +253,7 @@ class ProductosControllerTest extends ApiTestCase
      */
     public function testDeberiaObtenerUnProducto()
     {
-        $cabeceras = $this->loguearseComo('cliente');
-
-        $productoGuardado = $this->crearProducto($cabeceras);
+        $productoGuardado = $this->crearProducto($this->cabeceras);
         $id = $productoGuardado['id'];
 
         $respuesta = $this->json('GET', "api/productos/$id");
@@ -267,9 +271,7 @@ class ProductosControllerTest extends ApiTestCase
      */
     public function testDeberiaEditarUnProductoSinImagen()
     {
-        $cabeceras = $this->loguearseComo('cliente');
-
-        $productoGuardado = $this->crearProducto($cabeceras);
+        $productoGuardado = $this->crearProducto($this->cabeceras);
         $idProducto = $productoGuardado['id'];
         $idCategoria = $productoGuardado['id_categoria'];
 
@@ -287,7 +289,7 @@ class ProductosControllerTest extends ApiTestCase
         ];
 
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('PUT', "api/productos/$idProducto", $producto);
 
         $estructura = $this->getEstructuraProducto();
@@ -319,9 +321,7 @@ class ProductosControllerTest extends ApiTestCase
      */
     public function testDeberiaEditarUnProductoConImagen()
     {
-        $cabeceras = $this->loguearseComo('cliente');
-
-        $productoGuardado = $this->crearProducto($cabeceras);
+        $productoGuardado = $this->crearProducto($this->cabeceras);
         $idProducto = $productoGuardado['id'];
         $idCategoria = $productoGuardado['id_categoria'];
 
@@ -335,7 +335,7 @@ class ProductosControllerTest extends ApiTestCase
         ];
 
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('PUT', "api/productos/$idProducto", $producto);
 
         $estructura = $this->getEstructuraProducto();
@@ -358,13 +358,11 @@ class ProductosControllerTest extends ApiTestCase
      */
     public function testDeberiaEliminarUnProducto()
     {
-        $cabeceras = $this->loguearseComo('cliente');
-
-        $productoGuardado = $this->crearProducto($cabeceras);
+        $productoGuardado = $this->crearProducto($this->cabeceras);
         $id = $productoGuardado['id'];
 
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('DELETE', "api/productos/$id");
 
         $estructura = $this->getEstructuraProducto();
@@ -393,16 +391,14 @@ class ProductosControllerTest extends ApiTestCase
      */
     public function testDeberiaRestaurarUnProducto()
     {
-        $cabeceras = $this->loguearseComo('cliente');
-
-        $productoGuardado = $this->crearProducto($cabeceras);
+        $productoGuardado = $this->crearProducto($this->cabeceras);
         $id = $productoGuardado['id'];
 
         $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('DELETE', "api/productos/$id");
 
-        $respuesta = $this->withHeaders($cabeceras)
+        $respuesta = $this->withHeaders($this->cabeceras)
             ->json('POST', "api/productos/$id/restaurar");
 
         $estructura = $this->getEstructuraProducto();
