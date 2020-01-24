@@ -37,9 +37,15 @@ Route::group(['prefix' => 'auth', 'middleware' => ['auth.tipo', 'jwt.auth',],], 
 /**
  * Productos
  */
-Route::apiResource('productos', 'ProductosController')
-    ->only(['index', 'show'])
-    ->parameters(['productos' => 'producto']);
+Route::name('productos.')->prefix('productos')->group(function () {
+    Route::get('/', 'ProductosController@index')
+        ->middleware('can:list,App\Producto')
+        ->name('index');
+
+    Route::get('/{producto}', 'ProductosController@show')
+        ->middleware('can:view,producto')
+        ->name('show');
+});
 
 /**
  * Categorías de producto
@@ -303,12 +309,23 @@ Route::middleware(['auth.tipo', 'jwt.auth'])->group(function () {
     /**
      * Productos
      */
-    Route::apiResource('productos', 'ProductosController')
-        ->except(['index', 'show'])
-        ->parameters(['productos' => 'producto']);
+    Route::name('productos.')->prefix('productos')->group(function () {
+        Route::post('/', 'ProductosController@store')
+            ->middleware('can:create,App\Producto')
+            ->name('store');
 
-    Route::post('productos/{producto}/restaurar', 'ProductosController@restore')
-        ->name('productos.restore');
+        Route::put('/{producto}', 'ProductosController@update')
+            ->middleware('can:update,producto')
+            ->name('update');
+
+        Route::delete('/{producto}', 'ProductosController@destroy')
+            ->middleware('can:delete,producto')
+            ->name('destroy');
+
+        Route::post('/{producto}/restaurar/', 'ProductosController@restore')
+            ->middleware('can:restore,producto')
+            ->name('restore');
+    });
 
     /**
      * Productos favoritos

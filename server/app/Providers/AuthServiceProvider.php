@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Cliente;
+use App\Producto;
 use App\Localidad;
 use App\Provincia;
 use App\ClienteMail;
@@ -12,6 +13,7 @@ use App\ClienteDomicilio;
 use App\CategoriaProducto;
 use App\ClienteRazonSocial;
 use App\Policies\ClientePolicy;
+use App\Policies\ProductoPolicy;
 use App\Policies\LocalidadPolicy;
 use App\Policies\ProvinciaPolicy;
 use App\Policies\ClienteEmailPolicy;
@@ -41,6 +43,7 @@ class AuthServiceProvider extends ServiceProvider
         Provincia::class => ProvinciaPolicy::class,
         Localidad::class => LocalidadPolicy::class,
         CategoriaProducto::class => CategoriaProductoPolicy::class,
+        Producto::class => ProductoPolicy::class,
     ];
 
     /**

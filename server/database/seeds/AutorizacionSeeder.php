@@ -57,6 +57,12 @@ class AutorizacionSeeder extends Seeder
         Permission::create(['name' => 'actualizar categorias de producto', 'guard_name' => 'empleado']);
         Permission::create(['name' => 'eliminar categorias de producto', 'guard_name' => 'empleado']);
 
+        /**
+         * Productos
+         */
+        Permission::create(['name' => 'crear productos', 'guard_name' => 'empleado']);
+        Permission::create(['name' => 'actualizar productos', 'guard_name' => 'empleado']);
+        Permission::create(['name' => 'eliminar productos', 'guard_name' => 'empleado']);
 
         /**
          * Roles
