@@ -7,10 +7,12 @@ use App\Empleado;
 use App\Cotizacion;
 use App\Observacion;
 use App\PedidoEstado;
+use App\PedidoProducto;
 use App\ClienteTelefono;
 use App\ClienteDomicilio;
-use App\CotizacionEstado;
+
 use App\ClienteRazonSocial;
+use App\PedidoEntregaEstado;
 use Sofa\Eloquence\Mappable;
 use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
@@ -27,8 +29,8 @@ class Pedido extends Model
         'empleado_id' => 'id_us',
         'cliente_id' => 'id_cliente',
         'razon_id' => 'id_rz',
-        'cotizacion_estado_id' => 'estado',
-        'pedido_estado_id' => 'est_entrega',
+        'estado_id' => 'estado',
+        'entrega_estado_id' => 'est_entrega',
         'consumidor_final' => 'cons_final',
         'telefono_id' => 'id_con',
         'domicilio_id' => 'id_dom_cliente',
@@ -40,8 +42,8 @@ class Pedido extends Model
         'empleado_id',
         'cliente_id',
         'razon_id',
-        'cotizacion_estado_id',
-        'pedido_estado_id',
+        'estado_id',
+        'entrega_estado_id',
         'consumidor_final',
         'telefono_id',
         'domicilio_id',
@@ -67,8 +69,8 @@ class Pedido extends Model
         'empleado_id',
         'cliente_id',
         'razon_id',
-        'cotizacion_estado_id',
-        'pedido_estado_id',
+        'estado_id',
+        'entrega_estado_id',
         'fecha_pedido',
         'consumidor_final',
         'plazo',
@@ -78,6 +80,11 @@ class Pedido extends Model
     ];
 
     public $timestamps = false;
+
+    public function productos()
+    {
+        return $this->hasMany(PedidoProducto::class, 'id_pedido', 'id_pedido');
+    }
 
     public function empleado()
     {
@@ -94,14 +101,14 @@ class Pedido extends Model
         return $this->belongsTo(ClienteRazonSocial::class, 'id_rz', 'id_razon');
     }
 
-    public function cotizacionEstado()
-    {
-        return $this->belongsTo(CotizacionEstado::class, 'estado', 'id_apro');
-    }
-
     public function pedidoEstado()
     {
-        return $this->belongsTo(PedidoEstado::class, 'est_entrega', 'id_estado');
+        return $this->belongsTo(PedidoEstado::class, 'estado', 'id_apro');
+    }
+
+    public function entregaEstado()
+    {
+        return $this->belongsTo(PedidoEntregaEstado::class, 'est_entrega', 'id_estado');
     }
 
     public function telefono()

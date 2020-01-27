@@ -7,16 +7,16 @@ use Sofa\Eloquence\Mappable;
 use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
 
-class PedidoEstado extends Model
+class PedidoEntregaEstado extends Model
 {
     use Eloquence, Mappable;
 
-    protected $table = 'aprobacion';
-    protected $primaryKey = 'id_apro';
+    protected $table = 'estado_pedido';
+    protected $primaryKey = 'id_estado';
 
     protected $maps = [
-        'id' => 'id_apro',
-        'descripcion' => 'desc_apro'
+        'id' => 'id_estado',
+        'descripcion' => 'desc_estado'
     ];
 
     protected $appends = [
@@ -25,8 +25,8 @@ class PedidoEstado extends Model
     ];
 
     protected $hidden = [
-        'id_apro',
-        'desc_apro'
+        'id_estado',
+        'desc_estado'
     ];
 
     protected $fillable = ['descripcion'];
@@ -35,6 +35,6 @@ class PedidoEstado extends Model
 
     public function pedidos()
     {
-        return $this->hasMany(Pedido::class, 'estado', 'id_apro');
+        return $this->hasMany(Pedido::class, 'est_entrega', 'id_estado');
     }
 }

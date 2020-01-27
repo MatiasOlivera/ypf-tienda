@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Resources\Cotizacion;
+namespace App\Http\Resources\Pedido;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\Cotizacion\CotizacionProductoResource;
+use App\Http\Resources\Pedido\PedidoProductoResource;
 
-class CotizacionResource extends JsonResource
+class PedidoResource extends JsonResource
 {
-    public static $wrap = 'cotizacion';
+    public static $wrap = 'pedido';
 
     /**
      * Transform the resource into an array.
@@ -22,18 +22,14 @@ class CotizacionResource extends JsonResource
             'fecha_pedido' => $this->fecha_pedido,
             'consumidor_final' => $this->consumidor_final,
             'plazo' => $this->plazo,
-            'pedido_id' => $this->pedido_id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'deleted_at' => $this->deleted_at,
             'empleado' => $this->whenLoaded('empleado'),
             'cliente' => $this->whenLoaded('cliente'),
             'razon_social' => $this->whenLoaded('razonSocial'),
-            'estado' => $this->whenLoaded('cotizacionEstado'),
+            'estado' => $this->whenLoaded('pedidoEstado'),
             'telefono' => $this->whenLoaded('telefono'),
             'domicilio' => $this->whenLoaded('domicilio'),
             'observacion' => $this->whenLoaded('observacion'),
-            'productos' => CotizacionProductoResource::collection($this->whenLoaded('productos'))
+            'productos' => PedidoProductoResource::collection($this->whenLoaded('productos'))
         ];
     }
 }

@@ -5,6 +5,6 @@ use Faker\Generator as Faker;
 
 $factory->define(PedidoEstado::class, function (Faker $faker) {
     return [
-        'descripcion' => $faker->unique()->word()
+        'descripcion' => $faker->unique()->text(11)
     ];
 });

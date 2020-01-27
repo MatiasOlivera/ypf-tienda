@@ -9,10 +9,14 @@ use App\Cotizacion;
 use Tests\TestCase;
 use App\Observacion;
 use App\PedidoEstado;
+use App\PedidoProducto;
+use PedidoEstadoSeeder;
 use App\ClienteTelefono;
 use App\ClienteDomicilio;
-use App\CotizacionEstado;
 use App\ClienteRazonSocial;
+use App\PedidoEntregaEstado;
+use CategoriaProductoSeeder;
+use PedidoEntregaEstadoSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\Utilidades\EstructuraPedido;
 use Tests\Feature\Utilidades\EloquenceSolucion;
@@ -23,6 +27,15 @@ class PedidoTest extends TestCase
     use RefreshDatabase;
     use EstructuraPedido;
     use EloquenceSolucion;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seed(CategoriaProductoSeeder::class);
+        $this->seed(PedidoEstadoSeeder::class);
+        $this->seed(PedidoEntregaEstadoSeeder::class);
+    }
 
     public function test_deberia_crear_un_pedido()
     {
@@ -46,6 +59,17 @@ class PedidoTest extends TestCase
 
         unset($entrada['id']);
         $this->assertArraySubset($entrada, $pedido->toArray());
+    }
+
+    public function test_deberia_acceder_a_la_relacion_productos()
+    {
+        $pedido = factory(Pedido::class)->states('productos')->create();
+        $productos = $pedido->productos;
+
+        foreach ($productos as $producto) {
+            $this->assertInstanceOf(PedidoProducto::class, $producto);
+            $this->assertEquals($pedido->id, $producto->pedido_id);
+        }
     }
 
     public function test_deberia_acceder_a_la_relacion_empleado()
@@ -75,22 +99,22 @@ class PedidoTest extends TestCase
         $this->assertEquals($pedido->razon_id, $razonSocial->id);
     }
 
-    public function test_deberia_acceder_a_la_relacion_pedido_estado()
+    public function test_deberia_acceder_a_la_relacion_entrega_estado()
+    {
+        $pedido = factory(Pedido::class)->create();
+        $estado = $pedido->entregaEstado;
+
+        $this->assertInstanceOf(PedidoEntregaEstado::class, $estado);
+        $this->assertEquals($pedido->entrega_estado_id, $estado->id);
+    }
+
+    public function test_deberia_acceder_a_la_relacion_estado()
     {
         $pedido = factory(Pedido::class)->create();
         $estado = $pedido->pedidoEstado;
 
         $this->assertInstanceOf(PedidoEstado::class, $estado);
-        $this->assertEquals($pedido->pedido_estado_id, $estado->id);
-    }
-
-    public function test_deberia_acceder_a_la_relacion_cotizacion_estado()
-    {
-        $pedido = factory(Pedido::class)->create();
-        $estado = $pedido->cotizacionEstado;
-
-        $this->assertInstanceOf(CotizacionEstado::class, $estado);
-        $this->assertEquals($pedido->cotizacion_estado_id, $estado->id);
+        $this->assertEquals($pedido->estado_id, $estado->id);
     }
 
     public function test_deberia_acceder_a_la_relacion_telefono()
@@ -122,7 +146,7 @@ class PedidoTest extends TestCase
 
     public function test_deberia_acceder_a_la_relacion_cotizacion()
     {
-        $cotizacion = factory(Cotizacion::class)->create();
+        $cotizacion = factory(Cotizacion::class)->states('pedido')->create();
         $pedido = $cotizacion->pedido;
 
         $this->assertInstanceOf(Cotizacion::class, $pedido->cotizacion);

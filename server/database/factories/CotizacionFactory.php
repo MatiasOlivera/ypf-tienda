@@ -42,13 +42,6 @@ $factory->define(Cotizacion::class, function (Faker $faker) {
         },
         'domicilio_id' => function () {
             return factory(ClienteDomicilio::class)->create()->id;
-        },
-
-        /**
-        * Pedido
-        */
-        'pedido_id' => function () {
-            return factory(Pedido::class)->create()->id;
         }
     ];
 });
@@ -62,5 +55,11 @@ $factory->afterCreatingState(Cotizacion::class, 'productos', function ($cotizaci
 $factory->afterCreatingState(Cotizacion::class, 'observacion', function ($cotizacion, $faker) {
     $observacion = factory(Observacion::class)->create();
     $cotizacion->observacion_id = $observacion->id;
+    $cotizacion->save();
+});
+
+$factory->afterCreatingState(Cotizacion::class, 'pedido', function ($cotizacion, $faker) {
+    $pedido = factory(Pedido::class)->create();
+    $cotizacion->pedido_id = $pedido->id;
     $cotizacion->save();
 });
