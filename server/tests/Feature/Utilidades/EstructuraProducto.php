@@ -39,4 +39,22 @@ trait EstructuraProducto
     {
         return array_merge($this->estructuraProducto, $this->estructuraMensaje);
     }
+
+    private function getEstructuraProductoComoCliente(): array
+    {
+        return [
+            'producto' => [
+                'id',
+                'codigo',
+                'nombre',
+                'presentacion',
+                'imagen',
+                'es_favorito',
+                'id_categoria',
+                'created_at',
+                'updated_at',
+                'deleted_at'
+            ]
+        ];
+    }
 }
