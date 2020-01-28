@@ -32,7 +32,7 @@ class ProductosController extends Controller
         try {
             $soloFavoritos = $request->input('soloFavoritos', false);
 
-            if (Auth::check() && $soloFavoritos === true) {
+            if (Auth::check() && Auth::user()->esCliente() && $soloFavoritos === true) {
                 $modelo = Producto::with('usuariosQueMarcaronComoFavorito')
                     ->whereHas('usuariosQueMarcaronComoFavorito', function (Builder $consulta) {
                         $consulta->where('cliente_usuario_id', Auth::id());
