@@ -16,7 +16,7 @@ use Tests\Feature\Utilidades\EstructuraProducto;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
 
-class ProductosControllerTest extends ApiTestCase
+class ProductosControllerComoEmpleadoTest extends ApiTestCase
 {
     use AuthHelper;
     use EstructuraJsonHelper;
