@@ -104,6 +104,19 @@ class ProductoPolicy
         }
     }
 
+    /**
+    * Determine whether the user can administrar los productos favoritos.
+    *
+    * @param  Illuminate\Foundation\Auth\User  $usuario
+    * @return mixed
+    */
+    public function administrarFavoritos(?User $usuario)
+    {
+        if (Auth::check() && $usuario->esCliente()) {
+            return true;
+        }
+    }
+
     private function tienePermisoParaEliminar(User $usuario, Producto $producto)
     {
         if ($usuario->esCliente()) {

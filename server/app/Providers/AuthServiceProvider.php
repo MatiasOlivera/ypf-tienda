@@ -100,5 +100,6 @@ class AuthServiceProvider extends ServiceProvider
          * Productos
          */
         Gate::define('administrar_precios', 'App\Policies\ProductoPolicy@administrarPrecios');
+        Gate::define('administrar_favoritos', 'App\Policies\ProductoPolicy@administrarFavoritos');
     }
 }

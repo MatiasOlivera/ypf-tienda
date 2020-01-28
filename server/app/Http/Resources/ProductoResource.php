@@ -33,9 +33,12 @@ class ProductoResource extends JsonResource
             ]),
 
             'imagen' => $this->imagen,
-            // FIXME: debería mostrar el campo es_favorito solo cuando el
-            // usuario logueado es un cliente
-            'es_favorito' => $this->when(Auth::check(), $this->getEsFavorito()),
+
+            'es_favorito' => $this->when(
+                $usuario->can('administrar_favoritos', Producto::class),
+                $this->getEsFavorito()
+            ),
+
             'id_categoria' => $this->id_categoria,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
