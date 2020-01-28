@@ -95,5 +95,10 @@ class AuthServiceProvider extends ServiceProvider
          * Localidad
          */
         Gate::define('ver_localidades', 'App\Policies\LocalidadPolicy@list');
+
+        /**
+         * Productos
+         */
+        Gate::define('administrar_precios', 'App\Policies\ProductoPolicy@administrarPrecios');
     }
 }
