@@ -57,4 +57,23 @@ trait EstructuraProducto
             ]
         ];
     }
+
+    private function getEstructuraProductoComoEmpleado(): array
+    {
+        return [
+            'producto' => [
+                'id',
+                'codigo',
+                'nombre',
+                'presentacion',
+                'precio_por_mayor',
+                'consumidor_final',
+                'imagen',
+                'id_categoria',
+                'created_at',
+                'updated_at',
+                'deleted_at'
+            ]
+        ];
+    }
 }

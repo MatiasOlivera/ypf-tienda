@@ -8,9 +8,12 @@ use AutorizacionSeeder;
 use App\CategoriaProducto;
 use CategoriaProductoSeeder;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\ProductoResource;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\Feature\Utilidades\Api\ProductoApi;
 use Tests\Feature\Utilidades\EloquenceSolucion;
 use Tests\Feature\Utilidades\EstructuraProducto;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -19,6 +22,7 @@ use Tests\Feature\Utilidades\EstructuraJsonHelper;
 class ProductosControllerComoEmpleadoTest extends ApiTestCase
 {
     use AuthHelper;
+    use ProductoApi;
     use EstructuraJsonHelper;
     use EloquenceSolucion;
     use EstructuraProducto;
@@ -34,7 +38,7 @@ class ProductosControllerComoEmpleadoTest extends ApiTestCase
         $this->seed(CategoriaProductoSeeder::class);
         $this->seed(AutorizacionSeeder::class);
 
-        $login = $this->loguearseComoSuperAdministrador();
+        $login = $this->loguearseComoEmpleado();
         $this->usuario = $login['usuario'];
         $this->cabeceras = $login['cabeceras'];
     }
@@ -44,31 +48,6 @@ class ProductosControllerComoEmpleadoTest extends ApiTestCase
         $paginacion = $this->estructuraPaginacion;
         unset($paginacion['paginacion']['rutas']);
         return array_merge(['productos'], $paginacion);
-    }
-
-    private function crearProducto($cabeceras)
-    {
-        $categoria = ['descripcion' => 'Automotriz Alta Gama'];
-        $respuestaCategoria = $this
-            ->withHeaders($cabeceras)
-            ->json('POST', 'api/categorias-productos', $categoria);
-
-        $idCategoria = $respuestaCategoria->getData(true)['categoria']['id'];
-
-        $producto = [
-            'codigo' => '181696',
-            'nombre' => 'ELAION F50 d1 0W-20 12/1',
-            'presentacion' => 'Caja 12u / 1 litro',
-            'precio_por_mayor' => 150,
-            'consumidor_final' => 200,
-            'id_categoria' => $idCategoria
-        ];
-
-        $respuestaProducto = $this
-            ->withHeaders($cabeceras)
-            ->json('POST', 'api/productos', $producto);
-
-        return $respuestaProducto->getData(true)['producto'];
     }
 
     private function getImagen()
@@ -91,9 +70,9 @@ class ProductosControllerComoEmpleadoTest extends ApiTestCase
     /**
      * No debería obtener ningun producto
      */
-    public function testNoDeberiaObtenerNingunProducto()
+    public function testElEmpleadoNoDeberiaObtenerNingunProducto()
     {
-        $respuesta = $this->json('GET', 'api/productos');
+        $respuesta = $this->obtenerProductos();
 
         $estructura = $this->getEstructuraProductos();
 
@@ -108,60 +87,55 @@ class ProductosControllerComoEmpleadoTest extends ApiTestCase
      *
      * @return void
      */
-    public function testDeberiaObtenerProductos()
+    public function testElEmpleadoDeberiaObtenerProductos()
     {
-        factory(CategoriaProducto::class, 10)->create()->each(function ($categoria) {
-            $categoria->productos()->save(factory(Producto::class)->make());
-        });
+        factory(CategoriaProducto::class, 10)
+            ->create()
+            ->each(function ($categoria) {
+                $categoria->productos()->save(factory(Producto::class)->make());
+            });
 
-        $respuesta = $this->json('GET', 'api/productos');
+        $respuesta = $this->obtenerProductos();
 
         $estructura = $this->getEstructuraProductos();
-        $productos = Producto::orderBy('nombre', 'ASC')->get()->toArray();
+        $productos = Producto::orderBy('nombre', 'ASC')->get();
+        $coleccionProductos = ProductoResource::collection($productos)->resolve();
 
         $respuesta
             ->assertOk()
             ->assertJsonStructure($estructura)
-            ->assertJson(['productos' => $productos]);
+            ->assertJson(['productos' => $coleccionProductos]);
     }
 
     /**
      * Debería crear un producto sin imagen
      */
-    public function testDeberiaCrearUnProductoSinImagen()
+    public function testElEmpleadoDeberiaCrearUnProductoSinImagen()
     {
-        $categoria = ['descripcion' => 'Automotriz Alta Gama'];
+        $producto = factory(Producto::class)->make();
+        $productoArray = $producto->toArray();
+        unset($productoArray['imagen']);
 
-        $respuestaCategoria = $this
-            ->withHeaders($this->cabeceras)
-            ->json('POST', 'api/categorias-productos', $categoria);
+        $this->usuario->givePermissionTo('crear productos');
+        $respuesta = $this->crearProducto($productoArray);
 
-        $idCategoria = $respuestaCategoria->getData(true)['categoria']['id'];
-
-        $producto = [
-            'codigo' => '181696',
-            'nombre' => 'ELAION F50 d1 0W-20 12/1',
-            'presentacion' => 'Caja 12u / 1 litro',
-            'precio_por_mayor' => 150,
-            'consumidor_final' => 200,
-            'id_categoria' => $idCategoria
-        ];
-
-        $respuesta = $this
-            ->withHeaders($this->cabeceras)
-            ->json('POST', 'api/productos', $producto);
-
-        $estructura = $this->getEstructuraProducto();
+        $estructura = $this->getEstructuraProductoComoEmpleado();
+        $recursoProducto = ProductoResource::make($producto)->resolve();
+        unset(
+            $recursoProducto['id'],
+            $recursoProducto['created_at'],
+            $recursoProducto['updated_at']
+        );
 
         $respuesta
             ->assertStatus(201)
             ->assertJsonStructure($estructura)
             ->assertJson([
-                'producto' => $producto,
+                'producto' => $recursoProducto,
                 'mensaje' => [
                     'tipo' => 'exito',
                     'codigo' => 'GUARDADO',
-                    'descripcion' => 'El producto ELAION F50 d1 0W-20 12/1 ha sido creado'
+                    'descripcion' => "El producto {$producto->nombre} ha sido creado"
                 ]
             ]);
     }
@@ -169,39 +143,25 @@ class ProductosControllerComoEmpleadoTest extends ApiTestCase
     /**
      * Debería crear un producto con imagen
      */
-    public function testDeberiaCrearUnProductoConImagen()
+    public function testElEmpleadoDeberiaCrearUnProductoConImagen()
     {
-        $categoria = ['descripcion' => 'Automotriz Alta Gama'];
-
-        $respuestaCategoria = $this
-            ->withHeaders($this->cabeceras)
-            ->json('POST', 'api/categorias-productos', $categoria);
-
-        $idCategoria = $respuestaCategoria->getData(true)['categoria']['id'];
+        $producto = factory(Producto::class)->make();
+        $productoArray = $producto->toArray();
 
         Storage::fake('productos');
+
         $imagen = $this->getImagen();
+        $productoArray['imagen'] = $imagen;
 
-        $producto = [
-            'codigo' => '181696',
-            'nombre' => 'ELAION F50 d1 0W-20 12/1',
-            'presentacion' => 'Caja 12u / 1 litro',
-            'precio_por_mayor' => 150,
-            'consumidor_final' => 200,
-            'id_categoria' => $idCategoria,
-            'imagen' => $imagen
-        ];
+        $this->usuario->givePermissionTo('crear productos');
+        $respuesta = $this->crearProducto($productoArray);
 
-        $respuesta = $this
-            ->withHeaders($this->cabeceras)
-            ->json('POST', 'api/productos', $producto);
-
-        $estructura = $this->getEstructuraProducto();
+        $estructura = $this->getEstructuraProductoComoEmpleado();
 
         $productoGuardado = $respuesta->getData(true)['producto'];
-        $nombreArchivo = $this->getNombreImagen($productoGuardado, $imagen);
 
-        $productoEsperado = $producto;
+        $productoEsperado = $productoArray;
+        $nombreArchivo = $this->getNombreImagen($productoGuardado, $imagen);
         $productoEsperado['imagen'] = $this->getURLImagen($nombreArchivo);
 
         $respuesta
@@ -212,7 +172,7 @@ class ProductosControllerComoEmpleadoTest extends ApiTestCase
                 'mensaje' => [
                     'tipo' => 'exito',
                     'codigo' => 'GUARDADO',
-                    'descripcion' => 'El producto ELAION F50 d1 0W-20 12/1 ha sido creado'
+                    'descripcion' => "El producto {$producto->nombre} ha sido creado"
                 ]
             ]);
 
@@ -222,55 +182,40 @@ class ProductosControllerComoEmpleadoTest extends ApiTestCase
     /**
      * Debería obtener un producto
      */
-    public function testDeberiaObtenerUnProducto()
+    public function testElEmpleadoDeberiaObtenerUnProducto()
     {
-        $productoGuardado = $this->crearProducto($this->cabeceras);
-        $id = $productoGuardado['id'];
+        $producto = factory(Producto::class)->create();
 
-        $respuesta = $this->json('GET', "api/productos/$id");
+        $respuesta = $this->obtenerProducto($producto->id);
+
+        $estructura = $this->getEstructuraProductoComoEmpleado();
+        $recursoProducto = ProductoResource::make($producto)->resolve();
 
         $respuesta
             ->assertStatus(200)
-            ->assertJsonStructure($this->estructuraProducto)
+            ->assertJsonStructure($estructura)
             ->assertExactJson([
-                'producto' => $productoGuardado
+                'producto' => $recursoProducto
             ]);
     }
 
     /**
      * Debería editar un producto sin imagen
      */
-    public function testDeberiaEditarUnProductoSinImagen()
+    public function testElEmpleadoDeberiaEditarUnProductoSinImagen()
     {
-        $productoGuardado = $this->crearProducto($this->cabeceras);
-        $idProducto = $productoGuardado['id'];
-        $idCategoria = $productoGuardado['id_categoria'];
+        $producto = factory(Producto::class)->create();
+        $productoActualizado = factory(Producto::class)->make();
+        $productoArray = $productoActualizado->toArray();
+        unset($productoArray['imagen']);
 
-        Storage::fake('productos');
-        $imagen = $this->getImagen();
+        $this->usuario->givePermissionTo('actualizar productos');
+        $respuesta = $this->actualizarProducto($producto->id, $productoArray);
 
-        $producto = [
-            'codigo' => '181696',
-            'nombre' => 'ELAION F50 d1 0W-20',
-            'presentacion' => '12 x 1 litro',
-            'precio_por_mayor' => 150,
-            'consumidor_final' => 200,
-            'id_categoria' => $idCategoria,
-            'imagen' => $imagen
-        ];
+        $estructura = $this->getEstructuraProductoComoEmpleado();
 
-        $respuesta = $this
-            ->withHeaders($this->cabeceras)
-            ->json('PUT', "api/productos/$idProducto", $producto);
-
-        $estructura = $this->getEstructuraProducto();
-
-        $productoActualizado = $respuesta->getData(true)['producto'];
-        $nombreArchivo = $this->getNombreImagen($productoActualizado, $imagen);
-
-        $productoEsperado = array_merge($productoGuardado, $productoActualizado);
+        $productoEsperado = $productoArray;
         unset($productoEsperado['updated_at']);
-        $productoEsperado['imagen'] = $this->getURLImagen($nombreArchivo);
 
         $respuesta
             ->assertStatus(200)
@@ -280,46 +225,41 @@ class ProductosControllerComoEmpleadoTest extends ApiTestCase
                 'mensaje' => [
                     'tipo' => 'exito',
                     'codigo' => 'ACTUALIZADO',
-                    'descripcion' => 'El producto ELAION F50 d1 0W-20 ha sido modificado'
+                    'descripcion' => "El producto {$productoEsperado['nombre']} ha sido modificado"
                 ]
             ]);
-
-        Storage::disk('productos')->assertExists($nombreArchivo);
     }
 
     /**
      * Debería editar un producto con imagen
      */
-    public function testDeberiaEditarUnProductoConImagen()
+    public function testElEmpleadoDeberiaEditarUnProductoConImagen()
     {
-        $productoGuardado = $this->crearProducto($this->cabeceras);
-        $idProducto = $productoGuardado['id'];
-        $idCategoria = $productoGuardado['id_categoria'];
+        $producto = factory(Producto::class)->create();
 
-        $producto = [
-            'codigo' => '181696',
-            'nombre' => 'ELAION F50 d1 0W-20',
-            'presentacion' => '12 x 1 litro',
-            'precio_por_mayor' => 150,
-            'consumidor_final' => 200,
-            'id_categoria' => $idCategoria
-        ];
+        $productoArray = $producto->toArray();
+        $imagen = $this->getImagen();
+        $productoArray['imagen'] = $imagen;
 
-        $respuesta = $this
-            ->withHeaders($this->cabeceras)
-            ->json('PUT', "api/productos/$idProducto", $producto);
+        $this->usuario->givePermissionTo('actualizar productos');
+        $respuesta = $this->actualizarProducto($producto->id, $productoArray);
 
-        $estructura = $this->getEstructuraProducto();
+        $estructura = $this->getEstructuraProductoComoEmpleado();
+
+        $productoEsperado = $productoArray;
+        $nombreArchivo = $this->getNombreImagen($producto, $imagen);
+        $productoEsperado['imagen'] = $this->getURLImagen($nombreArchivo);
+        unset($productoEsperado['updated_at']);
 
         $respuesta
             ->assertStatus(200)
             ->assertJsonStructure($estructura)
             ->assertJson([
-                'producto' => $producto,
+                'producto' => $productoEsperado,
                 'mensaje' => [
                     'tipo' => 'exito',
                     'codigo' => 'ACTUALIZADO',
-                    'descripcion' => 'El producto ELAION F50 d1 0W-20 ha sido modificado'
+                    'descripcion' => "El producto {$producto->nombre} ha sido modificado"
                 ]
             ]);
     }
@@ -327,32 +267,27 @@ class ProductosControllerComoEmpleadoTest extends ApiTestCase
     /**
      * Debería eliminar un producto
      */
-    public function testDeberiaEliminarUnProducto()
+    public function testElEmpleadoDeberiaEliminarUnProducto()
     {
-        $productoGuardado = $this->crearProducto($this->cabeceras);
-        $id = $productoGuardado['id'];
+        $producto = factory(Producto::class)->create();
 
-        $respuesta = $this
-            ->withHeaders($this->cabeceras)
-            ->json('DELETE', "api/productos/$id");
+        $this->usuario->givePermissionTo('eliminar productos');
+        $respuesta = $this->eliminarProducto($producto->id);
 
-        $estructura = $this->getEstructuraProducto();
+        $estructura = $this->getEstructuraProductoComoEmpleado();
 
-        $productoDB = Producto::withTrashed()
-            ->where('id', $id)
-            ->firstOrFail()
-            ->toArray();
-        $productoDB['es_favorito'] = false;
+        $recursoProducto = ProductoResource::make($producto)->resolve();
+        unset($recursoProducto['updated_at'], $recursoProducto['deleted_at']);
 
         $respuesta
             ->assertStatus(200)
             ->assertJsonStructure($estructura)
-            ->assertExactJson([
-                'producto' => $productoDB,
+            ->assertJson([
+                'producto' => $recursoProducto,
                 'mensaje' => [
                     'tipo' => 'exito',
                     'codigo' => 'ELIMINADO',
-                    'descripcion' => 'El producto ELAION F50 d1 0W-20 12/1 ha sido eliminado'
+                    'descripcion' => "El producto {$producto->nombre} ha sido eliminado"
                 ]
             ]);
     }
@@ -360,35 +295,29 @@ class ProductosControllerComoEmpleadoTest extends ApiTestCase
     /**
      * Debería restaurar un producto
      */
-    public function testDeberiaRestaurarUnProducto()
+    public function testElEmpleadoDeberiaRestaurarUnProducto()
     {
-        $productoGuardado = $this->crearProducto($this->cabeceras);
-        $id = $productoGuardado['id'];
+        $producto = factory(Producto::class)->create();
 
-        $this
-            ->withHeaders($this->cabeceras)
-            ->json('DELETE', "api/productos/$id");
+        $this->usuario->givePermissionTo('eliminar productos');
 
-        $respuesta = $this->withHeaders($this->cabeceras)
-            ->json('POST', "api/productos/$id/restaurar");
+        $this->eliminarProducto($producto->id);
+        $respuesta = $this->restaurarProducto($producto->id);
 
-        $estructura = $this->getEstructuraProducto();
+        $estructura = $this->getEstructuraProductoComoEmpleado();
 
-        $productoDB = Producto::withTrashed()
-            ->where('id', $id)
-            ->firstOrFail()
-            ->toArray();
-        $productoDB['es_favorito'] = false;
+        $recursoProducto = ProductoResource::make($producto)->resolve();
+        unset($recursoProducto['updated_at']);
 
         $respuesta
             ->assertStatus(200)
             ->assertJsonStructure($estructura)
-            ->assertExactJson([
-                'producto' => $productoDB,
+            ->assertJson([
+                'producto' => $recursoProducto,
                 'mensaje' => [
                     'tipo' => 'exito',
                     'codigo' => 'RESTAURADO',
-                    'descripcion' => 'El producto ELAION F50 d1 0W-20 12/1 ha sido dado de alta'
+                    'descripcion' => "El producto {$producto->nombre} ha sido dado de alta"
                 ]
             ]);
     }
