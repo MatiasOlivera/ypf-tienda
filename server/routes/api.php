@@ -37,14 +37,16 @@ Route::group(['prefix' => 'auth', 'middleware' => ['auth.tipo', 'jwt.auth',],], 
 /**
  * Productos
  */
-Route::name('productos.')->prefix('productos')->group(function () {
-    Route::get('/', 'ProductosController@index')
-        ->middleware('can:list,App\Producto')
-        ->name('index');
+Route::name('publica.')->prefix('publica')->group(function () {
+    Route::name('productos.')->prefix('productos')->group(function () {
+        Route::get('/', 'ProductosController@index')
+            ->middleware('can:list,App\Producto')
+            ->name('index');
 
-    Route::get('/{producto}', 'ProductosController@show')
-        ->middleware('can:view,producto')
-        ->name('show');
+        Route::get('/{producto}', 'ProductosController@show')
+            ->middleware('can:view,producto')
+            ->name('show');
+    });
 });
 
 /**
@@ -310,6 +312,14 @@ Route::middleware(['auth.tipo', 'jwt.auth'])->group(function () {
      * Productos
      */
     Route::name('productos.')->prefix('productos')->group(function () {
+        Route::get('/', 'ProductosController@index')
+            ->middleware('can:list,App\Producto')
+            ->name('index');
+
+        Route::get('/{producto}', 'ProductosController@show')
+            ->middleware('can:view,producto')
+            ->name('show');
+
         Route::post('/', 'ProductosController@store')
             ->middleware('can:create,App\Producto')
             ->name('store');
