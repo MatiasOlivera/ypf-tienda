@@ -76,4 +76,24 @@ trait EstructuraProducto
             ]
         ];
     }
+
+    private function getEstructuraProductoComoInvitado(): array
+    {
+        return [
+            'producto' => [
+                'id',
+                'codigo',
+                'nombre',
+                'presentacion',
+                // 'precio_por_mayor',
+                // 'consumidor_final',
+                'imagen',
+                // 'es_favorito',
+                'id_categoria',
+                'created_at',
+                'updated_at',
+                'deleted_at'
+            ]
+        ];
+    }
 }

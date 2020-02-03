@@ -19,6 +19,7 @@ class ProductoResource extends JsonResource
      */
     public function toArray($request)
     {
+        $estaAutenticado = Auth::check();
         $usuario = Auth::user();
 
         return [
@@ -27,15 +28,18 @@ class ProductoResource extends JsonResource
             'nombre' => $this->nombre,
             'presentacion' => $this->presentacion,
 
-            $this->mergeWhen($usuario->can('administrar_precios', Producto::class), [
-                'precio_por_mayor' => $this->precio_por_mayor,
-                'consumidor_final' => $this->consumidor_final,
-            ]),
+            $this->mergeWhen(
+                $estaAutenticado && $usuario->can('administrar_precios', Producto::class),
+                [
+                    'precio_por_mayor' => $this->precio_por_mayor,
+                    'consumidor_final' => $this->consumidor_final,
+                ]
+            ),
 
             'imagen' => $this->imagen,
 
             'es_favorito' => $this->when(
-                $usuario->can('administrar_favoritos', Producto::class),
+                $estaAutenticado && $usuario->can('administrar_favoritos', Producto::class),
                 $this->getEsFavorito()
             ),
 
