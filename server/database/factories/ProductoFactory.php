@@ -21,8 +21,8 @@ $factory->define(App\Producto::class, function (Faker $faker) {
         },
         'nombre' => $faker->word(),
         'presentacion' => $faker->sentence(2),
-        'precio_por_mayor' => (string) $faker->randomFloat(2, 0, 10000),
-        'consumidor_final' => (string) $faker->randomFloat(2, 0, 10000),
+        'precio_por_mayor' => number_format($faker->randomFloat(2, 0, 10000), 2, '.', ''),
+        'consumidor_final' => number_format($faker->randomFloat(2, 0, 10000), 2, '.', ''),
 
         // Categoría
         'ID_CAT' => function () {
