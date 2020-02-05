@@ -341,9 +341,11 @@ Route::middleware(['auth.tipo', 'jwt.auth'])->group(function () {
      * Productos favoritos
      */
     Route::post('productos/{producto}/favorito', 'ProductosFavoritosController@asociar')
+        ->middleware('can:administrar_favoritos')
         ->name('productos.es_favorito');
 
     Route::delete('productos/{producto}/favorito', 'ProductosFavoritosController@desasociar')
+        ->middleware('can:administrar_favoritos')
         ->name('productos.no_es_favorito');
 
     /**

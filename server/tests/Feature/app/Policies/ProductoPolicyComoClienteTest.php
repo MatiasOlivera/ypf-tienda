@@ -10,6 +10,7 @@ use Tests\Feature\Utilidades\AuthHelper;
 use Tests\Feature\Utilidades\Api\ProductoApi;
 use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Feature\Utilidades\Api\ProductoFavoritoApi;
 
 class ProductoPolicyComoClienteTest extends ApiTestCase
 {
@@ -17,6 +18,7 @@ class ProductoPolicyComoClienteTest extends ApiTestCase
     use ProductoApi;
     use RefreshDatabase;
     use EloquenceSolucion;
+    use ProductoFavoritoApi;
 
     protected $usuario;
     protected $cabeceras;
@@ -94,5 +96,26 @@ class ProductoPolicyComoClienteTest extends ApiTestCase
     {
         $respuesta = $this->restaurarProducto($this->producto->id);
         $respuesta->assertStatus(403);
+    }
+
+    /**
+     * Agregar producto como favorito
+     */
+
+    public function test_el_cliente_usuario_puede_agregar_el_producto_como_favorito()
+    {
+        $respuesta = $this->agregarFavorito($this->producto->id);
+        $respuesta->assertOk();
+    }
+
+    /**
+     * Eliminar producto de favoritos
+     */
+
+    public function test_el_cliente_usuario_puede_eliminar_el_producto_de_favoritos()
+    {
+        $this->agregarFavorito($this->producto->id);
+        $respuesta = $this->eliminarFavorito($this->producto->id);
+        $respuesta->assertOk();
     }
 }
