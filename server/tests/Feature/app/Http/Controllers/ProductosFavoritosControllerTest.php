@@ -10,12 +10,14 @@ use Tests\Feature\Utilidades\AuthHelper;
 use Tests\Feature\Utilidades\EstructuraProducto;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
+use Tests\Feature\Utilidades\Api\ProductoFavoritoApi;
 
 class ProductosFavoritosControllerTest extends ApiTestCase
 {
     use AuthHelper;
     use RefreshDatabase;
     use EstructuraProducto;
+    use ProductoFavoritoApi;
     use EstructuraJsonHelper;
 
     protected $usuario;
@@ -38,11 +40,8 @@ class ProductosFavoritosControllerTest extends ApiTestCase
     public function testDeberiaGuardarProductoComoFavorito()
     {
         $producto = factory(Producto::class)->create();
-        $id = $producto->id;
 
-        $respuesta = $this
-            ->withHeaders($this->cabeceras)
-            ->json('POST', "api/productos/$id/favorito");
+        $respuesta = $this->agregarFavorito($producto->id);
 
         $estructura = $this->getEstructuraProductoComoCliente();
         $recursoProducto = ProductoResource::make($producto)->resolve();
@@ -69,15 +68,10 @@ class ProductosFavoritosControllerTest extends ApiTestCase
     public function testDeberiaQuitarProductoDeFavoritos()
     {
         $producto = factory(Producto::class)->create();
-        $id = $producto->id;
 
-        $this
-            ->withHeaders($this->cabeceras)
-            ->json('POST', "api/productos/$id/favorito");
+        $this->agregarFavorito($producto->id);
 
-        $respuesta = $this
-            ->withHeaders($this->cabeceras)
-            ->json('DELETE', "api/productos/$id/favorito");
+        $respuesta = $this->eliminarFavorito($producto->id);
 
         $estructura = $this->getEstructuraProductoComoCliente();
         $recursoProducto = ProductoResource::make($producto)->resolve();
