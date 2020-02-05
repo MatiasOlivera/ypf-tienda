@@ -6,15 +6,15 @@ use App\Producto;
 use Tests\ApiTestCase;
 use AutorizacionSeeder;
 use CategoriaProductoSeeder;
-use Tests\Feature\Utilidades\Api\ProductoApi;
 use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Feature\Utilidades\Api\ProductoApiPublica;
 
 class ProductoPolicyComoInvitadoTest extends ApiTestCase
 {
-    use ProductoApi;
     use RefreshDatabase;
     use EloquenceSolucion;
+    use ProductoApiPublica;
 
     protected $cabeceras;
 
