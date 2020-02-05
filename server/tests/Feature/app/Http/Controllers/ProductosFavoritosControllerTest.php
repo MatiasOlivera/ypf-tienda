@@ -5,6 +5,7 @@ namespace Tests\Feature\app\Http\Controllers;
 use App\Producto;
 use Tests\ApiTestCase;
 use CategoriaProductoSeeder;
+use App\Http\Resources\ProductoResource;
 use Tests\Feature\Utilidades\AuthHelper;
 use Tests\Feature\Utilidades\EstructuraProducto;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,15 +18,18 @@ class ProductosFavoritosControllerTest extends ApiTestCase
     use EstructuraProducto;
     use EstructuraJsonHelper;
 
+    protected $usuario;
+    protected $cabeceras;
+
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(CategoriaProductoSeeder::class);
-    }
 
-    private function crearProducto()
-    {
-        return factory(Producto::class, 1)->create()->toArray()[0];
+        $this->seed(CategoriaProductoSeeder::class);
+
+        $login = $this->loguearseComoCliente();
+        $this->usuario = $login['usuario'];
+        $this->cabeceras = $login['cabeceras'];
     }
 
     /**
@@ -33,26 +37,25 @@ class ProductosFavoritosControllerTest extends ApiTestCase
      */
     public function testDeberiaGuardarProductoComoFavorito()
     {
-        $producto = $this->crearProducto();
-        $id = $producto['id'];
+        $producto = factory(Producto::class)->create();
+        $id = $producto->id;
 
-        $cabeceras = $this->loguearseComo('cliente');
         $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('POST', "api/productos/$id/favorito", $producto);
+            ->withHeaders($this->cabeceras)
+            ->json('POST', "api/productos/$id/favorito");
 
-        $estructura = $this->getEstructuraProducto();
-        $producto['es_favorito'] = true;
+        $estructura = $this->getEstructuraProductoComoCliente();
+        $recursoProducto = ProductoResource::make($producto)->resolve();
 
         $respuesta
-            ->assertStatus(200)
+            ->assertOk()
             ->assertJsonStructure($estructura)
             ->assertJson([
-                'producto' => $producto,
+                'producto' => $recursoProducto,
                 'mensaje' => [
                     'tipo' => 'exito',
                     'codigo' => 'ASOCIADOS',
-                    'descripcion' => "Se guardo el producto {$producto['nombre']} como favorito"
+                    'descripcion' => "Se guardo el producto {$producto->nombre} como favorito"
                 ]
             ]);
 
@@ -65,31 +68,29 @@ class ProductosFavoritosControllerTest extends ApiTestCase
      */
     public function testDeberiaQuitarProductoDeFavoritos()
     {
-        $producto = $this->crearProducto();
-        $id = $producto['id'];
-
-        $cabeceras = $this->loguearseComo('cliente');
+        $producto = factory(Producto::class)->create();
+        $id = $producto->id;
 
         $this
-            ->withHeaders($cabeceras)
-            ->json('POST', "api/productos/$id/favorito", $producto);
+            ->withHeaders($this->cabeceras)
+            ->json('POST', "api/productos/$id/favorito");
 
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('DELETE', "api/productos/$id/favorito");
 
-        $estructura = $this->getEstructuraProducto();
-        $producto['es_favorito'] = false;
+        $estructura = $this->getEstructuraProductoComoCliente();
+        $recursoProducto = ProductoResource::make($producto)->resolve();
 
         $respuesta
-            ->assertStatus(200)
+            ->assertOk()
             ->assertJsonStructure($estructura)
             ->assertJson([
-                'producto' => $producto,
+                'producto' => $recursoProducto,
                 'mensaje' => [
                     'tipo' => 'exito',
                     'codigo' => 'DESASOCIADOS',
-                    'descripcion' => "Se quito el producto {$producto['nombre']} de la lista de favoritos"
+                    'descripcion' => "Se quito el producto {$producto->nombre} de la lista de favoritos"
                 ]
             ]);
 
