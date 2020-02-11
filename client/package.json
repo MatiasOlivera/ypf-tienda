@@ -11,7 +11,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "bootstrap-vue": "^2.0.0-rc.22",
+    "bootstrap-vue": "^2.4.0",
     "dayjs": "^1.8.11",
     "feather-icons": "^4.17.0",
     "izitoast": "^1.4.0",
