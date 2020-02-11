@@ -15,7 +15,7 @@
     "dayjs": "^1.8.20",
     "feather-icons": "^4.26.0",
     "izitoast": "^1.4.0",
-    "lodash": "^4.17.14",
+    "lodash": "^4.17.15",
     "vue": "^2.6.11",
     "vue-feather": "^1.0.0",
     "vue-loading-overlay": "^3.2.0",
