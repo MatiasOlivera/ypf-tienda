@@ -69,7 +69,7 @@ export async function clienteApi<RespuestaApi extends Respuesta>(
   }
 
   if (estado === 'EXPIRO' || !token) {
-    router.push({ name: rutaLogin });
+    await router.push({ name: rutaLogin });
 
     const respuesta: RespuestaNoAutorizado = {
       ok: false,
