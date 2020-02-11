@@ -13,7 +13,7 @@
   "dependencies": {
     "bootstrap-vue": "^2.4.0",
     "dayjs": "^1.8.20",
-    "feather-icons": "^4.17.0",
+    "feather-icons": "^4.26.0",
     "izitoast": "^1.4.0",
     "lodash": "^4.17.14",
     "vue": "^2.6.11",
