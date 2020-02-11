@@ -81,6 +81,6 @@ class Cliente extends Model
 
     public function cotizaciones()
     {
-        return $this->hasMany(Cotizacion::class, 'id_cot');
+        return $this->hasMany(Cotizacion::class, 'id_cliente', 'id_cliente');
     }
 }
