@@ -225,6 +225,30 @@ Route::middleware(['auth.tipo', 'jwt.auth'])->group(function () {
                 ->middleware('can:restore,razonSocial')
                 ->name('ClienteRazones.restore');
         });
+
+        /**
+         * Cotizaciones
+         */
+        Route::name('cotizaciones.')->group(function () {
+            Route::prefix('{cliente}/cotizaciones')->group(function () {
+                Route::get('/', 'CotizacionController@indexByClienteId')
+                    ->name('indexByClienteId');
+
+                Route::post('/', 'CotizacionController@store')
+                    ->name('store');
+            });
+
+            Route::prefix('cotizaciones')->group(function () {
+                Route::get('/{cotizacion}', 'CotizacionController@show')
+                    ->name('show');
+
+                Route::put('/{cotizacion}', 'CotizacionController@update')
+                    ->name('update');
+
+                Route::delete('/{cotizacion}', 'CotizacionController@destroy')
+                    ->name('destroy');
+            });
+        });
     });
 
      /**
@@ -351,8 +375,8 @@ Route::middleware(['auth.tipo', 'jwt.auth'])->group(function () {
     /**
      * Cotizaciones
      */
-    Route::apiResource('cotizaciones', 'CotizacionController')
-        ->parameters(['cotizaciones' => 'cotizacion']);
+    Route::get('/cotizaciones', 'CotizacionController@index')
+        ->name('cotizaciones.index');
 
     Route::group(['prefix' => 'cotizaciones',], function () {
         Route::put('/{cotizacion}/productos', 'CotizacionProductoController@update')

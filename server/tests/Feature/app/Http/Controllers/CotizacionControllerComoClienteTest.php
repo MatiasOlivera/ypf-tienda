@@ -2,15 +2,17 @@
 
 namespace Tests\Feature\app\Http\Controllers;
 
+use App\Cliente;
 use App\Producto;
 use App\Cotizacion;
-use Tests\ApiTestCase;
 use App\Observacion;
+use Tests\ApiTestCase;
 use App\CotizacionProducto;
 use CotizacionEstadoSeeder;
 use CategoriaProductoSeeder;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\Feature\Utilidades\Api\CotizacionApi;
 use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraCotizacion;
@@ -18,26 +20,37 @@ use Tests\Feature\Utilidades\EstructuraJsonHelper;
 use App\Http\Resources\Cotizacion\CotizacionResource;
 use App\Http\Resources\Cotizacion\CotizacionCollection;
 
-class CotizacionControllerTest extends ApiTestCase
+class CotizacionControllerComoClienteTest extends ApiTestCase
 {
     use AuthHelper;
+    use CotizacionApi;
     use RefreshDatabase;
     use EloquenceSolucion;
     use EstructuraJsonHelper;
     use EstructuraCotizacion;
 
+    protected $usuario;
+    protected $cabeceras;
+    protected $clienteID;
+
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->seed(CotizacionEstadoSeeder::class);
         $this->seed(CategoriaProductoSeeder::class);
+
+        $login = $this->loguearseComoCliente();
+        $this->usuario = $login['usuario'];
+        $this->cabeceras = $login['cabeceras'];
+        $this->clienteID = $this->usuario->id_cliente;
     }
 
     private function crearCotizacion()
     {
         $nuevaCotizacion = factory(Cotizacion::class)
             ->states('observacion', 'productos')
-            ->create()
+            ->create(['cliente_id' => $this->clienteID])
             ->toArray();
 
         return $this->getCotizacionConProductos($nuevaCotizacion);
@@ -47,7 +60,7 @@ class CotizacionControllerTest extends ApiTestCase
     {
         $nuevaCotizacion = factory(Cotizacion::class)
             ->states('productos')
-            ->create()
+            ->create(['cliente_id' => $this->clienteID])
             ->toArray();
 
         return $this->getCotizacionConProductos($nuevaCotizacion);
@@ -96,33 +109,18 @@ class CotizacionControllerTest extends ApiTestCase
         return $respuesta['cotizacion'];
     }
 
-    public function test_no_deberia_obtener_ninguna_cotizacion()
+    public function test_el_cliente_usuario_deberia_obtener_las_cotizaciones_propias()
     {
-        $cabeceras = $this->loguearseComo('cliente');
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('GET', 'api/cotizaciones');
+        factory(Cotizacion::class, 5)->create([
+            'cliente_id' => $this->clienteID
+        ]);
+
+        $respuesta = $this->obtenerCotizacionesDelCliente($this->clienteID);
 
         $estructura = $this->getEstructuraCotizaciones();
 
-        $respuesta
-            ->assertOk()
-            ->assertJsonStructure($estructura)
-            ->assertJson(['cotizaciones' => []]);
-    }
-
-    public function test_deberia_obtener_cotizaciones()
-    {
-        factory(Cotizacion::class, 10)->create();
-
-        $cabeceras = $this->loguearseComo('cliente');
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('GET', 'api/cotizaciones');
-
-        $estructura = $this->getEstructuraCotizaciones();
-
-        $cotizacionesTabla = Cotizacion::orderBy('created_at', 'DESC')->paginate(10);
+        $cliente = Cliente::find($this->clienteID);
+        $cotizacionesTabla = $cliente->cotizaciones()->orderBy('created_at', 'DESC')->paginate(10);
         $cotizacionesColeccion = new CotizacionCollection($cotizacionesTabla);
         $cotizacionesRespuesta = $cotizacionesColeccion->response()->getData(true);
 
@@ -132,14 +130,11 @@ class CotizacionControllerTest extends ApiTestCase
             ->assertJson($cotizacionesRespuesta);
     }
 
-    public function test_deberia_crear_una_cotizacion()
+    public function test_el_cliente_usuario_deberia_crear_una_cotizacion()
     {
         $nuevaCotizacion = $this->crearCotizacion();
 
-        $cabeceras = $this->loguearseComo('cliente');
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('POST', 'api/cotizaciones', $nuevaCotizacion);
+        $respuesta = $this->crearCotizacionDelCliente($this->clienteID, $nuevaCotizacion);
 
         $id = $respuesta->getData(true)['cotizacion']['id'];
         $cotizacionRespuesta = $this->getCotizacion($id);
@@ -156,26 +151,23 @@ class CotizacionControllerTest extends ApiTestCase
             ]);
     }
 
-    public function test_deberia_obtener_una_cotizacion()
+    public function test_el_cliente_usuario_deberia_obtener_una_cotizacion()
     {
         $cotizacionGuardada = $this->crearCotizacion();
         $id = $cotizacionGuardada['id'];
 
-        $cabeceras = $this->loguearseComo('cliente');
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('GET', "api/cotizaciones/$id");
+        $respuesta = $this->obtenerCotizacion($id);
 
         $cotizacionRespuesta = $this->getCotizacion($id);
 
         $respuesta
-            ->assertStatus(200)
+            ->assertOk()
             ->assertExactJson([
                 'cotizacion' => $cotizacionRespuesta
             ]);
     }
 
-    public function test_deberia_actualizar_una_cotizacion()
+    public function test_el_cliente_usuario_deberia_actualizar_una_cotizacion()
     {
         $cotizacion = $this->crearCotizacion();
         $id = $cotizacion['id'];
@@ -183,13 +175,10 @@ class CotizacionControllerTest extends ApiTestCase
         $cotizacionActualizada = factory(Cotizacion::class)->make()->toArray();
         $cotizacionActualizada['productos'] = $cotizacion['productos'];
 
-        $cabeceras = $this->loguearseComo('cliente');
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('PUT', "api/cotizaciones/$id", $cotizacionActualizada);
+        $respuesta = $this->actualizarCotizacion($id, $cotizacionActualizada);
 
         $respuesta
-            ->assertStatus(200)
+            ->assertOk()
             ->assertExactJson([
                 'cotizacion' => $this->getCotizacion($id),
                 'mensaje' => [
@@ -209,7 +198,7 @@ class CotizacionControllerTest extends ApiTestCase
         $this->assertEquals($cotizacionActualizada['domicilio_id'], $cotizacionRespuesta['domicilio']['id']);
     }
 
-    public function test_deberia_agregar_la_observacion_en_una_cotizacion()
+    public function test_el_cliente_usuario_deberia_agregar_la_observacion_en_una_cotizacion()
     {
         $cotizacion = $this->crearCotizacionSinObservacion();
         $id = $cotizacion['id'];
@@ -217,15 +206,12 @@ class CotizacionControllerTest extends ApiTestCase
         $observacion = factory(Observacion::class)->make()->toArray();
         $cotizacion['observacion'] = $observacion['descripcion'];
 
-        $cabeceras = $this->loguearseComo('cliente');
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('PUT', "api/cotizaciones/$id", $cotizacion);
+        $respuesta = $this->actualizarCotizacion($id, $cotizacion);
 
         $cotizacionRespuesta = $this->getCotizacion($id);
 
         $respuesta
-            ->assertStatus(200)
+            ->assertOk()
             ->assertExactJson([
                 'cotizacion' => $cotizacionRespuesta,
                 'mensaje' => [
@@ -239,7 +225,7 @@ class CotizacionControllerTest extends ApiTestCase
         $this->assertEquals($observacion['descripcion'], $observacionRespuesta['descripcion']);
     }
 
-    public function test_deberia_actualizar_la_observacion_en_una_cotizacion()
+    public function test_el_cliente_usuario_deberia_actualizar_la_observacion_en_una_cotizacion()
     {
         $cotizacion = $this->crearCotizacion();
         $id = $cotizacion['id'];
@@ -247,15 +233,12 @@ class CotizacionControllerTest extends ApiTestCase
         $observacion = factory(Observacion::class)->make()->toArray();
         $cotizacion['observacion'] = $observacion['descripcion'];
 
-        $cabeceras = $this->loguearseComo('cliente');
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('PUT', "api/cotizaciones/$id", $cotizacion);
+        $respuesta = $this->actualizarCotizacion($id, $cotizacion);
 
         $cotizacionRespuesta = $this->getCotizacion($id);
 
         $respuesta
-            ->assertStatus(200)
+            ->assertOk()
             ->assertExactJson([
                 'cotizacion' => $cotizacionRespuesta,
                 'mensaje' => [
@@ -269,7 +252,7 @@ class CotizacionControllerTest extends ApiTestCase
         $this->assertEquals($observacion['descripcion'], $observacionRespuesta['descripcion']);
     }
 
-    public function test_deberia_actualizar_un_producto_en_una_cotizacion()
+    public function test_el_cliente_usuario_deberia_actualizar_un_producto_en_una_cotizacion()
     {
         $cotizacion = $this->crearCotizacion();
         $id = $cotizacion['id'];
@@ -279,10 +262,7 @@ class CotizacionControllerTest extends ApiTestCase
         $productoActualizado['precio'] = 5000;
         $cotizacion['productos'][0] = $productoActualizado;
 
-        $cabeceras = $this->loguearseComo('cliente');
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('PUT', "api/cotizaciones/$id", $cotizacion);
+        $respuesta = $this->actualizarCotizacion($id, $cotizacion);
 
         $cotizacionRespuesta = $this->getCotizacion($id);
 
@@ -307,7 +287,7 @@ class CotizacionControllerTest extends ApiTestCase
         }
     }
 
-    public function test_deberia_agregar_un_producto_a_una_cotizacion()
+    public function test_el_cliente_usuario_deberia_agregar_un_producto_a_una_cotizacion()
     {
         $cotizacion = $this->crearCotizacion();
         $id = $cotizacion['id'];
@@ -319,15 +299,12 @@ class CotizacionControllerTest extends ApiTestCase
         $nuevoProducto['producto_id'] = $producto->id;
         $cotizacion['productos'][] = $nuevoProducto;
 
-        $cabeceras = $this->loguearseComo('cliente');
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('PUT', "api/cotizaciones/$id", $cotizacion);
+        $respuesta = $this->actualizarCotizacion($id, $cotizacion);
 
         $cotizacionRespuesta = $this->getCotizacion($id);
 
         $respuesta
-            ->assertStatus(200)
+            ->assertOk()
             ->assertExactJson([
                 'cotizacion' => $cotizacionRespuesta,
                 'mensaje' => [
@@ -340,7 +317,7 @@ class CotizacionControllerTest extends ApiTestCase
         $this->assertCount(6, $respuesta->getData(true)['cotizacion']['productos']);
     }
 
-    public function test_deberia_agregar_un_producto_duplicado_en_una_cotizacion()
+    public function test_el_cliente_usuario_deberia_agregar_un_producto_duplicado_en_una_cotizacion()
     {
         $cotizacion = $this->crearCotizacion();
         $id = $cotizacion['id'];
@@ -350,15 +327,12 @@ class CotizacionControllerTest extends ApiTestCase
         $productoDuplicado['id'] = null;
         $cotizacion['productos'][] = $productoDuplicado;
 
-        $cabeceras = $this->loguearseComo('cliente');
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('PUT', "api/cotizaciones/$id", $cotizacion);
+        $respuesta = $this->actualizarCotizacion($id, $cotizacion);
 
         $cotizacionRespuesta = $this->getCotizacion($id);
 
         $respuesta
-            ->assertStatus(200)
+            ->assertOk()
             ->assertExactJson([
                 'cotizacion' => $cotizacionRespuesta,
                 'mensaje' => [
@@ -382,20 +356,17 @@ class CotizacionControllerTest extends ApiTestCase
         }
     }
 
-    public function test_deberia_eliminar_una_cotizacion()
+    public function test_el_cliente_usuario_deberia_eliminar_una_cotizacion()
     {
         $cotizacion = $this->crearCotizacion();
         $id = $cotizacion['id'];
 
-        $cabeceras = $this->loguearseComo('cliente');
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('DELETE', "api/cotizaciones/$id");
+        $respuesta = $this->eliminarCotizacion($id);
 
         $cotizacionRespuesta = $this->getCotizacion($id);
 
         $respuesta
-            ->assertStatus(200)
+            ->assertOk()
             ->assertJson([
                 'cotizacion' => $cotizacionRespuesta,
                 'mensaje' => [

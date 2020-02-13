@@ -47,8 +47,6 @@ class CotizacionListadoResource extends JsonResource
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,
 
-            // FIXME: debería mostrar los campos cliente y razon social
-            // solo cuando el usuario logueado es el vendedor
             'cliente' => [
                 'id' => $this->cliente->id,
                 'nombre' => $this->cliente->nombre
