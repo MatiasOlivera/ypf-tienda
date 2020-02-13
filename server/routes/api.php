@@ -232,20 +232,25 @@ Route::middleware(['auth.tipo', 'jwt.auth'])->group(function () {
         Route::name('cotizaciones.')->group(function () {
             Route::prefix('{cliente}/cotizaciones')->group(function () {
                 Route::get('/', 'CotizacionController@indexByClienteId')
+                    ->middleware('can:ver_cotizaciones,cliente')
                     ->name('indexByClienteId');
 
                 Route::post('/', 'CotizacionController@store')
+                    ->middleware('can:crear_cotizaciones,cliente')
                     ->name('store');
             });
 
             Route::prefix('cotizaciones')->group(function () {
                 Route::get('/{cotizacion}', 'CotizacionController@show')
+                    ->middleware('can:view,cotizacion')
                     ->name('show');
 
                 Route::put('/{cotizacion}', 'CotizacionController@update')
+                    ->middleware('can:update,cotizacion')
                     ->name('update');
 
                 Route::delete('/{cotizacion}', 'CotizacionController@destroy')
+                    ->middleware('can:delete,cotizacion')
                     ->name('destroy');
             });
         });
@@ -376,6 +381,7 @@ Route::middleware(['auth.tipo', 'jwt.auth'])->group(function () {
      * Cotizaciones
      */
     Route::get('/cotizaciones', 'CotizacionController@index')
+        ->middleware('can:list,App\Cotizacion')
         ->name('cotizaciones.index');
 
     Route::group(['prefix' => 'cotizaciones',], function () {

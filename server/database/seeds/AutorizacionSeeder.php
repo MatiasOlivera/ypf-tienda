@@ -65,6 +65,14 @@ class AutorizacionSeeder extends Seeder
         Permission::create(['name' => 'eliminar productos', 'guard_name' => 'empleado']);
 
         /**
+         * Cotizaciones
+         */
+        Permission::create(['name' => 'ver cotizaciones', 'guard_name' => 'empleado']);
+        Permission::create(['name' => 'crear cotizaciones', 'guard_name' => 'empleado']);
+        Permission::create(['name' => 'actualizar cotizaciones', 'guard_name' => 'empleado']);
+        Permission::create(['name' => 'eliminar cotizaciones', 'guard_name' => 'empleado']);
+
+        /**
          * Roles
          */
         Role::create(['name' => 'super administrador', 'guard_name' => 'empleado']);

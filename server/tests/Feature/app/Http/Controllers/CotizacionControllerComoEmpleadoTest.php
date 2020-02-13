@@ -4,6 +4,7 @@ namespace Tests\Feature\app\Http\Controllers;
 
 use App\Cotizacion;
 use Tests\ApiTestCase;
+use AutorizacionSeeder;
 use CotizacionEstadoSeeder;
 use CategoriaProductoSeeder;
 use Tests\Feature\Utilidades\AuthHelper;
@@ -32,6 +33,7 @@ class CotizacionControllerComoEmpleadoTest extends ApiTestCase
 
         $this->seed(CotizacionEstadoSeeder::class);
         $this->seed(CategoriaProductoSeeder::class);
+        $this->seed(AutorizacionSeeder::class);
 
         $login = $this->loguearseComoEmpleado();
         $this->usuario = $login['usuario'];
@@ -47,6 +49,8 @@ class CotizacionControllerComoEmpleadoTest extends ApiTestCase
 
     public function test_el_empleado_no_deberia_obtener_ninguna_cotizacion()
     {
+        $this->usuario->givePermissionTo('ver cotizaciones');
+
         $respuesta = $this->obtenerCotizaciones();
 
         $estructura = $this->getEstructuraCotizaciones();
@@ -61,6 +65,7 @@ class CotizacionControllerComoEmpleadoTest extends ApiTestCase
     {
         factory(Cotizacion::class, 10)->create();
 
+        $this->usuario->givePermissionTo('ver cotizaciones');
         $respuesta = $this->obtenerCotizaciones();
 
         $estructura = $this->getEstructuraCotizaciones();

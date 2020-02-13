@@ -6,6 +6,7 @@ use App\Cliente;
 use App\Producto;
 use App\Localidad;
 use App\Provincia;
+use App\Cotizacion;
 use App\ClienteMail;
 use App\ClienteUsuario;
 use App\ClienteTelefono;
@@ -16,6 +17,7 @@ use App\Policies\ClientePolicy;
 use App\Policies\ProductoPolicy;
 use App\Policies\LocalidadPolicy;
 use App\Policies\ProvinciaPolicy;
+use App\Policies\CotizacionPolicy;
 use App\Policies\ClienteEmailPolicy;
 use Illuminate\Support\Facades\Gate;
 use App\Policies\ClienteUsuarioPolicy;
@@ -44,6 +46,7 @@ class AuthServiceProvider extends ServiceProvider
         Localidad::class => LocalidadPolicy::class,
         CategoriaProducto::class => CategoriaProductoPolicy::class,
         Producto::class => ProductoPolicy::class,
+        Cotizacion::class => CotizacionPolicy::class,
     ];
 
     /**
@@ -101,5 +104,11 @@ class AuthServiceProvider extends ServiceProvider
          */
         Gate::define('administrar_precios', 'App\Policies\ProductoPolicy@administrarPrecios');
         Gate::define('administrar_favoritos', 'App\Policies\ProductoPolicy@administrarFavoritos');
+
+        /**
+         * Cotizaciones
+         */
+        Gate::define('ver_cotizaciones', 'App\Policies\CotizacionPolicy@listByClienteId');
+        Gate::define('crear_cotizaciones', 'App\Policies\CotizacionPolicy@create');
     }
 }
