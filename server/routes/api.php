@@ -386,9 +386,11 @@ Route::middleware(['auth.tipo', 'jwt.auth'])->group(function () {
 
     Route::group(['prefix' => 'cotizaciones',], function () {
         Route::put('/{cotizacion}/productos', 'CotizacionProductoController@update')
+            ->middleware('can:update,cotizacion')
             ->name('CotizacionProducto.update');
 
         Route::delete('/productos/{cotizacion_producto}', 'CotizacionProductoController@destroy')
+            ->middleware('can:eliminar_cotizacion_productos,cotizacion_producto')
             ->name('CotizacionProducto.destroy');
     });
 });

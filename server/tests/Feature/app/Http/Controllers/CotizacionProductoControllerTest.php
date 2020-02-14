@@ -14,6 +14,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraCotizacion;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
 use App\Http\Resources\Cotizacion\CotizacionResource;
+use Tests\Feature\Utilidades\Api\CotizacionProductoApi;
 
 class CotizacionProductoControllerTest extends ApiTestCase
 {
@@ -21,20 +22,34 @@ class CotizacionProductoControllerTest extends ApiTestCase
     use RefreshDatabase;
     use EloquenceSolucion;
     use EstructuraJsonHelper;
+    use CotizacionProductoApi;
     use EstructuraCotizacion;
+
+    protected $usuario;
+    protected $cabeceras;
+    protected $clienteID;
+    protected $cotizacion;
 
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->seed(CotizacionEstadoSeeder::class);
         $this->seed(CategoriaProductoSeeder::class);
+
+        $login = $this->loguearseComoCliente();
+        $this->usuario = $login['usuario'];
+        $this->cabeceras = $login['cabeceras'];
+        $this->clienteID = $this->usuario->id_cliente;
+
+        $this->cotizacion = $this->crearCotizacion();
     }
 
     private function crearCotizacion()
     {
         $cotizacion = factory(Cotizacion::class)
             ->states('observacion', 'productos')
-            ->create()
+            ->create(['cliente_id' => $this->clienteID])
             ->toArray();
 
         $productos = $this->getCotizacionProductos($cotizacion['id']);
@@ -57,26 +72,22 @@ class CotizacionProductoControllerTest extends ApiTestCase
         return $cotizacion->productos->toArray();
     }
 
-    public function test_deberia_actualizar_un_producto_en_una_cotizacion()
+    public function test_el_cliente_usuario_deberia_actualizar_un_producto_en_una_cotizacion()
     {
-        $cotizacion = $this->crearCotizacion();
-        $id = $cotizacion['id'];
-        $productos = $cotizacion['productos'];
+        $id = $this->cotizacion['id'];
+        $productos = $this->cotizacion['productos'];
 
         $productoActualizado = $productos[0];
         $productoActualizado['cantidad'] = 10;
         $productoActualizado['precio'] = 5000;
         $productos[0] = $productoActualizado;
 
-        $cabeceras = $this->loguearseComo('cliente');
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('PUT', "api/cotizaciones/$id/productos", ["productos" => $productos]);
+        $respuesta = $this->actualizarCotizacionProductos($id, $productos);
 
         $productosRespuesta = $this->getCotizacionProductos($id);
 
         $respuesta
-            ->assertStatus(200)
+            ->assertOk()
             ->assertExactJson([
                 'productos' => $productosRespuesta,
                 'mensaje' => [
@@ -94,11 +105,10 @@ class CotizacionProductoControllerTest extends ApiTestCase
         }
     }
 
-    public function test_deberia_agregar_un_producto_a_una_cotizacion()
+    public function test_el_cliente_usuario_deberia_agregar_un_producto_a_una_cotizacion()
     {
-        $cotizacion = $this->crearCotizacion();
-        $id = $cotizacion['id'];
-        $productos = $cotizacion['productos'];
+        $id = $this->cotizacion['id'];
+        $productos = $this->cotizacion['productos'];
 
         $nuevoProducto = factory(CotizacionProducto::class)
             ->make(['cotizacion_id' => $id])
@@ -107,15 +117,12 @@ class CotizacionProductoControllerTest extends ApiTestCase
         $nuevoProducto['producto_id'] = $producto->id;
         $productos[] = $nuevoProducto;
 
-        $cabeceras = $this->loguearseComo('cliente');
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('PUT', "api/cotizaciones/$id/productos", ["productos" => $productos]);
+        $respuesta = $this->actualizarCotizacionProductos($id, $productos);
 
         $productosRespuesta = $this->getCotizacionProductos($id);
 
         $respuesta
-            ->assertStatus(200)
+            ->assertOk()
             ->assertExactJson([
                 'productos' => $productosRespuesta,
                 'mensaje' => [
@@ -128,26 +135,22 @@ class CotizacionProductoControllerTest extends ApiTestCase
         $this->assertCount(6, $respuesta->getData(true)['productos']);
     }
 
-    public function test_deberia_agregar_un_producto_duplicado_en_una_cotizacion()
+    public function test_el_cliente_usuario_deberia_agregar_un_producto_duplicado_en_una_cotizacion()
     {
-        $cotizacion = $this->crearCotizacion();
-        $id = $cotizacion['id'];
-        $productos = $cotizacion['productos'];
+        $id = $this->cotizacion['id'];
+        $productos = $this->cotizacion['productos'];
 
         $primerProducto = $productos[0];
         $productoDuplicado = $primerProducto;
         $productoDuplicado['id'] = null;
         $productos[] = $productoDuplicado;
 
-        $cabeceras = $this->loguearseComo('cliente');
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('PUT', "api/cotizaciones/$id/productos", ["productos" => $productos]);
+        $respuesta = $this->actualizarCotizacionProductos($id, $productos);
 
         $productosEsperados = $this->getCotizacionProductos($id);
 
         $respuesta
-            ->assertStatus(200)
+            ->assertOk()
             ->assertExactJson([
                 'productos' => $productosEsperados,
                 'mensaje' => [
@@ -171,33 +174,26 @@ class CotizacionProductoControllerTest extends ApiTestCase
         }
     }
 
-    public function test_deberia_agregar_un_producto_eliminado_en_una_cotizacion()
+    public function test_el_cliente_usuario_deberia_agregar_un_producto_eliminado_en_una_cotizacion()
     {
-        $cotizacion = $this->crearCotizacion();
-        $cotizacionId = $cotizacion['id'];
-        $productos = $cotizacion['productos'];
+        $id = $this->cotizacion['id'];
+        $productos = $this->cotizacion['productos'];
 
         $producto = $productos[0];
 
-        $cabeceras = $this->loguearseComo('cliente');
-
-        $cotizacionProductoId = $producto['id'];
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('DELETE', "api/cotizaciones/productos/$cotizacionProductoId");
+        $respuesta = $this->eliminarCotizacionProducto($producto['id']);
 
         $producto['id'] = null;
         $producto['cantidad'] = 10;
         $producto['precio'] = 100;
         $productos[0] = $producto;
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('PUT', "api/cotizaciones/$cotizacionId/productos", ["productos" => $productos]);
 
-        $productosEsperados = $this->getCotizacionProductos($cotizacionId);
+        $respuesta = $this->actualizarCotizacionProductos($id, $productos);
+
+        $productosEsperados = $this->getCotizacionProductos($id);
 
         $respuesta
-            ->assertStatus(200)
+            ->assertOk()
             ->assertExactJson([
                 'productos' => $productosEsperados,
                 'mensaje' => [
@@ -223,25 +219,20 @@ class CotizacionProductoControllerTest extends ApiTestCase
         }
     }
 
-    public function test_deberia_eliminar_un_producto_de_una_cotizacion()
+    public function test_el_cliente_usuario_deberia_eliminar_un_producto_de_una_cotizacion()
     {
-        $cotizacion = $this->crearCotizacion();
-        $cotizacionProducto = $cotizacion['productos'][0];
-        $id = $cotizacionProducto['id'];
+        $id = $this->cotizacion['productos'][0]['id'];
 
         $cotizacionProductoEsperado = CotizacionProducto::with('producto')->findOrFail($id);
         $nombre = $cotizacionProductoEsperado->producto->nombre;
 
-        $cabeceras = $this->loguearseComo('cliente');
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('DELETE', "api/cotizaciones/productos/$id");
+        $respuesta = $this->eliminarCotizacionProducto($id);
 
         $cotizacionProductoEsperadoArray = $cotizacionProductoEsperado->toArray();
         unset($cotizacionProductoEsperadoArray['deleted_at']);
 
         $respuesta
-            ->assertStatus(200)
+            ->assertOk()
             ->assertJson([
                 'producto' => $cotizacionProductoEsperadoArray,
                 'mensaje' => [

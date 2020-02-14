@@ -110,5 +110,10 @@ class AuthServiceProvider extends ServiceProvider
          */
         Gate::define('ver_cotizaciones', 'App\Policies\CotizacionPolicy@listByClienteId');
         Gate::define('crear_cotizaciones', 'App\Policies\CotizacionPolicy@create');
+
+        /**
+         * Cotización productos
+         */
+        Gate::define('eliminar_cotizacion_productos', 'App\Policies\CotizacionProductoPolicy@delete');
     }
 }
