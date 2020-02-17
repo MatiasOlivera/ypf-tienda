@@ -25,7 +25,6 @@ import usarParametros, {
 } from '@/store/mixins/parametros';
 import { MensajeError } from '@/types/mensaje-tipos';
 import { maquinaProductos, Estado, Evento } from './maquina-productos';
-import { OmniEvent } from 'xstate/lib/types';
 import moduloProductosFavoritos from './favoritos';
 import {
   MODULO_PRODUCTOS_FAVORITOS,
@@ -167,7 +166,7 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
           return;
         }
 
-        commit(MAQUINA_EVENTO, 'OBTENER');
+        commit(MAQUINA_EVENTO, { type: 'OBTENER' } as Evento);
 
         let respuesta: RespuestaGetProductos;
 
@@ -179,7 +178,7 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
           respuesta = await getProductos(state.parametros);
         }
         if (respuesta.ok) {
-          commit(MAQUINA_EVENTO, 'OBTUVO_PRODUCTOS');
+          commit(MAQUINA_EVENTO, { type: 'OBTUVO_PRODUCTOS' } as Evento);
 
           if (getters.estadoEsProductos) {
             const { productos, paginacion } = respuesta.datos;
@@ -192,7 +191,7 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
           switch (respuesta.estado) {
             // Validación
             case 422:
-              commit(MAQUINA_EVENTO, 'OBTUVO_VALIDACION');
+              commit(MAQUINA_EVENTO, { type: 'OBTUVO_VALIDACION' } as Evento);
 
               if (getters.estadoEsValidacion) {
                 commit(SET_VALIDACION, respuesta.datos.errores);
@@ -202,7 +201,7 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
             // Mensaje de error
             case 500:
               if (respuesta.datos && respuesta.datos.mensaje) {
-                commit(MAQUINA_EVENTO, 'OBTUVO_MENSAJE');
+                commit(MAQUINA_EVENTO, { type: 'OBTUVO_MENSAJE' } as Evento);
 
                 if (getters.estadoEsMensaje) {
                   commit(SET_MENSAJE, respuesta.datos.mensaje);
@@ -217,7 +216,7 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
         // eslint-disable-next-line consistent-return
         return respuesta;
       } catch (error) {
-        commit(MAQUINA_EVENTO, 'OBTUVO_MENSAJE');
+        commit(MAQUINA_EVENTO, { type: 'OBTUVO_MENSAJE' } as Evento);
 
         if (getters.estadoEsMensaje) {
           commit(SET_MENSAJE, error as MensajeError);
@@ -239,7 +238,7 @@ const moduloProductos: Module<EstadoProductos, EstadoBase> = {
       estado.parametros.soloFavoritos = soloFavoritos;
     },
 
-    [MAQUINA_EVENTO](estado, evento: OmniEvent<Evento>): void {
+    [MAQUINA_EVENTO](estado, evento: Evento): void {
       const { estadoActual } = estado;
       estado.estadoActual = maquinaProductos.transition(estadoActual, evento);
     },

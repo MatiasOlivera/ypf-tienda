@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 import { Module } from 'vuex';
-import { OmniEvent, StateValue } from 'xstate';
 import Vue from 'vue';
 import { EstadoBase } from '@/store/tipos-store';
 import {
@@ -81,7 +80,7 @@ const moduloProductosFavoritos: Module<EstadoProductosFavoritos, EstadoBase> = {
     ): Promise<RespuestaProductoFavorito | undefined> {
       try {
         const invertirFavorito: MaquinaEvento = {
-          evento: 'INVERTIR_FAVORITO',
+          evento: { type: 'INVERTIR_FAVORITO' },
           favorito
         };
         commit(MAQUINA_EVENTO, invertirFavorito);
@@ -92,7 +91,7 @@ const moduloProductosFavoritos: Module<EstadoProductosFavoritos, EstadoBase> = {
           const { producto: productoServidor } = respuesta.datos;
 
           const invertido: MaquinaEvento = {
-            evento: 'INVERTIDO',
+            evento: { type: 'INVERTIDO' },
             favorito: { ...favorito, valor: productoServidor.es_favorito }
           };
           commit(MAQUINA_EVENTO, invertido);
@@ -102,7 +101,7 @@ const moduloProductosFavoritos: Module<EstadoProductosFavoritos, EstadoBase> = {
           });
         } else {
           const noInvertido: MaquinaEvento = {
-            evento: 'NO_INVERTIDO',
+            evento: { type: 'NO_INVERTIDO' },
             favorito
           };
           commit(MAQUINA_EVENTO, noInvertido);
@@ -122,7 +121,7 @@ const moduloProductosFavoritos: Module<EstadoProductosFavoritos, EstadoBase> = {
     ): Promise<RespuestaProductoFavorito | undefined> {
       try {
         const invertirFavorito: MaquinaEvento = {
-          evento: 'INVERTIR_FAVORITO',
+          evento: { type: 'INVERTIR_FAVORITO' },
           favorito
         };
         commit(MAQUINA_EVENTO, invertirFavorito);
@@ -133,7 +132,7 @@ const moduloProductosFavoritos: Module<EstadoProductosFavoritos, EstadoBase> = {
           const { producto: productoServidor } = respuesta.datos;
 
           const invertido: MaquinaEvento = {
-            evento: 'INVERTIDO',
+            evento: { type: 'INVERTIDO' },
             favorito: { ...favorito, valor: productoServidor.es_favorito }
           };
           commit(MAQUINA_EVENTO, invertido);
@@ -141,7 +140,7 @@ const moduloProductosFavoritos: Module<EstadoProductosFavoritos, EstadoBase> = {
           dispatch(actualizarProducto, productoServidor, { root: true });
         } else {
           const noInvertido: MaquinaEvento = {
-            evento: 'NO_INVERTIDO',
+            evento: { type: 'NO_INVERTIDO' },
             favorito
           };
           commit(MAQUINA_EVENTO, noInvertido);
@@ -184,7 +183,7 @@ const moduloProductosFavoritos: Module<EstadoProductosFavoritos, EstadoBase> = {
 };
 
 interface MaquinaEvento {
-  evento: OmniEvent<EventoFavorito>;
+  evento: EventoFavorito;
   favorito: ProductoFavorito;
 }
 
