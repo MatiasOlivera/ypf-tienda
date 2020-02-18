@@ -54,7 +54,7 @@ class Cliente extends Model
 
     public function users()
     {
-        return $this->hasMany('App\User', 'id_cliente', 'id_cliente');
+        return $this->hasMany('App\ClienteUsuario', 'id_cliente', 'id_cliente');
     }
 
     public function domicilios()
@@ -81,6 +81,6 @@ class Cliente extends Model
 
     public function cotizaciones()
     {
-        return $this->hasMany(Cotizacion::class, 'id_cot');
+        return $this->hasMany(Cotizacion::class, 'id_cliente', 'id_cliente');
     }
 }

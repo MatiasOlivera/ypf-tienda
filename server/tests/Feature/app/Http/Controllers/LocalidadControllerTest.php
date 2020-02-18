@@ -4,19 +4,34 @@ namespace Tests\Feature\app\Http\Controllers;
 
 use App\Localidad;
 use App\Provincia;
-use Tests\TestCase;
+use Tests\ApiTestCase;
+use AutorizacionSeeder;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
 
-class LocalidadControllerTest extends TestCase
+class LocalidadControllerTest extends ApiTestCase
 {
     use AuthHelper;
     use RefreshDatabase;
     use EloquenceSolucion;
     use EstructuraJsonHelper;
+
+    protected $usuario;
+    protected $cabeceras;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->seed(AutorizacionSeeder::class);
+
+        $login = $this->loguearseComoSuperAdministrador();
+        $this->usuario = $login['usuario'];
+        $this->cabeceras = $login['cabeceras'];
+    }
 
     private $estructuraLocalidad = [
         'localidad' => [
@@ -91,13 +106,11 @@ class LocalidadControllerTest extends TestCase
      */
     public function testNoDeberiaObtenerNingunaLocalidad()
     {
-        $cabeceras = $this->loguearseComo('defecto');
-
-        $provincia = $this->crearProvincia($cabeceras);
+        $provincia = $this->crearProvincia($this->cabeceras);
         $id = $provincia['id'];
 
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('GET', "api/provincias/$id/localidades");
 
         $estructura = $this->getEstructuraLocalidades();
@@ -118,9 +131,8 @@ class LocalidadControllerTest extends TestCase
         $provincia = Provincia::inRandomOrder()->first();
         $id = $provincia->id;
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('GET', "api/provincias/$id/localidades");
 
         $estructura = $this->getEstructuraLocalidades();
@@ -137,9 +149,7 @@ class LocalidadControllerTest extends TestCase
      */
     public function testDeberiaCrearUnaLocalidad()
     {
-        $cabeceras = $this->loguearseComo('defecto');
-
-        $provincia = $this->crearProvincia($cabeceras);
+        $provincia = $this->crearProvincia($this->cabeceras);
 
         $localidad = [
             'nombre' => 'Mercedes',
@@ -147,7 +157,7 @@ class LocalidadControllerTest extends TestCase
         ];
 
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('POST', "api/localidades", $localidad);
 
         $estructura = $this->getEstructuraLocalidad();
@@ -170,13 +180,11 @@ class LocalidadControllerTest extends TestCase
      */
     public function testDeberiaObtenerUnaLocalidad()
     {
-        $cabeceras = $this->loguearseComo('defecto');
-
-        $localidadGuardada = $this->crearLocalidad($cabeceras);
+        $localidadGuardada = $this->crearLocalidad($this->cabeceras);
         $id = $localidadGuardada['id'];
 
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('GET', "api/localidades/$id");
 
         $respuesta
@@ -192,14 +200,12 @@ class LocalidadControllerTest extends TestCase
      */
     public function testDeberiaEditarUnaLocalidad()
     {
-        $cabeceras = $this->loguearseComo('defecto');
-
-        $localidadGuardada = $this->crearLocalidad($cabeceras);
+        $localidadGuardada = $this->crearLocalidad($this->cabeceras);
         $id = $localidadGuardada['id'];
 
         $localidadModificada = ['nombre' => 'Curuzú Cuatía'];
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('PUT', "api/localidades/$id", $localidadModificada);
 
         $localidadEsperada = array_merge($localidadGuardada, $localidadModificada);
@@ -225,13 +231,11 @@ class LocalidadControllerTest extends TestCase
      */
     public function testDeberiaEliminarUnaLocalidad()
     {
-        $cabeceras = $this->loguearseComo('defecto');
-
-        $localidadGuardada = $this->crearLocalidad($cabeceras);
+        $localidadGuardada = $this->crearLocalidad($this->cabeceras);
         $id = $localidadGuardada['id'];
 
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('DELETE', "api/localidades/$id");
 
         $localidadDB = $this->getLocalidad($id);
@@ -258,15 +262,13 @@ class LocalidadControllerTest extends TestCase
      */
     public function testDeberiaRestaurarUnaLocalidad()
     {
-        $cabeceras = $this->loguearseComo('defecto');
-
-        $localidadGuardada = $this->crearLocalidad($cabeceras);
+        $localidadGuardada = $this->crearLocalidad($this->cabeceras);
         $id = $localidadGuardada['id'];
 
-        $this->withHeaders($cabeceras)
+        $this->withHeaders($this->cabeceras)
             ->json('DELETE', "api/localidades/$id");
 
-        $respuesta = $this->withHeaders($cabeceras)
+        $respuesta = $this->withHeaders($this->cabeceras)
             ->json('POST', "api/localidades/$id/restaurar");
 
         $localidadDB = $this->getLocalidad($id);

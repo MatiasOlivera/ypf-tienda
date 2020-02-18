@@ -3,29 +3,35 @@
 namespace Tests\Feature\app\Http\Controllers;
 
 use App\Producto;
-use Tests\TestCase;
+use Tests\ApiTestCase;
 use CategoriaProductoSeeder;
+use App\Http\Resources\ProductoResource;
 use Tests\Feature\Utilidades\AuthHelper;
 use Tests\Feature\Utilidades\EstructuraProducto;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
+use Tests\Feature\Utilidades\Api\ProductoFavoritoApi;
 
-class ProductosFavoritosControllerTest extends TestCase
+class ProductosFavoritosControllerTest extends ApiTestCase
 {
     use AuthHelper;
     use RefreshDatabase;
     use EstructuraProducto;
+    use ProductoFavoritoApi;
     use EstructuraJsonHelper;
+
+    protected $usuario;
+    protected $cabeceras;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(CategoriaProductoSeeder::class);
-    }
 
-    private function crearProducto()
-    {
-        return factory(Producto::class, 1)->create()->toArray()[0];
+        $this->seed(CategoriaProductoSeeder::class);
+
+        $login = $this->loguearseComoCliente();
+        $this->usuario = $login['usuario'];
+        $this->cabeceras = $login['cabeceras'];
     }
 
     /**
@@ -33,26 +39,22 @@ class ProductosFavoritosControllerTest extends TestCase
      */
     public function testDeberiaGuardarProductoComoFavorito()
     {
-        $producto = $this->crearProducto();
-        $id = $producto['id'];
+        $producto = factory(Producto::class)->create();
 
-        $cabeceras = $this->loguearseComo('defecto');
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('POST', "api/productos/$id/favorito", $producto);
+        $respuesta = $this->agregarFavorito($producto->id);
 
-        $estructura = $this->getEstructuraProducto();
-        $producto['es_favorito'] = true;
+        $estructura = $this->getEstructuraProductoComoCliente();
+        $recursoProducto = ProductoResource::make($producto)->resolve();
 
         $respuesta
-            ->assertStatus(200)
+            ->assertOk()
             ->assertJsonStructure($estructura)
             ->assertJson([
-                'producto' => $producto,
+                'producto' => $recursoProducto,
                 'mensaje' => [
                     'tipo' => 'exito',
                     'codigo' => 'ASOCIADOS',
-                    'descripcion' => "Se guardo el producto {$producto['nombre']} como favorito"
+                    'descripcion' => "Se guardo el producto {$producto->nombre} como favorito"
                 ]
             ]);
 
@@ -65,31 +67,24 @@ class ProductosFavoritosControllerTest extends TestCase
      */
     public function testDeberiaQuitarProductoDeFavoritos()
     {
-        $producto = $this->crearProducto();
-        $id = $producto['id'];
+        $producto = factory(Producto::class)->create();
 
-        $cabeceras = $this->loguearseComo('defecto');
+        $this->agregarFavorito($producto->id);
 
-        $this
-            ->withHeaders($cabeceras)
-            ->json('POST', "api/productos/$id/favorito", $producto);
+        $respuesta = $this->eliminarFavorito($producto->id);
 
-        $respuesta = $this
-            ->withHeaders($cabeceras)
-            ->json('DELETE', "api/productos/$id/favorito");
-
-        $estructura = $this->getEstructuraProducto();
-        $producto['es_favorito'] = false;
+        $estructura = $this->getEstructuraProductoComoCliente();
+        $recursoProducto = ProductoResource::make($producto)->resolve();
 
         $respuesta
-            ->assertStatus(200)
+            ->assertOk()
             ->assertJsonStructure($estructura)
             ->assertJson([
-                'producto' => $producto,
+                'producto' => $recursoProducto,
                 'mensaje' => [
                     'tipo' => 'exito',
                     'codigo' => 'DESASOCIADOS',
-                    'descripcion' => "Se quito el producto {$producto['nombre']} de la lista de favoritos"
+                    'descripcion' => "Se quito el producto {$producto->nombre} de la lista de favoritos"
                 ]
             ]);
 

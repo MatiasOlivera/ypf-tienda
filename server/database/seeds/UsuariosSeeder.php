@@ -1,6 +1,6 @@
 <?php
 
-use App\User;
+use App\ClienteUsuario;
 use App\Cliente;
 use Illuminate\Database\Seeder;
 
@@ -120,7 +120,7 @@ class UsuariosSeeder extends Seeder
             $nuevoCliente = new Cliente();
             $nuevoCliente->nombre = $usuario['name'];
 
-            $nuevoUsuario = new User();
+            $nuevoUsuario = new ClienteUsuario();
             $nuevoUsuario->fill($usuario);
             $nuevoUsuario->cliente()->associate($nuevoCliente);
             $nuevoUsuario->save();

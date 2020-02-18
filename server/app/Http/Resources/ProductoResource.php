@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Producto;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Resources\MissingValue;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -18,19 +19,30 @@ class ProductoResource extends JsonResource
      */
     public function toArray($request)
     {
+        $estaAutenticado = Auth::check();
+        $usuario = Auth::user();
+
         return [
             'id' => $this->id,
             'codigo' => $this->codigo,
             'nombre' => $this->nombre,
             'presentacion' => $this->presentacion,
-            // FIXME: debería mostrar los campos precio_por_mayor y consumidor_final
-            // solo cuando el usuario logueado es el vendedor
-            'precio_por_mayor' => $this->precio_por_mayor,
-            'consumidor_final' => $this->consumidor_final,
+
+            $this->mergeWhen(
+                $estaAutenticado && $usuario->can('administrar_precios', Producto::class),
+                [
+                    'precio_por_mayor' => $this->precio_por_mayor,
+                    'consumidor_final' => $this->consumidor_final,
+                ]
+            ),
+
             'imagen' => $this->imagen,
-            // FIXME: debería mostrar el campo es_favorito solo cuando el
-            // usuario logueado es un cliente
-            'es_favorito' => $this->when(Auth::check(), $this->getEsFavorito()),
+
+            'es_favorito' => $this->when(
+                $estaAutenticado && $usuario->can('administrar_favoritos', Producto::class),
+                $this->getEsFavorito()
+            ),
+
             'id_categoria' => $this->id_categoria,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

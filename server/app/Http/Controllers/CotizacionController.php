@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Cliente;
 use App\Producto;
 use App\Cotizacion;
 use App\Observacion;
@@ -41,53 +42,31 @@ class CotizacionController extends Controller
      */
     public function index(CotizacionesRequest $request)
     {
-        try {
-            $consulta = Cotizacion::with([
-                'cliente:id,nombre',
-                'razonSocial:id,denominacion',
-                'cotizacionEstado:id,descripcion',
-                'empleado:id,nombre'
-            ]);
+        $consulta = Cotizacion::with([
+            'cliente:id,nombre',
+            'razonSocial:id,denominacion',
+            'cotizacionEstado:id,descripcion',
+            'empleado:id,nombre'
+        ]);
 
-            $parametros = [
-                'modelo' => $consulta,
-                'campos' => [
-                    'id',
-                    'empleado_id',
-                    'cliente_id',
-                    'razon_id',
-                    'fecha_pedido',
-                    'estado_id',
-                    'consumidor_final',
-                    'plazo',
-                    'telefono_id',
-                    'domicilio_id',
-                    'pedido_id',
-                    'observacion_id',
-                    'created_at',
-                    'updated_at',
-                    'deleted_at'
-                ],
-                'relaciones' => null,
-                'buscar' => $request->input("buscar", null),
-                'eliminados' => $request->input("eliminados", false),
-                'paginado'  => [
-                    'porPagina' => $request->input("porPagina", 10),
-                    'ordenarPor' => $request->input("ordenarPor", 'created_at'),
-                    'orden' => $request->input("orden", 'DESC'),
-                ]
-            ];
+        return $this->obtenerCotizaciones($request, $consulta);
+    }
 
-            $consulta = new Consulta();
-            $productos = $consulta->ejecutarConsulta($parametros);
+    /**
+     * Display a listing of the resource.
+     *
+     * @param  App\Cliente $cliente
+     * @return \Illuminate\Http\Response
+     */
+    public function indexByClienteId(CotizacionesRequest $request, Cliente $cliente)
+    {
+        $consulta = $cliente->cotizaciones()->with([
+            'razonSocial:id,denominacion',
+            'cotizacionEstado:id,descripcion',
+            'empleado:id,nombre'
+        ]);
 
-            return new CotizacionCollection($productos);
-        } catch (\Throwable $th) {
-            $mensajeError = new MensajeError();
-            $mensajeError->obtenerTodos('las cotizaciones');
-
-            return Respuesta::error($mensajeError, 500);
-        }
+        return $this->obtenerCotizaciones($request, $consulta);
     }
 
     /**
@@ -296,5 +275,56 @@ class CotizacionController extends Controller
         }
 
         return false;
+    }
+
+    /**
+     * Obtener cotizaciones
+     *
+     * @param  App\Http\Requests\Cotizacion\CotizacionesRequest $request
+     * @param  mixed  $consulta
+     * @return \Illuminate\Http\Response
+     */
+    private function obtenerCotizaciones(CotizacionesRequest $request, $consulta)
+    {
+        try {
+            $parametros = [
+                'modelo' => $consulta,
+                'campos' => [
+                    'id',
+                    'empleado_id',
+                    'cliente_id',
+                    'razon_id',
+                    'fecha_pedido',
+                    'estado_id',
+                    'consumidor_final',
+                    'plazo',
+                    'telefono_id',
+                    'domicilio_id',
+                    'pedido_id',
+                    'observacion_id',
+                    'created_at',
+                    'updated_at',
+                    'deleted_at'
+                ],
+                'relaciones' => null,
+                'buscar' => $request->input("buscar", null),
+                'eliminados' => $request->input("eliminados", false),
+                'paginado'  => [
+                    'porPagina' => $request->input("porPagina", 10),
+                    'ordenarPor' => $request->input("ordenarPor", 'created_at'),
+                    'orden' => $request->input("orden", 'DESC'),
+                ]
+            ];
+
+            $consulta = new Consulta();
+            $cotizaciones = $consulta->ejecutarConsulta($parametros);
+
+            return new CotizacionCollection($cotizaciones);
+        } catch (\Throwable $th) {
+            $mensajeError = new MensajeError();
+            $mensajeError->obtenerTodos('las cotizaciones');
+
+            return Respuesta::error($mensajeError, 500);
+        }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\User;
+use App\ClienteUsuario;
 use Tests\TestCase;
 use UsuariosSeeder;
 use App\Auxiliares\Consulta;
@@ -19,7 +19,7 @@ class ConsultaTest extends TestCase
         parent::setUp();
 
         $this->parametrosPorDefecto = [
-            'modelo' => 'User',
+            'modelo' => 'ClienteUsuario',
             'campos' => null,
             'relaciones' => null,
             'eliminados' => null,
@@ -57,7 +57,7 @@ class ConsultaTest extends TestCase
 
         $respuesta = $this->consultar($this->parametrosPorDefecto);
 
-        $respuestaEsperada = User::paginate(10, ['*'], 'pagina')
+        $respuestaEsperada = ClienteUsuario::paginate(10, ['*'], 'pagina')
             ->toArray();
 
         $this->assertEquals($respuestaEsperada, $respuesta->toArray());
@@ -79,7 +79,7 @@ class ConsultaTest extends TestCase
         );
         $respuesta = $this->consultar($parametros);
 
-        $respuestaEsperada = User::select(['id', 'name', 'email'])
+        $respuestaEsperada = ClienteUsuario::select(['id', 'name', 'email'])
             ->paginate(10, ['*'], 'pagina')
             ->toArray();
 
@@ -102,7 +102,7 @@ class ConsultaTest extends TestCase
         );
         $respuesta = $this->consultar($parametros);
 
-        $respuestaEsperada = User::with('cliente')
+        $respuestaEsperada = ClienteUsuario::with('cliente')
             ->paginate(10, ['*'], 'pagina')
             ->toArray();
 
@@ -119,13 +119,13 @@ class ConsultaTest extends TestCase
         $seeder = new UsuariosSeeder();
         $seeder->run();
 
-        $usuarios = User::paginate(10);
+        $usuarios = ClienteUsuario::paginate(10);
 
         foreach ($usuarios as $usuario) {
             $usuario->delete();
         }
 
-        $respuestaEsperada = User::onlyTrashed()
+        $respuestaEsperada = ClienteUsuario::onlyTrashed()
             ->paginate(10, ['*'], 'pagina')
             ->toArray();
 
@@ -151,7 +151,7 @@ class ConsultaTest extends TestCase
         );
         $respuesta = $this->consultar($parametros);
 
-        $respuestaEsperada = User::select(['id', 'name'])
+        $respuestaEsperada = ClienteUsuario::select(['id', 'name'])
                     ->where('name', 'like', '%Valen%')
                     ->paginate(10, ['*'], 'pagina')
                     ->toArray();
@@ -175,7 +175,7 @@ class ConsultaTest extends TestCase
         );
         $respuesta = $this->consultar($parametros);
 
-        $respuestaEsperada = User::paginate(5, ['*'], 'pagina')->toArray();
+        $respuestaEsperada = ClienteUsuario::paginate(5, ['*'], 'pagina')->toArray();
 
         $this->assertEquals($respuestaEsperada, $respuesta->toArray());
     }
@@ -196,7 +196,7 @@ class ConsultaTest extends TestCase
         );
         $respuesta = $this->consultar($parametros);
 
-        $respuestaEsperada = User::orderBy('name', 'DESC')
+        $respuestaEsperada = ClienteUsuario::orderBy('name', 'DESC')
             ->paginate(10, ['*'], 'pagina')
             ->toArray();
 

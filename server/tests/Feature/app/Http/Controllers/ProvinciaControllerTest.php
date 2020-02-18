@@ -3,19 +3,34 @@
 namespace Tests\Feature\app\Http\Controllers;
 
 use App\Provincia;
-use Tests\TestCase;
+use Tests\ApiTestCase;
+use AutorizacionSeeder;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
 
-class ProvinciaControllerTest extends TestCase
+class ProvinciaControllerTest extends ApiTestCase
 {
     use AuthHelper;
     use RefreshDatabase;
     use EloquenceSolucion;
     use EstructuraJsonHelper;
+
+    protected $usuario;
+    protected $cabeceras;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->seed(AutorizacionSeeder::class);
+
+        $login = $this->loguearseComoSuperAdministrador();
+        $this->usuario = $login['usuario'];
+        $this->cabeceras = $login['cabeceras'];
+    }
 
     private $estructuraProvincia = [
         'provincia' => [
@@ -50,9 +65,8 @@ class ProvinciaControllerTest extends TestCase
      */
     public function testNoDeberiaObtenerNingunaProvincia()
     {
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('GET', 'api/provincias');
 
          $respuesta
@@ -68,9 +82,8 @@ class ProvinciaControllerTest extends TestCase
     {
         factory(Provincia::class, 10)->create();
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('GET', 'api/provincias');
 
         $provincias = Provincia::all()->toArray();
@@ -88,9 +101,8 @@ class ProvinciaControllerTest extends TestCase
     {
         $provincia = ['nombre' => 'Corrientes'];
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('POST', 'api/provincias', $provincia);
 
         $estructura = $this->getEstructuraProvincia();
@@ -113,13 +125,11 @@ class ProvinciaControllerTest extends TestCase
      */
     public function testDeberiaObtenerUnaProvincia()
     {
-        $cabeceras = $this->loguearseComo('defecto');
-
-        $provinciaGuardada = $this->crearProvincia($cabeceras);
+        $provinciaGuardada = $this->crearProvincia($this->cabeceras);
         $id = $provinciaGuardada['id'];
 
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('GET', "api/provincias/$id");
 
         $respuesta
@@ -135,14 +145,12 @@ class ProvinciaControllerTest extends TestCase
      */
     public function testDeberiaEditarUnaProvincia()
     {
-        $cabeceras = $this->loguearseComo('defecto');
-
-        $provinciaGuardada = $this->crearProvincia($cabeceras);
+        $provinciaGuardada = $this->crearProvincia($this->cabeceras);
         $id = $provinciaGuardada['id'];
 
         $provinciaModificada = ['nombre' => 'Buenos Aires'];
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('PUT', "api/provincias/$id", $provinciaModificada);
 
         $provinciaEsperada = array_merge($provinciaGuardada, $provinciaModificada);
@@ -167,13 +175,11 @@ class ProvinciaControllerTest extends TestCase
      */
     public function testDeberiaEliminarUnaProvincia()
     {
-        $cabeceras = $this->loguearseComo('defecto');
-
-        $provinciaGuardada = $this->crearProvincia($cabeceras);
+        $provinciaGuardada = $this->crearProvincia($this->cabeceras);
         $id = $provinciaGuardada['id'];
 
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('DELETE', "api/provincias/$id");
 
         $provinciaDB = Provincia::withTrashed()
@@ -203,15 +209,13 @@ class ProvinciaControllerTest extends TestCase
      */
     public function testDeberiaRestaurarUnaProvincia()
     {
-        $cabeceras = $this->loguearseComo('defecto');
-
-        $provinciaGuardada = $this->crearProvincia($cabeceras);
+        $provinciaGuardada = $this->crearProvincia($this->cabeceras);
         $id = $provinciaGuardada['id'];
 
-        $this->withHeaders($cabeceras)
+        $this->withHeaders($this->cabeceras)
             ->json('DELETE', "api/provincias/$id");
 
-        $respuesta = $this->withHeaders($cabeceras)
+        $respuesta = $this->withHeaders($this->cabeceras)
             ->json('POST', "api/provincias/$id/restaurar");
 
         $provinciaDB = Provincia::withTrashed()

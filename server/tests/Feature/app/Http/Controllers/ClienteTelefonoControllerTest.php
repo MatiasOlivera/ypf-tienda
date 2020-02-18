@@ -3,7 +3,8 @@
 namespace Tests\Feature\app\Http\Controllers;
 
 use App\Cliente;
-use Tests\TestCase;
+use Tests\ApiTestCase;
+use AutorizacionSeeder;
 use App\ClienteTelefono;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -11,7 +12,7 @@ use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
 
-class ClienteTelefonoControllerTest extends TestCase
+class ClienteTelefonoControllerTest extends ApiTestCase
 {
     use AuthHelper;
     use WithFaker;
@@ -31,6 +32,20 @@ class ClienteTelefonoControllerTest extends TestCase
             'deleted_at'
         ]
     ];
+
+    protected $usuario;
+    protected $cabeceras;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->seed(AutorizacionSeeder::class);
+
+        $login = $this->loguearseComoSuperAdministrador();
+        $this->usuario = $login['usuario'];
+        $this->cabeceras = $login['cabeceras'];
+    }
 
     private function getEstructuraTelefonos()
     {
@@ -62,9 +77,8 @@ class ClienteTelefonoControllerTest extends TestCase
         $cliente = factory(Cliente::class, 1)->create()->toArray()[0];
         $id = $cliente['id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('GET', "api/clientes/$id/telefonos");
 
         $estructura = $this->getEstructuraTelefonos();
@@ -85,9 +99,8 @@ class ClienteTelefonoControllerTest extends TestCase
         $cliente = Cliente::inRandomOrder()->first();
         $id = $cliente->id;
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('GET', "api/clientes/$id/telefonos");
 
         $estructura = $this->getEstructuraTelefonos();
@@ -109,9 +122,8 @@ class ClienteTelefonoControllerTest extends TestCase
         ])->toArray()[0];
         $id = $telefono['cliente_id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('POST', "api/clientes/$id/telefonos", $telefono);
 
         $estructura = $this->getEstructuraTelefono();
@@ -143,9 +155,8 @@ class ClienteTelefonoControllerTest extends TestCase
 
         unset($telefono['nombreContacto']);
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('POST', "api/clientes/$id/telefonos", $telefono);
 
         $estructura = $this->getEstructuraTelefono();
@@ -176,9 +187,8 @@ class ClienteTelefonoControllerTest extends TestCase
         $clienteId = $telefono['cliente_id'];
         $id = $telefono['id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('GET', "api/clientes/$clienteId/telefonos/$id");
 
         $respuesta
@@ -203,9 +213,8 @@ class ClienteTelefonoControllerTest extends TestCase
         ])->toArray()[0];
         unset($telefonoModificado['cliente_id']);
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('PUT', "api/clientes/$clienteId/telefonos/$id", $telefonoModificado);
 
         $estructura = $this->getEstructuraTelefono();
@@ -232,9 +241,8 @@ class ClienteTelefonoControllerTest extends TestCase
         $clienteId = $telefono['cliente_id'];
         $id = $telefono['id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('DELETE', "api/clientes/$clienteId/telefonos/$id");
 
         unset($telefono['updated_at']);
@@ -265,13 +273,12 @@ class ClienteTelefonoControllerTest extends TestCase
         $clienteId = $telefono['cliente_id'];
         $id = $telefono['id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('DELETE', "api/clientes/$clienteId/telefonos/$id");
 
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('POST', "api/clientes/$clienteId/telefonos/$id/restaurar");
 
         unset($telefono['updated_at']);

@@ -3,7 +3,8 @@
 namespace Tests\Feature\app\Http\Controllers;
 
 use App\Cliente;
-use Tests\TestCase;
+use Tests\ApiTestCase;
+use AutorizacionSeeder;
 use App\ClienteRazonSocial;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -12,13 +13,24 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
 use Tests\Feature\Utilidades\AtributosClienteRazonSocial;
 
-class ClienteRazonSocialControllerTest extends TestCase
+class ClienteRazonSocialControllerTest extends ApiTestCase
 {
     use AuthHelper;
     use RefreshDatabase;
     use EloquenceSolucion;
     use EstructuraJsonHelper;
     use AtributosClienteRazonSocial;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->seed(AutorizacionSeeder::class);
+
+        $login = $this->loguearseComoSuperAdministrador();
+        $this->usuario = $login['usuario'];
+        $this->cabeceras = $login['cabeceras'];
+    }
 
     private function getEstructuraRazones()
     {
@@ -46,9 +58,8 @@ class ClienteRazonSocialControllerTest extends TestCase
         $cliente = factory(Cliente::class)->create();
         $id = $cliente->id;
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('GET', "api/clientes/$id/razones");
 
         $estructura = $this->getEstructuraRazones();
@@ -67,9 +78,8 @@ class ClienteRazonSocialControllerTest extends TestCase
         $cliente = factory(Cliente::class)->states('razonesSociales')->create();
         $id = $cliente->id;
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('GET', "api/clientes/$id/razones");
 
         $estructura = $this->getEstructuraRazones();
@@ -91,9 +101,8 @@ class ClienteRazonSocialControllerTest extends TestCase
 
         $razonSocial = factory(ClienteRazonSocial::class)->make()->toArray();
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('POST', "api/clientes/$id/razones", $razonSocial);
 
         $estructura = $this->getEstructuraRazonSocialConMensaje();
@@ -122,9 +131,8 @@ class ClienteRazonSocialControllerTest extends TestCase
         $clienteId = $cliente->id;
         $id = $razonSocial->id;
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('GET', "api/clientes/$clienteId/razones/$id");
 
         $estructura = $this->getEstructuraRazonSocial();
@@ -147,9 +155,8 @@ class ClienteRazonSocialControllerTest extends TestCase
 
         $razonSocialModificada = array_merge($razonSocial->toArray(), ['denominacion' => 'AppLab']);
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('PUT', "api/clientes/$clienteId/razones/$id", $razonSocialModificada);
 
         $estructura = $this->getEstructuraRazonSocialConMensaje();
@@ -178,9 +185,8 @@ class ClienteRazonSocialControllerTest extends TestCase
         $clienteId = $cliente->id;
         $id = $razonSocial->id;
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('DELETE', "api/clientes/$clienteId/razones/$id");
 
         $estructura = $this->getEstructuraRazonSocialConMensaje();
@@ -213,13 +219,12 @@ class ClienteRazonSocialControllerTest extends TestCase
         $clienteId = $cliente->id;
         $id = $razonSocial->id;
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('DELETE', "api/clientes/$clienteId/razones/$id");
 
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('POST', "api/clientes/$clienteId/razones/$id/restaurar");
 
         $estructura = $this->getEstructuraRazonSocialConMensaje();
@@ -250,9 +255,8 @@ class ClienteRazonSocialControllerTest extends TestCase
         $clienteId = $cliente->id;
         $id = $razonSocial->id;
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('POST', "api/clientes/$clienteId/razones/$id/asociar");
 
         $estructura = $this->getEstructuraRazonSocialConMensaje();
@@ -280,9 +284,8 @@ class ClienteRazonSocialControllerTest extends TestCase
         $clienteId = $cliente->id;
         $id = $razonSocial->id;
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('DELETE', "api/clientes/$clienteId/razones/$id/desasociar");
 
         $estructura = $this->getEstructuraRazonSocialConMensaje();

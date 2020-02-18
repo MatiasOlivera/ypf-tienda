@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\User;
+use App\ClienteUsuario;
 use Exception;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Hash;
@@ -16,7 +16,7 @@ class BaseControllerTest extends TestCase
     private function crearUnaNuevaInstancia()
     {
         $parametros = [
-            'modelo' => 'User',
+            'modelo' => 'ClienteUsuario',
             'inputs' => [
                 'name' => 'John',
                 'email' => 'John@email.com',
@@ -40,7 +40,7 @@ class BaseControllerTest extends TestCase
         $this->assertEquals(201, $respuestaCreado->status());
 
         $parametros = [
-            'modelo' => 'User',
+            'modelo' => 'ClienteUsuario',
             'buscar' => null,
             'campos' => null,
             'relaciones' => null,
@@ -59,7 +59,7 @@ class BaseControllerTest extends TestCase
 
         $status = $respuestaIndex->status();
         $datos = $respuestaIndex->getData(true);
-        $esperado = User::all()->toArray();
+        $esperado = ClienteUsuario::all()->toArray();
 
         $this->assertEquals(200, $status);
 
@@ -234,7 +234,7 @@ class BaseControllerTest extends TestCase
         $id = $respuestaCreado->getData(true)['usuario']['id'];
 
         $parametros = [
-            'instancia' => User::find($id),
+            'instancia' => ClienteUsuario::find($id),
             'inputs' => [
                 'name' => 'John Doe',
                 'email' => 'JohnDoe@email.com'
@@ -301,7 +301,7 @@ class BaseControllerTest extends TestCase
         $this->assertEquals(201, $respuestaCreado->status());
         $id = $respuestaCreado->getData(true)['usuario']['id'];
 
-        $instancia = User::find($id);
+        $instancia = ClienteUsuario::find($id);
         $nombre = 'El usuario John';
 
         $controller = new BaseController('usuario', 'usuarios', 'masculino');
@@ -363,7 +363,7 @@ class BaseControllerTest extends TestCase
         $this->assertEquals(201, $respuestaCreado->status());
         $id = $respuestaCreado->getData(true)['usuario']['id'];
 
-        $instancia = User::find($id);
+        $instancia = ClienteUsuario::find($id);
         $nombre = 'El usuario John';
 
         $controller = new BaseController('usuario', 'usuarios', 'masculino');
@@ -417,7 +417,7 @@ class BaseControllerTest extends TestCase
     public function testDeberiaUtilizarElMismoNombreEnAmbosMensajes()
     {
         $parametros = [
-            'modelo' => 'User',
+            'modelo' => 'ClienteUsuario',
             'inputs' => [
                 'name' => 'John',
                 'email' => 'John@email.com',
@@ -443,7 +443,7 @@ class BaseControllerTest extends TestCase
     public function testDeberiaUtilizarNombresDistintosEnCadaMensaje()
     {
         $parametros = [
-            'modelo' => 'User',
+            'modelo' => 'ClienteUsuario',
             'inputs' => [
                 'name' => 'John',
                 'email' => 'John@email.com',

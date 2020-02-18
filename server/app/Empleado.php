@@ -3,14 +3,26 @@
 namespace App;
 
 use App\Cotizacion;
-use App\EmpleadoCargo;
 use Sofa\Eloquence\Mappable;
 use Sofa\Eloquence\Eloquence;
-use Illuminate\Database\Eloquent\Model;
+use App\Auxiliares\TipoUsuario;
+use Illuminate\Foundation\Auth\User;
+use Spatie\Permission\Traits\HasRoles;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Notifications\Notifiable;
 
-class Empleado extends Model
+class Empleado extends User implements JWTSubject
 {
-    use Eloquence, Mappable;
+    use Notifiable, Eloquence, Mappable;
+    use TipoUsuario;
+
+    protected $guard = 'empleado';
+
+    /**
+     * spatie/laravel-permission
+     */
+    use HasRoles;
+    protected $guard_name = 'empleado';
 
     protected $table = 'usuarios';
     protected $primaryKey = 'ID_ven';
@@ -19,16 +31,14 @@ class Empleado extends Model
         'id' => 'ID_ven',
         'documento' => 'dni_ven',
         'fecha_nacimiento' => 'fe_na',
-        'password' => 'pass',
-        'cargo_id' => 'id_cargo'
+        'password' => 'pass'
     ];
 
     protected $appends = [
         'id',
         'documento',
         'fecha_nacimiento',
-        'password',
-        'cargo_id'
+        'password'
     ];
 
     protected $hidden = [
@@ -36,8 +46,7 @@ class Empleado extends Model
         'dni_ven',
         'fe_na',
         'pass',
-        'estado',
-        'id_cargo'
+        'estado'
     ];
 
     protected $dates = ['fecha_nacimiento'];
@@ -48,19 +57,33 @@ class Empleado extends Model
         'apellido',
         'fecha_nacimiento',
         'sexo',
-        'password',
-        'cargo_id'
+        'password'
     ];
 
     public $timestamps = false;
 
-    public function cargo()
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
     {
-        return $this->belongsTo(EmpleadoCargo::class, 'id_cargo');
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 
     public function cotizaciones()
     {
-        return $this->hasMany(Cotizacion::class, 'id_cot');
+        return $this->hasMany(Cotizacion::class, 'id_us', 'ID_ven');
     }
 }

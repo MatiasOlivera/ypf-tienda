@@ -3,11 +3,11 @@
 namespace Tests\Feature;
 
 use Exception;
-use Tests\TestCase;
+use Tests\ApiTestCase;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class AuthTest extends TestCase
+class AuthTest extends ApiTestCase
 {
     use AuthHelper;
     use RefreshDatabase;
@@ -19,7 +19,7 @@ class AuthTest extends TestCase
     {
         $this->seed('UsuariosDesarrolloSeeder');
 
-        $respuesta = $this->json('POST', 'api/auth/login', [
+        $respuesta = $this->json('POST', 'api/auth/cliente/login', [
             'email' => 'applab@dev.com',
             'password' => '12345678'
         ]);
@@ -37,7 +37,7 @@ class AuthTest extends TestCase
      */
     public function testLoginCredencialesInvalidas()
     {
-        $respuesta = $this->json('POST', 'api/auth/login', [
+        $respuesta = $this->json('POST', 'api/auth/cliente/login', [
             'email' => 'no-existe@mail.com',
             'password' => '12345678'
         ]);
@@ -57,7 +57,7 @@ class AuthTest extends TestCase
      */
     public function testRenovarToken()
     {
-        $headers = $this->loguearseComo('defecto');
+        $headers = $this->loguearseComo('cliente');
         $respuesta = $this->withHeaders($headers)->json('POST', 'api/auth/renovar');
 
         $respuesta
@@ -73,7 +73,7 @@ class AuthTest extends TestCase
      */
     public function testUsuarioLogueado()
     {
-        $headers = $this->loguearseComo('defecto');
+        $headers = $this->loguearseComo('cliente');
         $respuesta = $this->withHeaders($headers)->json('GET', 'api/auth/usuario');
 
         $respuesta
@@ -91,7 +91,7 @@ class AuthTest extends TestCase
      */
     public function testLogout()
     {
-        $headers = $this->loguearseComo('defecto');
+        $headers = $this->loguearseComo('cliente');
         $respuesta = $this->withHeaders($headers)->json('POST', 'api/auth/logout');
 
         $respuesta
@@ -112,6 +112,6 @@ class AuthTest extends TestCase
     public function testNoLogout()
     {
         $respuesta = $this->json('POST', 'api/auth/logout');
-        $respuesta->assertStatus(401);
+        $respuesta->assertStatus(500);
     }
 }

@@ -37,7 +37,7 @@ import FormularioLogin, {
 
 // Store
 import { MODULO_AUTENTICACION } from '../store/types/modulos';
-import { LOGIN } from '../store/types/acciones';
+import { CLIENTE_LOGIN } from '../store/types/acciones';
 
 // Router
 import { rutaProductos } from '@/router/rutas';
@@ -62,13 +62,13 @@ export default Vue.extend({
   },
 
   methods: {
-    ...mapActions(MODULO_AUTENTICACION, [LOGIN]),
+    ...mapActions(MODULO_AUTENTICACION, [CLIENTE_LOGIN]),
 
     loginLocal(credenciales: EventoSubmit): void {
       this.cargando = true;
 
       // @ts-ignore
-      this.login(credenciales)
+      this.clienteLogin(credenciales)
         // @ts-ignore
         .then((respuesta) => {
           this.mensaje = '';

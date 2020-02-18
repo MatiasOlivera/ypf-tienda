@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\User;
+use App\ClienteUsuario;
 use App\Cliente;
 use App\Producto;
 use App\Localidad;
@@ -37,9 +37,9 @@ class RouteServiceProvider extends ServiceProvider
 
         parent::boot();
 
-        //User
+        //ClienteUsuario
         Route::bind('user', function ($id) {
-            return User::withTrashed()
+            return ClienteUsuario::withTrashed()
                 ->where('id', $id)
                 ->firstOrFail();
         });

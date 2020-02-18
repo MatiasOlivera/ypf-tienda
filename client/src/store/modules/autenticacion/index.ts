@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import {
   getUsuario,
-  login,
+  clienteLogin,
   logout,
   RespuestaLogin,
   RespuestaUsuario,
@@ -9,7 +9,7 @@ import {
 } from '@/services/api/auth-api';
 import { EstadoBase } from '@/store/tipos-store';
 import {
-  LOGIN,
+  CLIENTE_LOGIN,
   LOGOUT,
   OBTENER_USUARIO,
   LOGIN_CLIENTE,
@@ -56,12 +56,12 @@ const moduloAutenticacion: Module<EstadoAutenticacion, EstadoBase> = {
   },
 
   actions: {
-    async [LOGIN](
+    async [CLIENTE_LOGIN](
       { dispatch, commit },
       credenciales: CredencialesUsuario
     ): Promise<RespuestaLogin> {
       try {
-        const respuesta = await login(credenciales);
+        const respuesta = await clienteLogin(credenciales);
         if (respuesta.ok) {
           await dispatch(OBTENER_USUARIO);
           commit(SET_ESTA_LOGUEADO, true);

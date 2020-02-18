@@ -16,6 +16,7 @@
         "laravel/tinker": "^1.0",
         "laraveles/spanish": "1.1",
         "sofa/eloquence-mappable": "^5.6",
+        "spatie/laravel-permission": "^2.38",
         "tymon/jwt-auth": "^1.0.0-rc.2"
     },
     "require-dev": {

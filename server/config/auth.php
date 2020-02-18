@@ -1,5 +1,8 @@
 <?php
 
+use App\Empleado;
+use App\ClienteUsuario;
+
 return [
 
     /*
@@ -14,8 +17,8 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'api',
-        'passwords' => 'users',
+        'guard' => 'cliente',
+        'passwords' => 'cliente',
     ],
 
     /*
@@ -36,14 +39,14 @@ return [
     */
 
     'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
+        'cliente' => [
+            'driver' => 'jwt',
+            'provider' => 'clientes',
         ],
 
-        'api' => [
+        'empleado' => [
             'driver' => 'jwt',
-            'provider' => 'users',
+            'provider' => 'empleados',
         ],
     ],
 
@@ -65,15 +68,15 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'clientes' => [
             'driver' => 'eloquent',
-            'model' => App\User::class,
+            'model' => ClienteUsuario::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'empleados' => [
+            'driver' => 'eloquent',
+            'model' => Empleado::class,
+        ],
     ],
 
     /*
@@ -92,8 +95,8 @@ return [
     */
 
     'passwords' => [
-        'users' => [
-            'provider' => 'users',
+        'cliente' => [
+            'provider' => 'clientes',
             'table' => 'password_resets',
             'expire' => 60,
         ],

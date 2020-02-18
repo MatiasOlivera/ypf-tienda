@@ -3,15 +3,16 @@
 namespace Tests\Feature\app\Http\Controllers;
 
 use App\Cliente;
-use Tests\TestCase;
+use Tests\ApiTestCase;
 use App\ClienteMail;
+use AutorizacionSeeder;
 use Tests\Feature\Utilidades\AuthHelper;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\Utilidades\EloquenceSolucion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utilidades\EstructuraJsonHelper;
 
-class ClienteEmailControllerTest extends TestCase
+class ClienteEmailControllerTest extends ApiTestCase
 {
     use AuthHelper;
     use RefreshDatabase;
@@ -28,6 +29,20 @@ class ClienteEmailControllerTest extends TestCase
             'deleted_at'
         ]
     ];
+
+    protected $usuario;
+    protected $cabeceras;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->seed(AutorizacionSeeder::class);
+
+        $login = $this->loguearseComoSuperAdministrador();
+        $this->usuario = $login['usuario'];
+        $this->cabeceras = $login['cabeceras'];
+    }
 
     private function getEstructuraEmails()
     {
@@ -52,9 +67,8 @@ class ClienteEmailControllerTest extends TestCase
         $cliente = factory(Cliente::class, 1)->create()->toArray()[0];
         $id = $cliente['id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('GET', "api/clientes/$id/emails");
 
         $estructura = $this->getEstructuraEmails();
@@ -75,9 +89,8 @@ class ClienteEmailControllerTest extends TestCase
         $cliente = Cliente::inRandomOrder()->first();
         $id = $cliente->id;
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('GET', "api/clientes/$id/emails");
 
         $estructura = $this->getEstructuraEmails();
@@ -97,9 +110,8 @@ class ClienteEmailControllerTest extends TestCase
         $email = factory(ClienteMail::class, 1)->make()->toArray()[0];
         $id = $email['cliente_id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('POST', "api/clientes/$id/emails", $email);
 
         $estructura = $this->getEstructuraEmail();
@@ -127,9 +139,8 @@ class ClienteEmailControllerTest extends TestCase
         $clienteId = $email['cliente_id'];
         $id = $email['id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('GET', "api/clientes/$clienteId/emails/$id");
 
         $respuesta
@@ -151,9 +162,8 @@ class ClienteEmailControllerTest extends TestCase
 
         $emailModificado = array_merge($email, ['mail' => 'nuevo@gmail.com']);
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('PUT', "api/clientes/$clienteId/emails/$id", $emailModificado);
 
         unset($emailModificado['updated_at']);
@@ -181,9 +191,8 @@ class ClienteEmailControllerTest extends TestCase
         $clienteId = $email['cliente_id'];
         $id = $email['id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('DELETE', "api/clientes/$clienteId/emails/$id");
 
         unset($email['updated_at']);
@@ -214,13 +223,12 @@ class ClienteEmailControllerTest extends TestCase
         $clienteId = $email['cliente_id'];
         $id = $email['id'];
 
-        $cabeceras = $this->loguearseComo('defecto');
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('DELETE', "api/clientes/$clienteId/emails/$id");
 
         $respuesta = $this
-            ->withHeaders($cabeceras)
+            ->withHeaders($this->cabeceras)
             ->json('POST', "api/clientes/$clienteId/emails/$id/restaurar");
 
         unset($email['updated_at']);
